@@ -10,8 +10,10 @@
 
 #import <CoreData/CoreData.h>
 
-@interface RootViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+#import "SettingsViewController.h"
 
+@interface RootViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+    SettingsViewController *settingsViewController;
 }
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;

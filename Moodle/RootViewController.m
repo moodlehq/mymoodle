@@ -22,11 +22,22 @@
 {
     [super viewDidLoad];
     // Set up the edit and add buttons.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc] initWithTitle:@"Sites" style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
+    self.navigationItem.leftBarButtonItem = sitesButton;
+    [sitesButton release];
+    
+    self.title = [NSString stringWithFormat:NSLocalizedString(@"sitename", @"Site name"), @"Toto"];
+   // self.title = NSLocalizedString(@"sitename", "site name");
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    [addButton release];
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
+//    self.navigationItem.rightBarButtonItem = addButton;
+//    [addButton release];
+}
+
+-(void)displaySettingsView {
+    settingsViewController = [[SettingsViewController alloc] initWithStyle:UITableViewStylePlain];
+    [self.navigationController pushViewController:settingsViewController animated:YES];
+    [settingsViewController release];
 }
 
 - (void)viewWillAppear:(BOOL)animated

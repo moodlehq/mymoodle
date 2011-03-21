@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A67A1336ECBE007BD281 /* SettingsViewController.m */; };
+		0246A6851336FA11007BD281 /* SettingsSiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A6841336FA10007BD281 /* SettingsSiteViewController.m */; };
+		0246A69613370B8B007BD281 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0246A69413370B8B007BD281 /* Localizable.strings */; };
 		02618A121331A581008D3037 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A111331A581008D3037 /* UIKit.framework */; };
 		02618A141331A581008D3037 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A131331A581008D3037 /* Foundation.framework */; };
 		02618A161331A581008D3037 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A151331A581008D3037 /* CoreGraphics.framework */; };
@@ -38,6 +41,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0246A6791336ECBE007BD281 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		0246A67A1336ECBE007BD281 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		0246A6831336FA10007BD281 /* SettingsSiteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsSiteViewController.h; sourceTree = "<group>"; };
+		0246A6841336FA10007BD281 /* SettingsSiteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsSiteViewController.m; sourceTree = "<group>"; };
+		0246A69513370B8B007BD281 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0246A69713370B96007BD281 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		02618A0D1331A581008D3037 /* Moodle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moodle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02618A111331A581008D3037 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		02618A131331A581008D3037 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -121,6 +130,7 @@
 		02618A191331A581008D3037 /* Moodle */ = {
 			isa = PBXGroup;
 			children = (
+				0246A69413370B8B007BD281 /* Localizable.strings */,
 				02618A221331A581008D3037 /* MoodleAppDelegate.h */,
 				02618A231331A581008D3037 /* MoodleAppDelegate.m */,
 				02618A281331A582008D3037 /* MainWindow.xib */,
@@ -129,6 +139,10 @@
 				02618A2E1331A582008D3037 /* RootViewController.xib */,
 				02618A251331A582008D3037 /* Moodle.xcdatamodeld */,
 				02618A1A1331A581008D3037 /* Supporting Files */,
+				0246A6791336ECBE007BD281 /* SettingsViewController.h */,
+				0246A67A1336ECBE007BD281 /* SettingsViewController.m */,
+				0246A6831336FA10007BD281 /* SettingsSiteViewController.h */,
+				0246A6841336FA10007BD281 /* SettingsSiteViewController.m */,
 			);
 			path = Moodle;
 			sourceTree = "<group>";
@@ -217,6 +231,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				fr,
 			);
 			mainGroup = 02618A021331A581008D3037;
 			productRefGroup = 02618A0E1331A581008D3037 /* Products */;
@@ -237,6 +252,7 @@
 				02618A1E1331A581008D3037 /* InfoPlist.strings in Resources */,
 				02618A2A1331A582008D3037 /* MainWindow.xib in Resources */,
 				02618A301331A582008D3037 /* RootViewController.xib in Resources */,
+				0246A69613370B8B007BD281 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +292,8 @@
 				02618A241331A581008D3037 /* MoodleAppDelegate.m in Sources */,
 				02618A271331A582008D3037 /* Moodle.xcdatamodeld in Sources */,
 				02618A2D1331A582008D3037 /* RootViewController.m in Sources */,
+				0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */,
+				0246A6851336FA11007BD281 /* SettingsSiteViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +316,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0246A69413370B8B007BD281 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0246A69513370B8B007BD281 /* en */,
+				0246A69713370B96007BD281 /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		02618A1C1331A581008D3037 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
