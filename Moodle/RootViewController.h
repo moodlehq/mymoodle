@@ -12,7 +12,7 @@
 
 #import "SettingsViewController.h"
 
-@interface DashboardViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+@interface RootViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
     SettingsViewController *settingsViewController;
 }
 

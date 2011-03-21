@@ -6,13 +6,13 @@
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
-#import "DashboardViewController.h"
+#import "RootViewController.h"
 
-@interface DashboardViewController ()
+@interface RootViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
-@implementation DashboardViewController
+@implementation RootViewController
 
 @synthesize fetchedResultsController=__fetchedResultsController;
 
@@ -26,8 +26,7 @@
     self.navigationItem.leftBarButtonItem = sitesButton;
     [sitesButton release];
     
-    self.title = [NSString stringWithFormat:NSLocalizedString(@"sitename", @"Site name"), @"Toto"];
-   // self.title = NSLocalizedString(@"sitename", "site name");
+    self.title = NSLocalizedString(@"sitename", "site name");
 
 //    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
 //    self.navigationItem.rightBarButtonItem = addButton;

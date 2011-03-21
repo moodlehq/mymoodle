@@ -8,7 +8,7 @@
 
 #import "MoodleAppDelegate.h"
 
-#import "DashboardViewController.h"
+#import "RootViewController.h"
 
 @implementation MoodleAppDelegate
 
@@ -80,8 +80,8 @@
 
 - (void)awakeFromNib
 {
-    DashboardViewController *dashboardViewController = (DashboardViewController *)[self.navigationController topViewController];
-    dashboardViewController.managedObjectContext = self.managedObjectContext;
+    RootViewController *rootViewController = (RootViewController *)[self.navigationController topViewController];
+    rootViewController.managedObjectContext = self.managedObjectContext;
 }
 
 - (void)saveContext
