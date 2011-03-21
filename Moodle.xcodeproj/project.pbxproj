@@ -19,8 +19,8 @@
 		02618A241331A581008D3037 /* MoodleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A231331A581008D3037 /* MoodleAppDelegate.m */; };
 		02618A271331A582008D3037 /* Moodle.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 02618A251331A582008D3037 /* Moodle.xcdatamodeld */; };
 		02618A2A1331A582008D3037 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02618A281331A582008D3037 /* MainWindow.xib */; };
-		02618A2D1331A582008D3037 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A2C1331A582008D3037 /* RootViewController.m */; };
-		02618A301331A582008D3037 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02618A2E1331A582008D3037 /* RootViewController.xib */; };
+		02618A2D1331A582008D3037 /* DashboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A2C1331A582008D3037 /* DashboardViewController.m */; };
+		02618A301331A582008D3037 /* DashboardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02618A2E1331A582008D3037 /* DashboardViewController.xib */; };
 		02618A371331A582008D3037 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A111331A581008D3037 /* UIKit.framework */; };
 		02618A381331A582008D3037 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A131331A581008D3037 /* Foundation.framework */; };
 		02618A391331A582008D3037 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A151331A581008D3037 /* CoreGraphics.framework */; };
@@ -60,9 +60,9 @@
 		02618A231331A581008D3037 /* MoodleAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoodleAppDelegate.m; sourceTree = "<group>"; };
 		02618A261331A582008D3037 /* Moodle.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Moodle.xcdatamodel; sourceTree = "<group>"; };
 		02618A291331A582008D3037 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		02618A2B1331A582008D3037 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
-		02618A2C1331A582008D3037 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
-		02618A2F1331A582008D3037 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RootViewController.xib; sourceTree = "<group>"; };
+		02618A2B1331A582008D3037 /* DashboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashboardViewController.h; sourceTree = "<group>"; };
+		02618A2C1331A582008D3037 /* DashboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashboardViewController.m; sourceTree = "<group>"; };
+		02618A2F1331A582008D3037 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DashboardViewController.xib; sourceTree = "<group>"; };
 		02618A361331A582008D3037 /* MoodleTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoodleTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		02618A3F1331A582008D3037 /* MoodleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MoodleTests-Info.plist"; sourceTree = "<group>"; };
 		02618A411331A582008D3037 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -134,9 +134,9 @@
 				02618A221331A581008D3037 /* MoodleAppDelegate.h */,
 				02618A231331A581008D3037 /* MoodleAppDelegate.m */,
 				02618A281331A582008D3037 /* MainWindow.xib */,
-				02618A2B1331A582008D3037 /* RootViewController.h */,
-				02618A2C1331A582008D3037 /* RootViewController.m */,
-				02618A2E1331A582008D3037 /* RootViewController.xib */,
+				02618A2B1331A582008D3037 /* DashboardViewController.h */,
+				02618A2C1331A582008D3037 /* DashboardViewController.m */,
+				02618A2E1331A582008D3037 /* DashboardViewController.xib */,
 				02618A251331A582008D3037 /* Moodle.xcdatamodeld */,
 				02618A1A1331A581008D3037 /* Supporting Files */,
 				0246A6791336ECBE007BD281 /* SettingsViewController.h */,
@@ -251,7 +251,7 @@
 			files = (
 				02618A1E1331A581008D3037 /* InfoPlist.strings in Resources */,
 				02618A2A1331A582008D3037 /* MainWindow.xib in Resources */,
-				02618A301331A582008D3037 /* RootViewController.xib in Resources */,
+				02618A301331A582008D3037 /* DashboardViewController.xib in Resources */,
 				0246A69613370B8B007BD281 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -291,7 +291,7 @@
 				02618A211331A581008D3037 /* main.m in Sources */,
 				02618A241331A581008D3037 /* MoodleAppDelegate.m in Sources */,
 				02618A271331A582008D3037 /* Moodle.xcdatamodeld in Sources */,
-				02618A2D1331A582008D3037 /* RootViewController.m in Sources */,
+				02618A2D1331A582008D3037 /* DashboardViewController.m in Sources */,
 				0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */,
 				0246A6851336FA11007BD281 /* SettingsSiteViewController.m in Sources */,
 			);
@@ -341,12 +341,12 @@
 			name = MainWindow.xib;
 			sourceTree = "<group>";
 		};
-		02618A2E1331A582008D3037 /* RootViewController.xib */ = {
+		02618A2E1331A582008D3037 /* DashboardViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				02618A2F1331A582008D3037 /* en */,
 			);
-			name = RootViewController.xib;
+			name = DashboardViewController.xib;
 			sourceTree = "<group>";
 		};
 		02618A401331A582008D3037 /* InfoPlist.strings */ = {

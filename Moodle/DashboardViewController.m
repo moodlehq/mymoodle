@@ -6,13 +6,13 @@
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
-#import "RootViewController.h"
+#import "DashboardViewController.h"
 
-@interface RootViewController ()
+@interface DashboardViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
-@implementation RootViewController
+@implementation DashboardViewController
 
 @synthesize fetchedResultsController=__fetchedResultsController;
 
