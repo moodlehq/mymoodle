@@ -11,7 +11,12 @@
 
 
 @interface SettingsViewController : UITableViewController {
+    NSArray *list;
     SettingsSiteViewController *settingsSiteViewController;
+    NSIndexPath *lastIndexPath;
+    UIImageView *lastCheckMark;
 }
 
+@property (nonatomic, retain) NSArray *list;
+@property (nonatomic, retain) NSIndexPath *lastIndexPath;
 @end

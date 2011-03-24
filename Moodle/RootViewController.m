@@ -21,12 +21,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Set up the edit and add buttons.
     UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc] initWithTitle:@"Sites" style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
-    self.navigationItem.leftBarButtonItem = sitesButton;
+    self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
     
-    self.title = NSLocalizedString(@"sitename", "site name");
+    self.title = @"Moodle.org";
 
 //    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
 //    self.navigationItem.rightBarButtonItem = addButton;
@@ -35,6 +34,10 @@
 
 -(void)displaySettingsView {
     settingsViewController = [[SettingsViewController alloc] initWithStyle:UITableViewStylePlain];
+    //set the dashboard back button just before to push the settings view
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
+    [[self navigationItem] setBackBarButtonItem: newBackButton];
+    [newBackButton release];
     [self.navigationController pushViewController:settingsViewController animated:YES];
     [settingsViewController release];
 }
