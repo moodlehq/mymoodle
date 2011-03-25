@@ -7,7 +7,8 @@
 //
 
 #import "SettingsSiteViewController.h"
-
+#import "WSClient.h"
+#import "XMLRPCRequest.h"
 
 @implementation SettingsSiteViewController
 @synthesize fieldLabels;
@@ -49,9 +50,19 @@
     [self.navigationController popViewControllerAnimated:YES];
     
     NSArray *allControllers = self.navigationController.viewControllers;
+    
+    WSClient *client = [[WSClient alloc] initWithToken: @"http://moodle.local/moodle/webservice/xmlrpc/server.php?wstoken=fffffffffffffffffffffff"];
+    
+    
+    NSString *msg = [client invoke: @"moodle_echo" withParams: [[NSArray alloc] initWithObjects:@"Hello, Moodle", nil]];    
     UITableViewController *parent = [allControllers lastObject];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello World" message:msg delegate:self cancelButtonTitle:@"yes" otherButtonTitles: nil];
+    [alert show];
+    [alert release];
+    
     [parent.tableView reloadData];
 }
+
 -(IBAction)textFieldDone:(id)sender {
     UITableViewCell *cell =
     (UITableViewCell *)[[sender superview] superview];
