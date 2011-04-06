@@ -14,12 +14,34 @@
 @synthesize fieldLabels;
 @synthesize tempValues;
 @synthesize textFieldBeingEdited;
+@synthesize site;
+@synthesize fetchedResultsController;
 
 -(IBAction)cancel:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)save:(id)sender
 {
+    //create the site if it doesn't exist
+    if ( site == nil) {
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+        site = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    }
+    
+    //retrieve the site name
+    WSClient *client = [[WSClient alloc] initWithToken: @"http://dongsheng.moodle.local/m2/webservice/xmlrpc/server.php?wstoken=869232723a601578ac602ff38fca9080"];
+    NSArray *wsparams = [[NSArray alloc] initWithObjects:@"Hello, Moodle", nil];
+    NSString *msg = [client invoke: @"moodle_echo" withParams: wsparams];  
+    [client release];
+    [wsparams release];
+    if ([msg isKindOfClass:[NSString class]]) {
+        [site setValue:msg forKey:@"sitename"];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Web service call failed" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
+    }
     
     if (textFieldBeingEdited != nil)
     {
@@ -32,35 +54,34 @@
     for (NSNumber *key in [tempValues allKeys])
     {
         switch ([key intValue]) {
-            case kNameRowIndex:
-//                president.name = [tempValues objectForKey:key];
+            case kUrlIndex:
+                [site setValue:[tempValues objectForKey:key] forKey:@"siteurl"];
                 break;
-            case kFromYearRowIndex:
-//                president.fromYear = [tempValues objectForKey:key];
+            case kUsernameIndex:
+                [site setValue:[tempValues objectForKey:key] forKey:@"username"];
                 break;
-            case kToYearRowIndex:
-//                president.toYear = [tempValues objectForKey:key];
+            case kPasswordIndex:
+                [site setValue:[tempValues objectForKey:key] forKey:@"password"];
                 break;
-            case kPartyIndex:
-//                president.party = [tempValues objectForKey:key];
+            
             default:
                 break;
         }
     }
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    //save the modification
+    NSError *error;
+    if (![[site managedObjectContext] save:&error]) {
+        NSLog(@"Error saving entity: %@", [error localizedDescription]);
+    }
+    
     
     NSArray *allControllers = self.navigationController.viewControllers;
-    
-    WSClient *client = [[WSClient alloc] initWithToken: @"http://moodle.local/moodle/webservice/xmlrpc/server.php?wstoken=fffffffffffffffffffffff"];
-    
-    
-    NSString *msg = [client invoke: @"moodle_echo" withParams: [[NSArray alloc] initWithObjects:@"Hello, Moodle", nil]];    
+    [self.navigationController popViewControllerAnimated:YES];
     UITableViewController *parent = [allControllers lastObject];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello World" message:msg delegate:self cancelButtonTitle:@"yes" otherButtonTitles: nil];
-    [alert show];
-    [alert release];
+    [parent.tableView reloadData];    
     
-    [parent.tableView reloadData];
+    
 }
 
 -(IBAction)textFieldDone:(id)sender {
@@ -86,36 +107,20 @@
     [nextField becomeFirstResponder];
 }
 
-//- (id)initWithStyle:(UITableViewStyle)style
-//{
-//    self = [super initWithStyle:style];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
-
 - (void)dealloc {
     [textFieldBeingEdited release];
     [tempValues release];
     [fieldLabels release];
-    
+    [site release];
     [super dealloc];
 }
-//- (void)didReceiveMemoryWarning
-//{
-//    // Releases the view if it doesn't have a superview.
-//    [super didReceiveMemoryWarning];
-//    
-//    // Release any cached data, images, etc that aren't in use.
-//}
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad {
     
     NSArray *array = [[NSArray alloc] initWithObjects:@"URL:", @"Username:", 
-                      @"Password:", @"Token:", nil];
+                      @"Password:", nil];
     self.fieldLabels = array;
     [array release];
     
@@ -141,47 +146,13 @@
     [super viewDidLoad];
 }
 
-//- (void)viewDidUnload
-//{
-//    [super viewDidUnload];
-//    // Release any retained subviews of the main view.
-//    // e.g. self.myOutlet = nil;
-//}
-
-//- (void)viewWillAppear:(BOOL)animated
-//{
-//    [super viewWillAppear:animated];
-//}
-//
-//- (void)viewDidAppear:(BOOL)animated
-//{
-//    [super viewDidAppear:animated];
-//}
-//
-//- (void)viewWillDisappear:(BOOL)animated
-//{
-//    [super viewWillDisappear:animated];
-//}
-//
-//- (void)viewDidDisappear:(BOOL)animated
-//{
-//    [super viewDidDisappear:animated];
-//}
-//
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-//{
-//    // Return YES for supported orientations
-//    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-//}
+- (void)viewWillAppear:(BOOL)animated
+{   
+    //set the site value
+    [super viewWillAppear:animated];
+}
 
 #pragma mark - Table view data source
-
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-//{
-//#warning Potentially incomplete method implementation.
-//    // Return the number of sections.
-//    return 0;
-//}
 
 - (NSInteger)tableView:(UITableView *)tableView 
  numberOfRowsInSection:(NSInteger)section {
@@ -191,14 +162,14 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *PresidentCellIdentifier = @"PresidentCellIdentifier";
+    static NSString *SiteSettingCellIdentifier = @"SiteSettingCellIdentifier";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                             PresidentCellIdentifier];
+                             SiteSettingCellIdentifier];
     if (cell == nil) {
         
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                       reuseIdentifier:PresidentCellIdentifier] autorelease];
+                                       reuseIdentifier:SiteSettingCellIdentifier] autorelease];
         UILabel *label = [[UILabel alloc] initWithFrame:
                           CGRectMake(10, 10, 75, 25)];
         label.textAlignment = UITextAlignmentRight;
@@ -229,29 +200,26 @@
     label.text = [fieldLabels objectAtIndex:row];
     NSNumber *rowAsNum = [[NSNumber alloc] initWithInt:row];
     switch (row) {
-        case kNameRowIndex:
+        case kUrlIndex:
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
-            else
-//                textField.text = president.name;
+            else {
+                textField.text = [site valueForKey:@"siteurl"];
+                }
             break;
-        case kFromYearRowIndex:
+        case kUsernameIndex:
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else
-//                textField.text = president.fromYear;
+                textField.text = [site valueForKey:@"username"];
             break;
-        case kToYearRowIndex:
+        case kPasswordIndex:
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else
-//                textField.text = president.toYear;
+                textField.text = [site valueForKey:@"password"];
             break;
-        case kPartyIndex:
-            if ([[tempValues allKeys] containsObject:rowAsNum])
-                textField.text = [tempValues objectForKey:rowAsNum];
-            else
-//                textField.text = president.party;
+       
         default:
             break;
     }

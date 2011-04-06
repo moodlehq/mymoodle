@@ -8,11 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-#define kNumberOfEditableRows 4
-#define kNameRowIndex 0
-#define kFromYearRowIndex 1
-#define kToYearRowIndex 2
-#define kPartyIndex 3
+#define kNumberOfEditableRows 3
+#define kUrlIndex 0
+#define kUsernameIndex 1
+#define kPasswordIndex 2
 
 #define kLabelTag 4096
 
@@ -21,10 +20,13 @@
     NSArray *fieldLabels;
     NSMutableDictionary *tempValues;
     UITextField *textFieldBeingEdited;
+    NSManagedObject *site;
 }
 @property (nonatomic, retain) NSArray *fieldLabels;
 @property (nonatomic, retain) NSMutableDictionary *tempValues;
 @property (nonatomic, retain) UITextField *textFieldBeingEdited;
+@property (nonatomic, retain) NSManagedObject *site;
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)save:(id)sender;

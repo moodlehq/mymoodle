@@ -11,38 +11,55 @@
 
 #define kSiteNameTag 1;
 
+@interface SettingsViewController ()
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+@end
 
 @implementation SettingsViewController
-@synthesize list;
 @synthesize lastIndexPath;
+@synthesize fetchedResultsController=__fetchedResultsController;
+@synthesize managedObjectContext=__managedObjectContext;
+@synthesize settingsSiteViewController;
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = [[managedObject valueForKey:@"sitename"] description];
+}
+
+- (void)addSite {
+    [self.navigationController pushViewController:settingsSiteViewController animated:YES];
+}
 
 
 #pragma mark - View lifecycle
 
 - (void)dealloc{
-    [list release];
     [lastIndexPath release];
+    [settingsSiteViewController release];
     [super dealloc];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    settingsSiteViewController = [[SettingsSiteViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    settingsSiteViewController.fetchedResultsController = self.fetchedResultsController;
+    [super viewWillAppear:animated];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
  - (void)viewDidLoad {
-     NSArray *array = [[NSArray alloc] initWithObjects:@"Moodle.org", @"Jerome.moodle.local", @"Dongsheng Moodle Site",nil];
+     
      self.title = NSLocalizedString(@"selectsite", "select a site");
      
      // Set up the edit and add buttons.
-     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:nil];
+     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addSite)];
      self.navigationItem.rightBarButtonItem = addButton;
      [addButton release];
-      
      
-     self.list = array;
-     [array release];
      [super viewDidLoad];
  }
 
 -(void)viewDidUnload {
-    self.list = nil;
     self.lastIndexPath = nil;
     [super viewDidUnload];
 }
@@ -51,7 +68,8 @@
 #pragma mark -
 #pragma mark Table Data Source Methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [list count];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -63,10 +81,11 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SettingsCellIdentifier] autorelease];
     }
+    
+    NSManagedObject *oneSite = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
     NSUInteger row = [indexPath row];
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
-    
-    NSString *rowString = [list objectAtIndex:row];
     
     UIImage *image = [UIImage imageNamed:@"profilpicture.jpg"];
     cell.imageView.image = image;
@@ -74,7 +93,7 @@
     CGRect siteNameRect = CGRectMake(100, 5, 200, 18);
     UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
     siteName.tag = kSiteNameTag;
-    siteName.text = rowString;
+    siteName.text = [oneSite valueForKey:@"sitename"];
     siteName.font = [UIFont boldSystemFontOfSize:15];
     [cell.contentView addSubview:siteName];
     [siteName release];
@@ -98,7 +117,7 @@
     
  //   cell.textLabel.text = rowString;
     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-    [rowString release];
+
     
     
     
@@ -106,47 +125,22 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-//    if (settingsSiteViewController == nil) {
-//        settingsSiteViewController = [[SettingsSiteViewController alloc] initWithNibName:@"DisclosureDetail" bundle:nil];
-//    }
-//    
-//    childController.title = @"Disclosure Button Pressed";
-//    NSUInteger row = [indexPath row];
-//    
-//    NSString *selectedMovie = [list objectAtIndex:row];
-//    NSString *detailMessage = [[NSString alloc] initWithFormat:@"You pressed the disclosure button for %@.", selectedMovie];
-//    childController.message = detailMessage;
-//    childController.title = selectedMovie;
-//    [detailMessage release];
-//    [self.navigationController pushViewController:childController animated:YES];
-    
-    NSUInteger row = [indexPath row];
-//    President *prez = [self.list objectAtIndex:row];
-    
-    settingsSiteViewController = [[SettingsSiteViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    
-    settingsSiteViewController.title = [list objectAtIndex:row];
-//    childController.president = prez;
+    settingsSiteViewController.site = [self.fetchedResultsController objectAtIndexPath:indexPath];  
+    settingsSiteViewController.title = [settingsSiteViewController.site valueForKey:@"sitename"];
     
     [self.navigationController pushViewController:settingsSiteViewController animated:YES];
     [settingsSiteViewController release];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger row = [indexPath row];
-    NSString *rowString = [list objectAtIndex:row];
-    
-    
     
     //TODO: remove this hacky code once the dashboard to gt the proper value for some saved settings
     NSArray *allControllers = self.navigationController.viewControllers;
     NSUInteger parentindex = [allControllers count] - 2 ;
     UITableViewController *parent = [allControllers objectAtIndex:parentindex];
-    parent.title = rowString;
-
-    [rowString release];
     
-    
+    settingsSiteViewController.site = [self.fetchedResultsController objectAtIndexPath:indexPath];  
+    parent.title = [settingsSiteViewController.site valueForKey:@"sitename"];
     
     int newRow = [indexPath row];
     int oldRow = (lastIndexPath != nil) ? [lastIndexPath row] : -1;
@@ -156,8 +150,7 @@
         if (lastCheckMark != nil) {
             [lastCheckMark removeFromSuperview];
         }
-               
-        
+                       
         UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
         UIImage *checkMarkImage = [UIImage imageNamed:@"checkmark.png"];
         CGRect checkMarkRect = CGRectMake(57, 0, 43, 45);
@@ -167,23 +160,131 @@
         lastCheckMark = imageView;
         [imageView release];
         
-        
         [self.tableView cellForRowAtIndexPath:lastIndexPath];
-
-//        UITableViewCell *oldCell = [tableView cellForRowAtIndexPath:lastIndexPath];
-//        UIImage *emptyImage = [UIImage imageNamed:@"profilepicture.png"];
-//        CGRect checkMarkRect2 = CGRectMake(57, 0, 43, 45);
-//        UIImageView *emptyImageView = [[UIImageView alloc] initWithFrame:checkMarkRect2];
-//        [emptyImageView setImage:emptyImage];
-//        [oldCell.contentView addSubview:emptyImageView];
-//        [emptyImageView release];
         
-
         lastIndexPath = indexPath;
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
 }
+
+#pragma mark - Fetched results controller
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (__fetchedResultsController != nil)
+    {
+        return __fetchedResultsController;
+    }
+    
+    /*
+     Set up the fetched results controller.
+    */
+    // Create the fetch request for the entity.
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Connection" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sitename" ascending:NO];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    
+    [aFetchedResultsController release];
+    [fetchRequest release];
+    [sortDescriptor release];
+    [sortDescriptors release];
+
+	NSError *error = nil;
+	if (![self.fetchedResultsController performFetch:&error])
+        {
+	    /*
+	     Replace this implementation with code to handle the error appropriately.
+
+	     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+	     */
+	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	    abort();
+	}
+    
+    return __fetchedResultsController;
+}   
+
+#pragma mark - Fetched results controller delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    switch(type)
+    {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    UITableView *tableView = self.tableView;
+    
+    switch(type)
+    {
+            
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView endUpdates];
+}
+
+/*
+ // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
+ 
+ - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+ {
+ // In the simplest, most efficient, case, reload the table view.
+ [self.tableView reloadData];
+ }
+ */
 
 @end

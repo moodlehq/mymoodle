@@ -10,13 +10,16 @@
 #import "SettingsSiteViewController.h"
 
 
-@interface SettingsViewController : UITableViewController {
+@interface SettingsViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
     NSArray *list;
     SettingsSiteViewController *settingsSiteViewController;
     NSIndexPath *lastIndexPath;
     UIImageView *lastCheckMark;
 }
 
-@property (nonatomic, retain) NSArray *list;
 @property (nonatomic, retain) NSIndexPath *lastIndexPath;
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) SettingsSiteViewController *settingsSiteViewController;
+- (void)addSite;
 @end

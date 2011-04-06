@@ -12,11 +12,10 @@
 
 #import "SettingsViewController.h"
 
-@interface RootViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+@interface RootViewController : UIViewController {
     SettingsViewController *settingsViewController;
 }
 
-@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @end
