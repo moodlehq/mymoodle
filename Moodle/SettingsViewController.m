@@ -28,6 +28,7 @@
 }
 
 - (void)addSite {
+    settingsSiteViewController.site = nil; //if user did select a row, we don't try to edit it.
     [self.navigationController pushViewController:settingsSiteViewController animated:YES];
 }
 
