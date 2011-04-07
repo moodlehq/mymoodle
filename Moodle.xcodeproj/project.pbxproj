@@ -63,6 +63,7 @@
 
 /* Begin PBXFileReference section */
 		02096EAB1337255400FA9B1A /* RootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
+		020E06C7134D9D6C0076B4BA /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		0210918C1339DFBE00CFE9F7 /* profilpicture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = profilpicture.jpg; sourceTree = "<group>"; };
 		0210918E1339ECF700CFE9F7 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
 		0246A6791336ECBE007BD281 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -327,6 +328,7 @@
 				0246A67A1336ECBE007BD281 /* SettingsViewController.m */,
 				0246A6831336FA10007BD281 /* SettingsSiteViewController.h */,
 				0246A6841336FA10007BD281 /* SettingsSiteViewController.m */,
+				020E06C7134D9D6C0076B4BA /* Config.h */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";

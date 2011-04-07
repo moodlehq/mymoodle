@@ -35,7 +35,7 @@
 #pragma mark - View lifecycle
 
 - (void)dealloc{
-    [lastIndexPath release];
+    [self.lastIndexPath release];
     [settingsSiteViewController release];
     [super dealloc];
 }
@@ -43,6 +43,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     settingsSiteViewController = [[SettingsSiteViewController alloc] initWithStyle:UITableViewStyleGrouped];
     settingsSiteViewController.fetchedResultsController = self.fetchedResultsController;
+   // [self.tableView reloadData];
     [super viewWillAppear:animated];
 }
 
@@ -86,6 +87,8 @@
     
     NSUInteger row = [indexPath row];
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
+        
+    NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
     
     UIImage *image = [UIImage imageNamed:@"profilpicture.jpg"];
     cell.imageView.image = image;
@@ -106,20 +109,20 @@
     [cell.contentView addSubview:userName];
     [userName release];
     
-    if (row == oldRow && lastIndexPath != nil) {
+    if ((row == oldRow && lastIndexPath != nil) 
+        || [[oneSite valueForKey:@"siteurl"] isEqualToString:defaultSiteUrl]) {
+        
         UIImage *checkMarkImage = [UIImage imageNamed:@"checkmark.png"];
-        CGRect checkMarkRect = CGRectMake(245, 0, 50, 45);
+        CGRect checkMarkRect = CGRectMake(57, 0, 43, 45);
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:checkMarkRect];
         [imageView setImage:checkMarkImage];
         [cell.contentView addSubview:imageView];
+        lastCheckMark = imageView;
+        lastIndexPath = indexPath;
         [imageView release];
     }
     
- //   cell.textLabel.text = rowString;
     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-
-    
-    
     
     return cell;
 }
@@ -133,14 +136,8 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    //TODO: remove this hacky code once the dashboard to gt the proper value for some saved settings
-    NSArray *allControllers = self.navigationController.viewControllers;
-    NSUInteger parentindex = [allControllers count] - 2 ;
-    UITableViewController *parent = [allControllers objectAtIndex:parentindex];
-    
+        
     settingsSiteViewController.site = [self.fetchedResultsController objectAtIndexPath:indexPath];  
-    parent.title = [settingsSiteViewController.site valueForKey:@"sitename"];
     
     int newRow = [indexPath row];
     int oldRow = (lastIndexPath != nil) ? [lastIndexPath row] : -1;
@@ -163,6 +160,14 @@
         [self.tableView cellForRowAtIndexPath:lastIndexPath];
         
         lastIndexPath = indexPath;
+        
+        //save the current site into user preference
+        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
+        [NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
+        
+
+
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

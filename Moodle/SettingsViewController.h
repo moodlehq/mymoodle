@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "SettingsSiteViewController.h"
+#import "Config.h"
 
 
 @interface SettingsViewController : UITableViewController <NSFetchedResultsControllerDelegate> {

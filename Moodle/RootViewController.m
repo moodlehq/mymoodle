@@ -7,6 +7,7 @@
 //
 
 #import "RootViewController.h"
+#import "Config.h"
 
 @implementation RootViewController
 
@@ -36,6 +37,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
     [super viewWillAppear:animated];
 }
 

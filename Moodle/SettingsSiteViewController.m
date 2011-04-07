@@ -77,9 +77,13 @@
     
     
     NSArray *allControllers = self.navigationController.viewControllers;
+    
     [self.navigationController popViewControllerAnimated:YES];
+  
     UITableViewController *parent = [allControllers lastObject];
-    [parent.tableView reloadData];    
+    [parent.tableView reloadData];   
+    
+   
     
     
 }
