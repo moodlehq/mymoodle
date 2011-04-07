@@ -11,21 +11,11 @@
 
 #define kSiteNameTag 1;
 
-@interface SettingsViewController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-@end
-
 @implementation SettingsViewController
 @synthesize lastIndexPath;
 @synthesize fetchedResultsController=__fetchedResultsController;
 @synthesize managedObjectContext=__managedObjectContext;
 @synthesize settingsSiteViewController;
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[managedObject valueForKey:@"sitename"] description];
-}
 
 - (void)addSite {
     settingsSiteViewController.site = nil; //if user did select a row, we don't try to edit it.
@@ -278,7 +268,6 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
