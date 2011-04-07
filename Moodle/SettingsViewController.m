@@ -259,7 +259,17 @@
     {
             
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];       
+             settingsSiteViewController.site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];  
+            //save the current site into user preference
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
+            [NSUserDefaults resetStandardUserDefaults];
+            //remove the previous checkmark
+            if (lastCheckMark != nil) {
+                [lastCheckMark removeFromSuperview];
+            }
+            
             break;
             
         case NSFetchedResultsChangeDelete:
