@@ -16,7 +16,7 @@
 #define kLabelTag 4096
 
 
-@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate>{
+@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate>{
     NSArray *fieldLabels;
     NSMutableDictionary *tempValues;
     UITextField *textFieldBeingEdited;
@@ -31,5 +31,7 @@
 - (IBAction)cancel:(id)sender;
 - (IBAction)save:(id)sender;
 - (IBAction)textFieldDone:(id)sender;
+- (IBAction)backgroundTap:(id)sender;
+- (void)deleteSite;
 
 @end

@@ -20,6 +20,29 @@
 -(IBAction)cancel:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
 }
+-(void)deleteSite {
+    UIActionSheet *deleteActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"deletesite", "Delete the site") delegate:self cancelButtonTitle:NSLocalizedString(@"donotdeletesite", "Do not delete the site") destructiveButtonTitle: NSLocalizedString(@"dodeletesite", "Do delete the site") otherButtonTitles:nil];
+    [deleteActionSheet showInView:self.view];
+    [deleteActionSheet release];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
+    if (buttonIndex != [actionSheet cancelButtonIndex]) {
+        //delete the entry
+        [[site managedObjectContext] deleteObject:site];
+        NSError *error;
+        if (![[site managedObjectContext] save:&error]) {
+            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
+        //return the list of sites
+        [self.navigationController popViewControllerAnimated:YES];
+        NSArray *allControllers = self.navigationController.viewControllers;
+        UITableViewController *parent = [allControllers lastObject];
+        [parent.tableView reloadData];
+    }
+}
+
 - (IBAction)save:(id)sender
 {
     //create the site if it doesn't exist
@@ -68,7 +91,7 @@
                 break;
         }
     }
-    
+   
     //save the modification
     NSError *error;
     if (![[site managedObjectContext] save:&error]) {
@@ -147,6 +170,27 @@
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     self.tempValues = dict;
     [dict release];
+    
+    if ( site != nil) {
+        //create a footer view on the bottom of the tabeview with a Delete button
+        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 270)];
+        //Cacaco framework doesn't have a style for the 'Delete contact' red button! We need to simulate it with a background image
+        UIImage *buttonImage = [[UIImage imageNamed:@"redbutton.png"] stretchableImageWithLeftCapWidth:8 topCapHeight:8];
+        //create the button
+        UIButton *btnDelete = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btnDelete setBackgroundImage:buttonImage forState:UIControlStateNormal];
+        btnDelete.frame = CGRectMake(0, 170, 300, 40); //button position at the bottom of the screen (a bit clunky)
+        [btnDelete setTitle:NSLocalizedString(@"delete", "delete") forState:UIControlStateNormal];
+        [btnDelete.titleLabel setFont:[UIFont boldSystemFontOfSize:20]];
+       // [btnDelete setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [btnDelete addTarget:self action:@selector(deleteSite) forControlEvents:UIControlEventTouchUpInside];
+        //add the button to the footer
+        [footerView addSubview:btnDelete];
+        //add the footer to the tableView
+        self.tableView.tableFooterView = footerView; 
+        [footerView release];
+    }
+    
     [super viewDidLoad];
 }
 
@@ -251,5 +295,6 @@
     [tempValues setObject:textField.text forKey:tagAsNum];
     [tagAsNum release];
 }
+
 
 @end
