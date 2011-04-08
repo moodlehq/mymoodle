@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		02096EAC1337255400FA9B1A /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02096EAB1337255400FA9B1A /* RootViewController.xib */; };
+		020E06CE134EA99A0076B4BA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 020E06CD134EA99A0076B4BA /* icon.png */; };
+		020E06D0134EA9A20076B4BA /* iconhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 020E06CF134EA9A20076B4BA /* iconhd.png */; };
 		0210918D1339DFBF00CFE9F7 /* profilpicture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0210918C1339DFBE00CFE9F7 /* profilpicture.jpg */; };
 		0210918F1339ECF700CFE9F7 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 0210918E1339ECF700CFE9F7 /* checkmark.png */; };
 		0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A67A1336ECBE007BD281 /* SettingsViewController.m */; };
@@ -64,6 +66,8 @@
 /* Begin PBXFileReference section */
 		02096EAB1337255400FA9B1A /* RootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
 		020E06C7134D9D6C0076B4BA /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
+		020E06CD134EA99A0076B4BA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		020E06CF134EA9A20076B4BA /* iconhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconhd.png; sourceTree = "<group>"; };
 		0210918C1339DFBE00CFE9F7 /* profilpicture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = profilpicture.jpg; sourceTree = "<group>"; };
 		0210918E1339ECF700CFE9F7 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
 		0246A6791336ECBE007BD281 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -166,6 +170,8 @@
 		02618A021331A581008D3037 = {
 			isa = PBXGroup;
 			children = (
+				020E06CF134EA9A20076B4BA /* iconhd.png */,
+				020E06CD134EA99A0076B4BA /* icon.png */,
 				02618A191331A581008D3037 /* Moodle */,
 				02618A3D1331A582008D3037 /* MoodleTests */,
 				02618A101331A581008D3037 /* Frameworks */,
@@ -410,6 +416,8 @@
 				02096EAC1337255400FA9B1A /* RootViewController.xib in Resources */,
 				0210918D1339DFBF00CFE9F7 /* profilpicture.jpg in Resources */,
 				0210918F1339ECF700CFE9F7 /* checkmark.png in Resources */,
+				020E06CE134EA99A0076B4BA /* icon.png in Resources */,
+				020E06D0134EA9A20076B4BA /* iconhd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
