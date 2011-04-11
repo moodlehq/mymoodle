@@ -152,7 +152,7 @@
     [array release];
     
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]
-                                     initWithTitle:@"Cancel"
+                                     initWithTitle:NSLocalizedString(@"cancel", "cancel button label")
                                      style:UIBarButtonItemStylePlain
                                      target:self
                                      action:@selector(cancel:)];
@@ -160,7 +160,7 @@
     [cancelButton release];
     
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
-                                   initWithTitle:@"Save" 
+                                   initWithTitle:NSLocalizedString(@"save", "save button label") 
                                    style:UIBarButtonItemStyleDone
                                    target:self
                                    action:@selector(save:)];

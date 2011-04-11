@@ -12,6 +12,20 @@
 @implementation RootViewController
 
 @synthesize managedObjectContext=__managedObjectContext;
+//@synthesize participantsButton;
+
+-(IBAction)displayParticipantsView:(id)sender {
+    if (participantsViewController == nil) {
+        participantsViewController = [[ParticipantsViewController alloc] initWithStyle:UITableViewStylePlain];
+    }
+    participantsViewController.managedObjectContext = self.managedObjectContext;
+    //set the dashboard back button just before to push the settings view
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
+    [[self navigationItem] setBackBarButtonItem: newBackButton];
+    [newBackButton release];
+    [self.navigationController pushViewController:participantsViewController animated:YES];
+    
+}
 
 - (void)viewDidLoad
 {

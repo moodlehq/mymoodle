@@ -11,11 +11,17 @@
 #import <CoreData/CoreData.h>
 
 #import "SettingsViewController.h"
+#import "ParticipantsViewController.h"
 
 @interface RootViewController : UIViewController {
     SettingsViewController *settingsViewController;
+    ParticipantsViewController *participantsViewController;
+    //UIButton *participantsButton;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+//@property (nonatomic, retain) IBOutlet UIButton *participantsButton;
+
+-(IBAction)displayParticipantsView:(id)sender;
 
 @end

@@ -31,7 +31,6 @@
 - (IBAction)cancel:(id)sender;
 - (IBAction)save:(id)sender;
 - (IBAction)textFieldDone:(id)sender;
-- (IBAction)backgroundTap:(id)sender;
 - (void)deleteSite;
 
 @end

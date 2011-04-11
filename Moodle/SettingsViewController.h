@@ -23,4 +23,5 @@
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) SettingsSiteViewController *settingsSiteViewController;
 - (void)addSite;
+- (void)switchOfflineMode;
 @end

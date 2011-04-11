@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		02096EAC1337255400FA9B1A /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02096EAB1337255400FA9B1A /* RootViewController.xib */; };
 		020E06CE134EA99A0076B4BA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 020E06CD134EA99A0076B4BA /* icon.png */; };
 		020E06D0134EA9A20076B4BA /* iconhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 020E06CF134EA9A20076B4BA /* iconhd.png */; };
 		020E06D2134EAD060076B4BA /* SettingsSiteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */; };
@@ -35,6 +34,9 @@
 		02618A451331A582008D3037 /* MoodleTests.h in Resources */ = {isa = PBXBuildFile; fileRef = 02618A441331A582008D3037 /* MoodleTests.h */; };
 		02618A471331A582008D3037 /* MoodleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A461331A582008D3037 /* MoodleTests.m */; };
 		026C426E134EEC2C00BBFDB1 /* redbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 026C426D134EEC2C00BBFDB1 /* redbutton.png */; };
+		02A0F5D71352AA4200FAD4D4 /* moon.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A0F5D61352AA4100FAD4D4 /* moon.png */; };
+		02A0F5D81352AD7A00FAD4D4 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A0F5DA1352AD7A00FAD4D4 /* RootViewController.xib */; };
+		02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */; };
 		B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B54EFAA0133C7CB500CE8F87 /* WSClient.m */; };
 		B57CD153133C785D00CCB81A /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD152133C785D00CCB81A /* libz.1.2.3.dylib */; };
 		B57CD156133C787F00CCB81A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD155133C787F00CCB81A /* CFNetwork.framework */; };
@@ -67,7 +69,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		02096EAB1337255400FA9B1A /* RootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
 		020E06C7134D9D6C0076B4BA /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		020E06CD134EA99A0076B4BA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
 		020E06CF134EA9A20076B4BA /* iconhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iconhd.png; path = ../iconhd.png; sourceTree = "<group>"; };
@@ -103,6 +104,11 @@
 		02618A441331A582008D3037 /* MoodleTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoodleTests.h; sourceTree = "<group>"; };
 		02618A461331A582008D3037 /* MoodleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoodleTests.m; sourceTree = "<group>"; };
 		026C426D134EEC2C00BBFDB1 /* redbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redbutton.png; sourceTree = "<group>"; };
+		02A0F5D61352AA4100FAD4D4 /* moon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon.png; sourceTree = "<group>"; };
+		02A0F5D91352AD7A00FAD4D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RootViewController.xib; sourceTree = "<group>"; };
+		02A0F5DB1352AD9900FAD4D4 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file; name = fr; path = fr.lproj/RootViewController.xib; sourceTree = "<group>"; };
+		02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantsViewController.h; sourceTree = "<group>"; };
+		02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantsViewController.m; sourceTree = "<group>"; };
 		B54EFA9F133C7CB500CE8F87 /* WSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSClient.h; sourceTree = "<group>"; };
 		B54EFAA0133C7CB500CE8F87 /* WSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSClient.m; sourceTree = "<group>"; };
 		B57CD152133C785D00CCB81A /* libz.1.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.3.dylib; path = usr/lib/libz.1.2.3.dylib; sourceTree = SDKROOT; };
@@ -312,7 +318,7 @@
 			isa = PBXGroup;
 			children = (
 				02618A281331A582008D3037 /* MainWindow.xib */,
-				02096EAB1337255400FA9B1A /* RootViewController.xib */,
+				02A0F5DA1352AD7A00FAD4D4 /* RootViewController.xib */,
 				0246A69413370B8B007BD281 /* Localizable.strings */,
 				020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */,
 			);
@@ -322,6 +328,7 @@
 		B57CD18D133C79B600CCB81A /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				02A0F5D61352AA4100FAD4D4 /* moon.png */,
 				026C426D134EEC2C00BBFDB1 /* redbutton.png */,
 				020E06CF134EA9A20076B4BA /* iconhd.png */,
 				020E06CD134EA99A0076B4BA /* icon.png */,
@@ -344,6 +351,8 @@
 				0246A6831336FA10007BD281 /* SettingsSiteViewController.h */,
 				0246A6841336FA10007BD281 /* SettingsSiteViewController.m */,
 				020E06C7134D9D6C0076B4BA /* Config.h */,
+				02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */,
+				02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -422,7 +431,7 @@
 				02618A1E1331A581008D3037 /* InfoPlist.strings in Resources */,
 				02618A2A1331A582008D3037 /* MainWindow.xib in Resources */,
 				0246A69613370B8B007BD281 /* Localizable.strings in Resources */,
-				02096EAC1337255400FA9B1A /* RootViewController.xib in Resources */,
+				02A0F5D81352AD7A00FAD4D4 /* RootViewController.xib in Resources */,
 				0210918D1339DFBF00CFE9F7 /* profilpicture.jpg in Resources */,
 				0210918F1339ECF700CFE9F7 /* checkmark.png in Resources */,
 				020E06CE134EA99A0076B4BA /* icon.png in Resources */,
@@ -430,6 +439,7 @@
 				020E06D2134EAD060076B4BA /* SettingsSiteViewController.xib in Resources */,
 				020E06D4134EDD390076B4BA /* button_red.png in Resources */,
 				026C426E134EEC2C00BBFDB1 /* redbutton.png in Resources */,
+				02A0F5D71352AA4200FAD4D4 /* moon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,6 +496,7 @@
 				B57CD18A133C794200CCB81A /* NSString+XMLExtensions.m in Sources */,
 				B57CD18B133C794200CCB81A /* XMLRPCRequest.m in Sources */,
 				B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */,
+				02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -539,6 +550,15 @@
 				02618A411331A582008D3037 /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		02A0F5DA1352AD7A00FAD4D4 /* RootViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				02A0F5D91352AD7A00FAD4D4 /* en */,
+				02A0F5DB1352AD9900FAD4D4 /* fr */,
+			);
+			name = RootViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

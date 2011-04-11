@@ -38,6 +38,13 @@
     [super viewWillAppear:animated];
 }
 
+- (void)switchOfflineMode {
+    BOOL offlineMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSelectedOfflineModeKey];
+    offlineMode = !offlineMode;
+    [[NSUserDefaults standardUserDefaults] setBool:offlineMode forKey:kSelectedOfflineModeKey];
+    [NSUserDefaults resetStandardUserDefaults];
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
  - (void)viewDidLoad {
      
@@ -48,6 +55,25 @@
      self.navigationItem.rightBarButtonItem = addButton;
      [addButton release];
      
+     UILabel *offlineSwitchLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 13, 110, 40)];
+     offlineSwitchLabel.text = NSLocalizedString(@"offlinemode", "Offline mode");
+     
+     //create a footer view on the bottom of the tabeview with a Offline mode button
+     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 40)];
+     //create the switch
+     UISwitch *offlineSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(110, 20, 50, 40)];
+     BOOL offlineMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSelectedOfflineModeKey];
+     [offlineSwitch setOn:offlineMode];
+     // [btnDelete setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+     [offlineSwitch addTarget:self action:@selector(switchOfflineMode) forControlEvents:UIControlEventTouchUpInside];
+     //add the switch to the footer
+     [footerView addSubview:offlineSwitch];
+     [footerView addSubview:offlineSwitchLabel];
+     //add the footer to the tableView
+     self.tableView.tableFooterView = footerView; 
+     [footerView release];
+     [offlineSwitch release];
+     [offlineSwitchLabel release];
      [super viewDidLoad];
  }
 
