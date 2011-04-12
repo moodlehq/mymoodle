@@ -18,5 +18,5 @@
 
 -(id)invoke:(NSString *)method withParams: (NSArray *)params;
 
--(id)initWithToken: (NSString *)host;
+-(id)initWithToken: (NSString *)host withHost: (NSString *)host;
 @end

@@ -9,6 +9,7 @@
 #import "SettingsSiteViewController.h"
 #import "WSClient.h"
 #import "XMLRPCRequest.h"
+#import "NSDataAdditions.h"
 
 @implementation SettingsSiteViewController
 @synthesize fieldLabels;
@@ -51,21 +52,7 @@
         NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
         site = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
     }
-    
-    //retrieve the site name
-    WSClient *client = [[WSClient alloc] initWithToken: @"http://dongsheng.moodle.local/m2/webservice/xmlrpc/server.php?wstoken=869232723a601578ac602ff38fca9080"];
-    NSArray *wsparams = [[NSArray alloc] initWithObjects:@"Hello, Moodle", nil];
-    NSString *msg = [client invoke: @"moodle_echo" withParams: wsparams];  
-    [client release];
-    [wsparams release];
-    if ([msg isKindOfClass:[NSString class]]) {
-        [site setValue:msg forKey:@"sitename"];
-    } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Web service call failed" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
-        [alert show];
-        [alert release];
-    }
-    
+
     if (textFieldBeingEdited != nil)
     {
         NSNumber *tagAsNum= [[NSNumber alloc] 
@@ -91,24 +78,50 @@
                 break;
         }
     }
-   
-    //save the modification
-    NSError *error;
-    if (![[site managedObjectContext] save:&error]) {
-        NSLog(@"Error saving entity: %@", [error localizedDescription]);
+    // TODO hard coded token here, will get rid of it later
+    NSString *token = @"869232723a601578ac602ff38fca9080";
+    //retrieve the site name
+    WSClient *client = [[WSClient alloc] initWithToken: token withHost: [site valueForKey:@"siteurl"]];
+    NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
+    NSDictionary *siteinfo = [client invoke: @"moodle_mobile_get_siteinfo" withParams: wsparams];
+    
+    
+    //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    //NSString *documentsDirectory = [paths objectAtIndex:0];
+    //NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"f1.png"];    
+    // profile pictre
+    NSString *picture = [siteinfo objectForKey:@"profilepicture"];
+    // base64 decode
+    NSData *data = [NSData base64DataFromString:picture];
+    
+    //[data writeToFile:filePath atomically:true];
+    
+    NSString *sitename = [siteinfo objectForKey:@"sitename"];   
+    [client release];
+    [wsparams release];
+
+    if ([siteinfo isKindOfClass:[NSDictionary class]]) {
+        [site setValue:sitename forKey:@"sitename"];
+        
+        [site setValue: data forKey: @"profilepicture"];
+        [site setValue: token forKey: @"token"];
+        //save the modification
+        NSError *error;
+        if (![[site managedObjectContext] save:&error]) {
+            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
+        
+        NSArray *allControllers = self.navigationController.viewControllers;
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        
+        UITableViewController *parent = [allControllers lastObject];
+        [parent.tableView reloadData];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Web service call failed" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
     }
-    
-    
-    NSArray *allControllers = self.navigationController.viewControllers;
-    
-    [self.navigationController popViewControllerAnimated:YES];
-  
-    UITableViewController *parent = [allControllers lastObject];
-    [parent.tableView reloadData];   
-    
-   
-    
-    
 }
 
 -(IBAction)textFieldDone:(id)sender {
@@ -249,6 +262,8 @@
     NSNumber *rowAsNum = [[NSNumber alloc] initWithInt:row];
     switch (row) {
         case kUrlIndex:
+            textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            textField.autocorrectionType = UITextAutocorrectionTypeNo;
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else {
@@ -256,6 +271,8 @@
                 }
             break;
         case kUsernameIndex:
+            textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            textField.autocorrectionType = UITextAutocorrectionTypeNo;
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else

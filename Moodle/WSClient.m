@@ -10,18 +10,28 @@
 #import "ASIHTTPRequest.h"
 #import "XMLRPCRequest.h"
 #import "XMLRPCResponse.h"
+#import "Config.h"
 
 @implementation WSClient
 
 @synthesize url;
 
--(id)initWithToken: (NSString *)host {
-    self.url = [NSURL URLWithString:host];
+-(id)initWithToken: (NSString *)token withHost:(NSString *)host{
+    NSString *wsurl = [NSString stringWithFormat: @"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
+    NSLog(@"%@", wsurl);
+    self.url = [NSURL URLWithString: wsurl];
+    [wsurl release];
     return self;
 }
 
 -(id)invoke:(NSString *)method withParams: (NSArray *)params {
-    
+    if (self.url == nil) {
+        NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
+        NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
+        NSString *wsurl = [NSString stringWithFormat: @"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
+        self.url = [NSURL URLWithString: wsurl];
+        [wsurl release];
+    }
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
     [req setMethod:method withObjects: params];
     

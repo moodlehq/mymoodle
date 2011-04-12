@@ -106,8 +106,7 @@
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
         
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-    
-    UIImage *image = [UIImage imageNamed:@"profilpicture.jpg"];
+    UIImage *image = [UIImage imageWithData: [oneSite valueForKey:@"profilepicture"]];
     cell.imageView.image = image;
     
     CGRect siteNameRect = CGRectMake(100, 5, 200, 18);
@@ -121,7 +120,7 @@
     CGRect userNameRect = CGRectMake(100, 26, 200, 12);
     UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
     userName.tag = kSiteNameTag;
-    userName.text = @"Jerome Mouneyrac";
+    userName.text = [oneSite valueForKey:@"username"];
     userName.font = [UIFont italicSystemFontOfSize:12];
     [cell.contentView addSubview:userName];
     [userName release];
@@ -181,6 +180,7 @@
         //save the current site into user preference
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteNameKey];
         [NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
         
 
@@ -281,6 +281,7 @@
             //save the current site into user preference
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteNameKey];
             [NSUserDefaults resetStandardUserDefaults];
             //remove the previous checkmark
             if (lastCheckMark != nil) {

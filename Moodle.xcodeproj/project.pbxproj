@@ -56,6 +56,7 @@
 		B57CD189133C794200CCB81A /* XMLRPCExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD17F133C794200CCB81A /* XMLRPCExtensions.m */; };
 		B57CD18A133C794200CCB81A /* NSString+XMLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD181133C794200CCB81A /* NSString+XMLExtensions.m */; };
 		B57CD18B133C794200CCB81A /* XMLRPCRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD183133C794200CCB81A /* XMLRPCRequest.m */; };
+		B5DFA1AB135405A2001389DF /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DFA1AA135405A2001389DF /* NSDataAdditions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,7 +107,7 @@
 		026C426D134EEC2C00BBFDB1 /* redbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redbutton.png; sourceTree = "<group>"; };
 		02A0F5D61352AA4100FAD4D4 /* moon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon.png; sourceTree = "<group>"; };
 		02A0F5D91352AD7A00FAD4D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RootViewController.xib; sourceTree = "<group>"; };
-		02A0F5DB1352AD9900FAD4D4 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file; name = fr; path = fr.lproj/RootViewController.xib; sourceTree = "<group>"; };
+		02A0F5DB1352AD9900FAD4D4 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/RootViewController.xib; sourceTree = "<group>"; };
 		02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantsViewController.h; sourceTree = "<group>"; };
 		02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantsViewController.m; sourceTree = "<group>"; };
 		B54EFA9F133C7CB500CE8F87 /* WSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSClient.h; sourceTree = "<group>"; };
@@ -147,6 +148,8 @@
 		B57CD181133C794200CCB81A /* NSString+XMLExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+XMLExtensions.m"; sourceTree = "<group>"; };
 		B57CD182133C794200CCB81A /* XMLRPCRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLRPCRequest.h; sourceTree = "<group>"; };
 		B57CD183133C794200CCB81A /* XMLRPCRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLRPCRequest.m; sourceTree = "<group>"; };
+		B5DFA1A9135405A2001389DF /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
+		B5DFA1AA135405A2001389DF /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +295,8 @@
 		B57CD15D133C791500CCB81A /* XMLRPC */ = {
 			isa = PBXGroup;
 			children = (
+				B5DFA1A9135405A2001389DF /* NSDataAdditions.h */,
+				B5DFA1AA135405A2001389DF /* NSDataAdditions.m */,
 				B57CD174133C794200CCB81A /* XMLRPCDecoder.h */,
 				B57CD175133C794200CCB81A /* XMLRPCDecoder.m */,
 				B57CD176133C794200CCB81A /* XMLValueDecoder.h */,
@@ -497,6 +502,7 @@
 				B57CD18B133C794200CCB81A /* XMLRPCRequest.m in Sources */,
 				B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */,
 				02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */,
+				B5DFA1AB135405A2001389DF /* NSDataAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
