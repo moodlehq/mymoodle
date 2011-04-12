@@ -33,8 +33,54 @@
     UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc] initWithTitle:@"Sites" style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
     self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
+    NSArray* imageNames = [NSArray arrayWithObjects:
+                           @"Contacts.png",
+                           @"Text.png",
+                           @"Calendar.png",
+                           @"Settings.png",
+                           @"Photos.png", nil];
     
+    UIButton *Btn;
+    for (int i=0; i<[imageNames count]; i++) {
+        CGRect frame;
+        Btn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+        [Btn setImage:[UIImage imageNamed:[imageNames objectAtIndex: i]] forState:UIControlStateNormal];        
+        Btn.tag = i;
+        
+        frame.size.width = 59;
+        frame.size.height = 75;
+        frame.origin.x = (i%3)*(59+32)+40;
+        frame.origin.y = floor(i/3)*(75+24)+40;
+        [Btn setFrame:frame];
+        
+        [Btn setBackgroundColor:[UIColor clearColor]];
+        [Btn addTarget:self action:@selector(btnPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:Btn];
+        [Btn release];
+        
+    }
+
     self.title = @"Moodle.org";
+}
+
+- (void)loadView {
+    UIImageView *contentView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [contentView setImage:[UIImage imageNamed:@"view_bg.jpg"]];
+    [contentView setUserInteractionEnabled:YES];
+    self.view = contentView;
+    [contentView release];
+}
+
+
+
+-(void)btnPressed:(id)sender{
+    UIButton *Btn = (UIButton *)sender;
+    int index = Btn.tag;
+    switch (index) {
+        case 0:
+            [self displayParticipantsView:sender];
+            break;
+    }
 }
 
 -(void)displaySettingsView {

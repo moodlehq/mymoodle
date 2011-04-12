@@ -11,7 +11,6 @@
 		020E06D0134EA9A20076B4BA /* iconhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 020E06CF134EA9A20076B4BA /* iconhd.png */; };
 		020E06D2134EAD060076B4BA /* SettingsSiteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */; };
 		020E06D4134EDD390076B4BA /* button_red.png in Resources */ = {isa = PBXBuildFile; fileRef = 020E06D3134EDD390076B4BA /* button_red.png */; };
-		0210918D1339DFBF00CFE9F7 /* profilpicture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0210918C1339DFBE00CFE9F7 /* profilpicture.jpg */; };
 		0210918F1339ECF700CFE9F7 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 0210918E1339ECF700CFE9F7 /* checkmark.png */; };
 		0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A67A1336ECBE007BD281 /* SettingsViewController.m */; };
 		0246A6851336FA11007BD281 /* SettingsSiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A6841336FA10007BD281 /* SettingsSiteViewController.m */; };
@@ -57,6 +56,12 @@
 		B57CD18A133C794200CCB81A /* NSString+XMLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD181133C794200CCB81A /* NSString+XMLExtensions.m */; };
 		B57CD18B133C794200CCB81A /* XMLRPCRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD183133C794200CCB81A /* XMLRPCRequest.m */; };
 		B5DFA1AB135405A2001389DF /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DFA1AA135405A2001389DF /* NSDataAdditions.m */; };
+		B5F193521354444A00F45441 /* view_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B5F193511354444A00F45441 /* view_bg.jpg */; };
+		B5F193631354499600F45441 /* Settings.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F193621354499600F45441 /* Settings.png */; };
+		B5F19365135449A300F45441 /* Calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19364135449A300F45441 /* Calendar.png */; };
+		B5F19367135449AC00F45441 /* Contacts.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19366135449AC00F45441 /* Contacts.png */; };
+		B5F19369135449E600F45441 /* Photos.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19368135449E600F45441 /* Photos.png */; };
+		B5F1936B13544AD000F45441 /* Text.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F1936A13544AD000F45441 /* Text.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,7 +80,6 @@
 		020E06CF134EA9A20076B4BA /* iconhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iconhd.png; path = ../iconhd.png; sourceTree = "<group>"; };
 		020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsSiteViewController.xib; sourceTree = "<group>"; };
 		020E06D3134EDD390076B4BA /* button_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_red.png; sourceTree = "<group>"; };
-		0210918C1339DFBE00CFE9F7 /* profilpicture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = profilpicture.jpg; sourceTree = "<group>"; };
 		0210918E1339ECF700CFE9F7 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
 		0246A6791336ECBE007BD281 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		0246A67A1336ECBE007BD281 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
@@ -96,8 +100,8 @@
 		02618A231331A581008D3037 /* MoodleAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoodleAppDelegate.m; sourceTree = "<group>"; };
 		02618A261331A582008D3037 /* Moodle.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Moodle.xcdatamodel; sourceTree = "<group>"; };
 		02618A291331A582008D3037 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		02618A2B1331A582008D3037 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
-		02618A2C1331A582008D3037 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		02618A2B1331A582008D3037 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		02618A2C1331A582008D3037 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		02618A361331A582008D3037 /* MoodleTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoodleTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		02618A3F1331A582008D3037 /* MoodleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MoodleTests-Info.plist"; sourceTree = "<group>"; };
 		02618A411331A582008D3037 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -150,6 +154,12 @@
 		B57CD183133C794200CCB81A /* XMLRPCRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLRPCRequest.m; sourceTree = "<group>"; };
 		B5DFA1A9135405A2001389DF /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
 		B5DFA1AA135405A2001389DF /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
+		B5F193511354444A00F45441 /* view_bg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = view_bg.jpg; sourceTree = "<group>"; };
+		B5F193621354499600F45441 /* Settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Settings.png; sourceTree = "<group>"; };
+		B5F19364135449A300F45441 /* Calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Calendar.png; sourceTree = "<group>"; };
+		B5F19366135449AC00F45441 /* Contacts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Contacts.png; sourceTree = "<group>"; };
+		B5F19368135449E600F45441 /* Photos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Photos.png; sourceTree = "<group>"; };
+		B5F1936A13544AD000F45441 /* Text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Text.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,6 +229,7 @@
 		02618A191331A581008D3037 /* Moodle */ = {
 			isa = PBXGroup;
 			children = (
+				B5F193591354466000F45441 /* icons */,
 				B57CD18C133C798600CCB81A /* Resources */,
 				B57CD18D133C79B600CCB81A /* Images */,
 				B57CD15B133C78F400CCB81A /* Classes */,
@@ -333,13 +344,12 @@
 		B57CD18D133C79B600CCB81A /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				02A0F5D61352AA4100FAD4D4 /* moon.png */,
+				B5F193511354444A00F45441 /* view_bg.jpg */,
 				026C426D134EEC2C00BBFDB1 /* redbutton.png */,
 				020E06CF134EA9A20076B4BA /* iconhd.png */,
 				020E06CD134EA99A0076B4BA /* icon.png */,
 				020E06D3134EDD390076B4BA /* button_red.png */,
 				0210918E1339ECF700CFE9F7 /* checkmark.png */,
-				0210918C1339DFBE00CFE9F7 /* profilpicture.jpg */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -360,6 +370,19 @@
 				02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		B5F193591354466000F45441 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				B5F193621354499600F45441 /* Settings.png */,
+				B5F19364135449A300F45441 /* Calendar.png */,
+				B5F19368135449E600F45441 /* Photos.png */,
+				B5F19366135449AC00F45441 /* Contacts.png */,
+				B5F1936A13544AD000F45441 /* Text.png */,
+				02A0F5D61352AA4100FAD4D4 /* moon.png */,
+			);
+			name = icons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -437,7 +460,6 @@
 				02618A2A1331A582008D3037 /* MainWindow.xib in Resources */,
 				0246A69613370B8B007BD281 /* Localizable.strings in Resources */,
 				02A0F5D81352AD7A00FAD4D4 /* RootViewController.xib in Resources */,
-				0210918D1339DFBF00CFE9F7 /* profilpicture.jpg in Resources */,
 				0210918F1339ECF700CFE9F7 /* checkmark.png in Resources */,
 				020E06CE134EA99A0076B4BA /* icon.png in Resources */,
 				020E06D0134EA9A20076B4BA /* iconhd.png in Resources */,
@@ -445,6 +467,12 @@
 				020E06D4134EDD390076B4BA /* button_red.png in Resources */,
 				026C426E134EEC2C00BBFDB1 /* redbutton.png in Resources */,
 				02A0F5D71352AA4200FAD4D4 /* moon.png in Resources */,
+				B5F193521354444A00F45441 /* view_bg.jpg in Resources */,
+				B5F193631354499600F45441 /* Settings.png in Resources */,
+				B5F19365135449A300F45441 /* Calendar.png in Resources */,
+				B5F19367135449AC00F45441 /* Contacts.png in Resources */,
+				B5F19369135449E600F45441 /* Photos.png in Resources */,
+				B5F1936B13544AD000F45441 /* Text.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

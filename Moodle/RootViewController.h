@@ -23,5 +23,5 @@
 //@property (nonatomic, retain) IBOutlet UIButton *participantsButton;
 
 -(IBAction)displayParticipantsView:(id)sender;
-
+-(void)btnPressed:(id)sender;
 @end
