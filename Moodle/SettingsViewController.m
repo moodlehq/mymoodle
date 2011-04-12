@@ -180,7 +180,7 @@
         //save the current site into user preference
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
-        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteNameKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
         [NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
         
 
@@ -281,7 +281,7 @@
             //save the current site into user preference
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteNameKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
             [NSUserDefaults resetStandardUserDefaults];
             //remove the previous checkmark
             if (lastCheckMark != nil) {

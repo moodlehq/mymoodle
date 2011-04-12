@@ -27,7 +27,7 @@
 -(id)invoke:(NSString *)method withParams: (NSArray *)params {
     if (self.url == nil) {
         NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
-        NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
+        NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
         NSString *wsurl = [NSString stringWithFormat: @"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
         self.url = [NSURL URLWithString: wsurl];
         [wsurl release];

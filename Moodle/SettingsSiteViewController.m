@@ -79,7 +79,8 @@
         }
     }
     // TODO hard coded token here, will get rid of it later
-    NSString *token = @"869232723a601578ac602ff38fca9080";
+    NSString *token = @"acabec9d20933913f14309785324f579";
+    //NSString *token = @"869232723a601578ac602ff38fca9080";
     //retrieve the site name
     WSClient *client = [[WSClient alloc] initWithToken: token withHost: [site valueForKey:@"siteurl"]];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
