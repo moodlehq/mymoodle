@@ -36,24 +36,44 @@
                                     action:@selector(displaySettingsView)];
     self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
-    
-    NSDictionary *participants  = [[NSDictionary alloc] initWithObjectsAndKeys:@"Contacts.png", @"icon", @"Participants", @"title", nil];
-    NSDictionary *calendar      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Calendar.png", @"icon", @"Calendar",     @"title", nil];
-    NSDictionary *photos        = [[NSDictionary alloc] initWithObjectsAndKeys:@"Photos.png",   @"icon", @"Photos",       @"title", nil];
-    NSDictionary *text          = [[NSDictionary alloc] initWithObjectsAndKeys:@"Text.png",     @"icon", @"Messages",     @"title", nil];
-    NSDictionary *settings      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Settings.png", @"icon", @"Settings",     @"title", nil];
+    NSDictionary *grade        = [[NSDictionary alloc] initWithObjectsAndKeys:@"Grade.png", @"icon",
+                                  NSLocalizedString(@"grade", "grade"), @"title", nil];
+    NSDictionary *message      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Message.png", @"icon",
+                                  NSLocalizedString(@"message", "message"), @"title", nil];
+    NSDictionary *calendar     = [[NSDictionary alloc] initWithObjectsAndKeys:@"Calendar.png", @"icon",
+                                  NSLocalizedString(@"calendar", "calendar"), @"title", nil];
+    NSDictionary *upload       = [[NSDictionary alloc] initWithObjectsAndKeys:@"Upload.png", @"icon",
+                                  NSLocalizedString(@"upload", "upload"), @"title", nil];
+    NSDictionary *participants = [[NSDictionary alloc] initWithObjectsAndKeys:@"Participants.png", @"icon",
+                                  NSLocalizedString(@"participants", "participants"), @"title", nil];
+    NSDictionary *attendance   = [[NSDictionary alloc] initWithObjectsAndKeys:@"Attendance.png", @"icon",
+                                  NSLocalizedString(@"attendance", "attendance"), @"title", nil];
+    NSDictionary *poll         = [[NSDictionary alloc] initWithObjectsAndKeys:@"Poll.png",   @"icon",
+                                  NSLocalizedString(@"poll", "poll"),       @"title", nil];
+    NSDictionary *toolguide    = [[NSDictionary alloc] initWithObjectsAndKeys:@"ToolGuide.png",     @"icon",
+                                  NSLocalizedString(@"toolguide", "toolguide"), @"title", nil];
+    NSDictionary *moodlehelp   = [[NSDictionary alloc] initWithObjectsAndKeys:@"MoodleHelp.png", @"icon",
+                                  NSLocalizedString(@"moodlehelp", "moodlehelp"), @"title", nil];
     NSArray *array = [NSArray arrayWithObjects:
-                           participants,
-                           calendar,
-                           photos,
-                           text,
-                           settings, nil];
+                      grade,
+                      message,
+                      calendar,
+                      upload,
+                      participants,
+                      attendance,
+                      poll,
+                      toolguide,
+                      moodlehelp, nil];
     self.modules = array;
-    [participants release];
+    [grade release];
+    [message release];
     [calendar release];
-    [photos release];
-    [text release];
-    [settings release];
+    [upload release];
+    [participants release];
+    [attendance release];
+    [poll release];
+    [toolguide release];
+    [moodlehelp release];
     [array release];
     
     UIButton *icon;

@@ -55,13 +55,17 @@
 		B57CD189133C794200CCB81A /* XMLRPCExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD17F133C794200CCB81A /* XMLRPCExtensions.m */; };
 		B57CD18A133C794200CCB81A /* NSString+XMLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD181133C794200CCB81A /* NSString+XMLExtensions.m */; };
 		B57CD18B133C794200CCB81A /* XMLRPCRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B57CD183133C794200CCB81A /* XMLRPCRequest.m */; };
+		B5DA618C1355511500A253D6 /* Upload.png in Resources */ = {isa = PBXBuildFile; fileRef = B5DA618B1355511500A253D6 /* Upload.png */; };
+		B5DA618E1355514200A253D6 /* Poll.png in Resources */ = {isa = PBXBuildFile; fileRef = B5DA618D1355514200A253D6 /* Poll.png */; };
+		B5DA61901355516000A253D6 /* ToolGuide.png in Resources */ = {isa = PBXBuildFile; fileRef = B5DA618F1355515F00A253D6 /* ToolGuide.png */; };
+		B5DA61921355519B00A253D6 /* Grade.png in Resources */ = {isa = PBXBuildFile; fileRef = B5DA61911355519B00A253D6 /* Grade.png */; };
+		B5DA6194135551D300A253D6 /* MoodleHelp.png in Resources */ = {isa = PBXBuildFile; fileRef = B5DA6193135551D300A253D6 /* MoodleHelp.png */; };
 		B5DFA1AB135405A2001389DF /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DFA1AA135405A2001389DF /* NSDataAdditions.m */; };
 		B5F193521354444A00F45441 /* view_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B5F193511354444A00F45441 /* view_bg.jpg */; };
-		B5F193631354499600F45441 /* Settings.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F193621354499600F45441 /* Settings.png */; };
 		B5F19365135449A300F45441 /* Calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19364135449A300F45441 /* Calendar.png */; };
-		B5F19367135449AC00F45441 /* Contacts.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19366135449AC00F45441 /* Contacts.png */; };
-		B5F19369135449E600F45441 /* Photos.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19368135449E600F45441 /* Photos.png */; };
-		B5F1936B13544AD000F45441 /* Text.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F1936A13544AD000F45441 /* Text.png */; };
+		B5F19367135449AC00F45441 /* Participants.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19366135449AC00F45441 /* Participants.png */; };
+		B5F19369135449E600F45441 /* Attendance.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F19368135449E600F45441 /* Attendance.png */; };
+		B5F1936B13544AD000F45441 /* Message.png in Resources */ = {isa = PBXBuildFile; fileRef = B5F1936A13544AD000F45441 /* Message.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,14 +156,18 @@
 		B57CD181133C794200CCB81A /* NSString+XMLExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+XMLExtensions.m"; sourceTree = "<group>"; };
 		B57CD182133C794200CCB81A /* XMLRPCRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLRPCRequest.h; sourceTree = "<group>"; };
 		B57CD183133C794200CCB81A /* XMLRPCRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLRPCRequest.m; sourceTree = "<group>"; };
+		B5DA618B1355511500A253D6 /* Upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Upload.png; sourceTree = "<group>"; };
+		B5DA618D1355514200A253D6 /* Poll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Poll.png; sourceTree = "<group>"; };
+		B5DA618F1355515F00A253D6 /* ToolGuide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ToolGuide.png; sourceTree = "<group>"; };
+		B5DA61911355519B00A253D6 /* Grade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Grade.png; sourceTree = "<group>"; };
+		B5DA6193135551D300A253D6 /* MoodleHelp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MoodleHelp.png; sourceTree = "<group>"; };
 		B5DFA1A9135405A2001389DF /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
 		B5DFA1AA135405A2001389DF /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
 		B5F193511354444A00F45441 /* view_bg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = view_bg.jpg; sourceTree = "<group>"; };
-		B5F193621354499600F45441 /* Settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Settings.png; sourceTree = "<group>"; };
 		B5F19364135449A300F45441 /* Calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Calendar.png; sourceTree = "<group>"; };
-		B5F19366135449AC00F45441 /* Contacts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Contacts.png; sourceTree = "<group>"; };
-		B5F19368135449E600F45441 /* Photos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Photos.png; sourceTree = "<group>"; };
-		B5F1936A13544AD000F45441 /* Text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Text.png; sourceTree = "<group>"; };
+		B5F19366135449AC00F45441 /* Participants.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Participants.png; sourceTree = "<group>"; };
+		B5F19368135449E600F45441 /* Attendance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Attendance.png; sourceTree = "<group>"; };
+		B5F1936A13544AD000F45441 /* Message.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Message.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -375,11 +383,15 @@
 		B5F193591354466000F45441 /* icons */ = {
 			isa = PBXGroup;
 			children = (
-				B5F193621354499600F45441 /* Settings.png */,
 				B5F19364135449A300F45441 /* Calendar.png */,
-				B5F19368135449E600F45441 /* Photos.png */,
-				B5F19366135449AC00F45441 /* Contacts.png */,
-				B5F1936A13544AD000F45441 /* Text.png */,
+				B5F19368135449E600F45441 /* Attendance.png */,
+				B5DA618D1355514200A253D6 /* Poll.png */,
+				B5DA618B1355511500A253D6 /* Upload.png */,
+				B5DA61911355519B00A253D6 /* Grade.png */,
+				B5DA618F1355515F00A253D6 /* ToolGuide.png */,
+				B5F19366135449AC00F45441 /* Participants.png */,
+				B5F1936A13544AD000F45441 /* Message.png */,
+				B5DA6193135551D300A253D6 /* MoodleHelp.png */,
 				02A0F5D61352AA4100FAD4D4 /* moon.png */,
 			);
 			name = icons;
@@ -439,6 +451,7 @@
 			knownRegions = (
 				en,
 				fr,
+				"zh-Hans",
 			);
 			mainGroup = 02618A021331A581008D3037;
 			productRefGroup = 02618A0E1331A581008D3037 /* Products */;
@@ -468,11 +481,15 @@
 				026C426E134EEC2C00BBFDB1 /* redbutton.png in Resources */,
 				02A0F5D71352AA4200FAD4D4 /* moon.png in Resources */,
 				B5F193521354444A00F45441 /* view_bg.jpg in Resources */,
-				B5F193631354499600F45441 /* Settings.png in Resources */,
 				B5F19365135449A300F45441 /* Calendar.png in Resources */,
-				B5F19367135449AC00F45441 /* Contacts.png in Resources */,
-				B5F19369135449E600F45441 /* Photos.png in Resources */,
-				B5F1936B13544AD000F45441 /* Text.png in Resources */,
+				B5F19367135449AC00F45441 /* Participants.png in Resources */,
+				B5F19369135449E600F45441 /* Attendance.png in Resources */,
+				B5F1936B13544AD000F45441 /* Message.png in Resources */,
+				B5DA618C1355511500A253D6 /* Upload.png in Resources */,
+				B5DA618E1355514200A253D6 /* Poll.png in Resources */,
+				B5DA61901355516000A253D6 /* ToolGuide.png in Resources */,
+				B5DA61921355519B00A253D6 /* Grade.png in Resources */,
+				B5DA6194135551D300A253D6 /* MoodleHelp.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
