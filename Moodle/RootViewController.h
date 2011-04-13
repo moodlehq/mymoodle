@@ -16,12 +16,11 @@
 @interface RootViewController : UIViewController {
     SettingsViewController *settingsViewController;
     ParticipantsViewController *participantsViewController;
-    //UIButton *participantsButton;
+    NSArray *modules;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-//@property (nonatomic, retain) IBOutlet UIButton *participantsButton;
-
+@property (nonatomic, retain) NSArray *modules;
 -(IBAction)displayParticipantsView:(id)sender;
 -(void)btnPressed:(id)sender;
 @end

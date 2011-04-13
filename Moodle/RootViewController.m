@@ -12,8 +12,7 @@
 @implementation RootViewController
 
 @synthesize managedObjectContext=__managedObjectContext;
-//@synthesize participantsButton;
-
+@synthesize modules;
 -(IBAction)displayParticipantsView:(id)sender {
     if (participantsViewController == nil) {
         participantsViewController = [[ParticipantsViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -30,33 +29,77 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc] initWithTitle:@"Sites" style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
+    UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc]
+                                    initWithTitle:@"Sites"
+                                    style:UIBarButtonItemStylePlain
+                                    target:self
+                                    action:@selector(displaySettingsView)];
     self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
-    NSArray* imageNames = [NSArray arrayWithObjects:
-                           @"Contacts.png",
-                           @"Text.png",
-                           @"Calendar.png",
-                           @"Settings.png",
-                           @"Photos.png", nil];
     
-    UIButton *Btn;
-    for (int i=0; i<[imageNames count]; i++) {
+    NSDictionary *participants  = [[NSDictionary alloc] initWithObjectsAndKeys:@"Contacts.png", @"icon", @"Participants", @"title", nil];
+    NSDictionary *calendar      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Calendar.png", @"icon", @"Calendar",     @"title", nil];
+    NSDictionary *photos        = [[NSDictionary alloc] initWithObjectsAndKeys:@"Photos.png",   @"icon", @"Photos",       @"title", nil];
+    NSDictionary *text          = [[NSDictionary alloc] initWithObjectsAndKeys:@"Text.png",     @"icon", @"Messages",     @"title", nil];
+    NSDictionary *settings      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Settings.png", @"icon", @"Settings",     @"title", nil];
+    NSArray *array = [NSArray arrayWithObjects:
+                           participants,
+                           calendar,
+                           photos,
+                           text,
+                           settings, nil];
+    self.modules = array;
+    [participants release];
+    [calendar release];
+    [photos release];
+    [text release];
+    [settings release];
+    [array release];
+    
+    UIButton *icon;
+    UILabel  *label;
+    int top = 20;
+    int left = 30;
+    int h_span = 42;
+    int v_span = 24;
+    int frame_width = 59;
+    int frame_height = 75;
+    int label_height = 16;
+    int label_width = frame_width;
+    for (int i=0; i<[modules count]; i++) {
         CGRect frame;
-        Btn = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        [Btn setImage:[UIImage imageNamed:[imageNames objectAtIndex: i]] forState:UIControlStateNormal];        
-        Btn.tag = i;
+        NSDictionary *module = [modules objectAtIndex:i];
+        icon = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+        [icon setImage:[UIImage imageNamed:[module valueForKey:@"icon"]] forState:UIControlStateNormal];        
+        icon.tag = i;
         
-        frame.size.width = 59;
-        frame.size.height = 75;
-        frame.origin.x = (i%3)*(59+32)+40;
-        frame.origin.y = floor(i/3)*(75+24)+40;
-        [Btn setFrame:frame];
+        frame.size.width = frame_width;
+        frame.size.height = frame_height;
+        frame.origin.x = (i%3)*(frame_width+h_span)+left;
+        frame.origin.y = floor(i/3)*(frame_height+v_span)+top;
+        [icon setFrame:frame];
         
-        [Btn setBackgroundColor:[UIColor clearColor]];
-        [Btn addTarget:self action:@selector(btnPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:Btn];
-        [Btn release];
+        CGRect labelFrame;
+        labelFrame.size.width = label_width;
+        labelFrame.size.height = label_height;
+        labelFrame.origin.x = frame.origin.x;
+        labelFrame.origin.y = frame.origin.y + frame.size.height;
+        label = [[UILabel alloc] initWithFrame:labelFrame];
+        [label setText:[module valueForKey:@"title"]];
+        label.font = [UIFont systemFontOfSize:11];
+        label.shadowColor = [UIColor grayColor];
+        label.shadowOffset = CGSizeMake(0,1);
+        label.backgroundColor = [UIColor clearColor];
+        label.textAlignment = UITextAlignmentCenter;
+        
+        [icon setBackgroundColor:[UIColor clearColor]];
+        [icon addTarget:self action:@selector(btnPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:icon];
+        [self.view addSubview:label];
+        
+        // release objects
+        [icon release];
+        [label release];
         
     }
 
@@ -70,8 +113,6 @@
     self.view = contentView;
     [contentView release];
 }
-
-
 
 -(void)btnPressed:(id)sender{
     UIButton *Btn = (UIButton *)sender;
@@ -126,6 +167,7 @@
 
 - (void)viewDidUnload
 {
+    self.modules = nil;
     [super viewDidUnload];
 
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
@@ -134,6 +176,7 @@
 
 - (void)dealloc
 {
+    [self.modules release];
 //    [__fetchedResultsController release];
     [__managedObjectContext release];
     [settingsViewController release];
