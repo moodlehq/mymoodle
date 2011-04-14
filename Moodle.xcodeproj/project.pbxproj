@@ -281,6 +281,7 @@
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				020E06C7134D9D6C0076B4BA /* Config.h */,
 				B57CD18E133C79D500CCB81A /* Controllers */,
 				B57CD15D133C791500CCB81A /* XMLRPC */,
 				B57CD15C133C790B00CCB81A /* HTTP */,
@@ -373,7 +374,6 @@
 				0246A67A1336ECBE007BD281 /* SettingsViewController.m */,
 				0246A6831336FA10007BD281 /* SettingsSiteViewController.h */,
 				0246A6841336FA10007BD281 /* SettingsSiteViewController.m */,
-				020E06C7134D9D6C0076B4BA /* Config.h */,
 				02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */,
 				02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */,
 			);

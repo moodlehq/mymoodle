@@ -45,6 +45,17 @@
     [NSUserDefaults resetStandardUserDefaults];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    //if there is no site available go to the add a site view
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+    if ([sectionInfo numberOfObjects] == 0) {
+        [self addSite];
+    } 
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
  - (void)viewDidLoad {
      
@@ -106,27 +117,27 @@
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
         
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-    UIImage *image = [UIImage imageWithData: [oneSite valueForKey:@"profilepicture"]];
+    UIImage *image = [UIImage imageWithData: [oneSite valueForKey:@"logo"]];
     cell.imageView.image = image;
     
     CGRect siteNameRect = CGRectMake(100, 5, 200, 18);
     UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
     siteName.tag = kSiteNameTag;
-    siteName.text = [oneSite valueForKey:@"sitename"];
+    siteName.text = [oneSite valueForKey:@"name"];
     siteName.font = [UIFont boldSystemFontOfSize:15];
     [cell.contentView addSubview:siteName];
     [siteName release];
     
     CGRect userNameRect = CGRectMake(100, 26, 200, 12);
     UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
-    userName.tag = kSiteNameTag;
-    userName.text = [oneSite valueForKey:@"username"];
+    NSString *fullname = [NSString stringWithFormat:@"%@ %@", [oneSite valueForKeyPath:@"user.firstname"], [oneSite valueForKeyPath:@"user.lastname"]];
+    userName.text = fullname;
     userName.font = [UIFont italicSystemFontOfSize:12];
     [cell.contentView addSubview:userName];
     [userName release];
     
     if ((row == oldRow && lastIndexPath != nil) 
-        || [[oneSite valueForKey:@"siteurl"] isEqualToString:defaultSiteUrl]) {
+        || [[oneSite valueForKey:@"url"] isEqualToString:defaultSiteUrl]) {
         
         UIImage *checkMarkImage = [UIImage imageNamed:@"checkmark.png"];
         CGRect checkMarkRect = CGRectMake(57, 0, 43, 45);
@@ -145,7 +156,7 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     settingsSiteViewController.site = [self.fetchedResultsController objectAtIndexPath:indexPath];  
-    settingsSiteViewController.title = [settingsSiteViewController.site valueForKey:@"sitename"];
+    settingsSiteViewController.title = [settingsSiteViewController.site valueForKey:@"name"];
     
     [self.navigationController pushViewController:settingsSiteViewController animated:YES];
     [settingsSiteViewController release];
@@ -178,8 +189,8 @@
         lastIndexPath = indexPath;
         
         //save the current site into user preference
-        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
-        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
         [NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
         
@@ -206,14 +217,14 @@
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Connection" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sitename" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -279,8 +290,8 @@
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];       
              settingsSiteViewController.site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];  
             //save the current site into user preference
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"siteurl"] forKey:kSelectedSiteUrlKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"sitename"] forKey:kSelectedSiteNameKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
             [NSUserDefaults resetStandardUserDefaults];
             //remove the previous checkmark

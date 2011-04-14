@@ -65,7 +65,7 @@
     {
         switch ([key intValue]) {
             case kUrlIndex:
-                [site setValue:[tempValues objectForKey:key] forKey:@"siteurl"];
+                [site setValue:[tempValues objectForKey:key] forKey:@"url"];
                 break;
             case kUsernameIndex:
                 [site setValue:[tempValues objectForKey:key] forKey:@"username"];
@@ -79,12 +79,12 @@
         }
     }
     // TODO hard coded token here, will get rid of it later
-    //NSString *token = @"acabec9d20933913f14309785324f579";
-    NSString *token = @"869232723a601578ac602ff38fca9080";
+    NSString *token = @"65b113e44048963fecaefb2fcad2e15d";
+    //NSString *token = @"869232723a601578ac602ff38fca9080";
     //retrieve the site name
-    WSClient *client = [[WSClient alloc] initWithToken: token withHost: [site valueForKey:@"siteurl"]];
+    WSClient *client = [[WSClient alloc] initWithToken: token withHost: [site valueForKey:@"url"]];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
-    NSDictionary *siteinfo = [client invoke: @"moodle_mobile_get_siteinfo" withParams: wsparams];
+    NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
     
     
     //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -102,10 +102,21 @@
     [wsparams release];
 
     if ([siteinfo isKindOfClass:[NSDictionary class]]) {
-        [site setValue:sitename forKey:@"sitename"];
         
-        [site setValue: data forKey: @"profilepicture"];
+        //create participant main user
+        NSEntityDescription *pariticipantEntityDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:[site managedObjectContext]];
+        NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
+        [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
+        [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
+        [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
+        [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
+        
+        //create/update the site
+        [site setValue:sitename forKey:@"name"];
+        [site setValue: data forKey: @"logo"];
         [site setValue: token forKey: @"token"];
+        [site setValue:user forKey:@"user"];
+        
         //save the modification
         NSError *error;
         if (![[site managedObjectContext] save:&error]) {
@@ -160,6 +171,8 @@
 
 - (void)viewDidLoad {
     
+    
+    
     NSArray *array = [[NSArray alloc] initWithObjects:@"URL:", @"Username:", 
                       @"Password:", nil];
     self.fieldLabels = array;
@@ -185,7 +198,11 @@
     self.tempValues = dict;
     [dict release];
     
+   
     if ( site != nil) {
+        // case of Updating a site
+        self.title = NSLocalizedString(@"updatesite", @"Update the site");
+       
         //create a footer view on the bottom of the tabeview with a Delete button
         UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 270)];
         //Cacaco framework doesn't have a style for the 'Delete contact' red button! We need to simulate it with a background image
@@ -203,6 +220,9 @@
         //add the footer to the tableView
         self.tableView.tableFooterView = footerView; 
         [footerView release];
+    } else {
+        //case of Adding a new site
+        self.title = NSLocalizedString(@"addasite", @"add a site");
     }
     
     [super viewDidLoad];
@@ -268,7 +288,7 @@
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else {
-                textField.text = [site valueForKey:@"siteurl"];
+                textField.text = [site valueForKey:@"url"];
                 }
             break;
         case kUsernameIndex:
@@ -277,13 +297,13 @@
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else
-                textField.text = [site valueForKey:@"username"];
+                textField.text = [site valueForKeyPath:@"user.username"];
             break;
         case kPasswordIndex:
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else
-                textField.text = [site valueForKey:@"password"];
+                textField.text = [site valueForKeyPath:@"user.password"];
             break;
        
         default:

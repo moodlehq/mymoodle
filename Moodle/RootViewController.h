@@ -22,5 +22,6 @@
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSArray *modules;
 -(IBAction)displayParticipantsView:(id)sender;
+-(void)displaySettingsView;
 -(void)btnPressed:(id)sender;
 @end

@@ -73,6 +73,7 @@
         
         //update core data courses with course from web service call
         if (result != nil) {
+            NSLog(@"Result: %@", result);
             for ( NSDictionary *item in result) {
              
                 NSArray *mycourses = [item objectForKey:@"courses"];

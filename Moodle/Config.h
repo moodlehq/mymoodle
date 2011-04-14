@@ -10,3 +10,4 @@
 #define kSelectedSiteUrlKey @"Selected Site Url"
 #define kSelectedSiteTokenKey @"Selected Site Token"
 #define kSelectedSiteNameKey @"Selected Site Name"
+#define kSelectedUserIdKey @"Selected User ID"

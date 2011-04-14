@@ -138,7 +138,7 @@
     UIButton *Btn = (UIButton *)sender;
     int index = Btn.tag;
     switch (index) {
-        case 0:
+        case 4:
             [self displayParticipantsView:sender];
             break;
     }
@@ -165,6 +165,12 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    //if there is no site selected go to the site selection
+    NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
+    if (defaultSiteUrl == nil) {
+        [self displaySettingsView];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
