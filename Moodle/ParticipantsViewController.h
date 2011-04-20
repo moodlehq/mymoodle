@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ParticipantListViewController.h"
 
 
 @interface ParticipantsViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
-    
+    ParticipantListViewController *participantListViewController;
 }
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) ParticipantListViewController *participantListViewController;
 @end

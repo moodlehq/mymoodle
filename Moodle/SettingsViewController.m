@@ -130,7 +130,7 @@
     
     CGRect userNameRect = CGRectMake(100, 26, 200, 12);
     UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
-    NSString *fullname = [NSString stringWithFormat:@"%@ %@", [oneSite valueForKeyPath:@"user.firstname"], [oneSite valueForKeyPath:@"user.lastname"]];
+    NSString *fullname = [NSString stringWithFormat:@"%@ %@", [oneSite valueForKeyPath:@"mainuser.firstname"], [oneSite valueForKeyPath:@"mainuser.lastname"]];
     userName.text = fullname;
     userName.font = [UIFont italicSystemFontOfSize:12];
     [cell.contentView addSubview:userName];
@@ -192,6 +192,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
         [NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
         
 
@@ -293,6 +294,7 @@
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
             [NSUserDefaults resetStandardUserDefaults];
             //remove the previous checkmark
             if (lastCheckMark != nil) {
@@ -302,10 +304,16 @@
             break;
             
         case NSFetchedResultsChangeDelete:
+            //TODO: unset the default selected if ever the selected site is deleted
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+            [NSUserDefaults resetStandardUserDefaults];
             break;
             
         case NSFetchedResultsChangeMove:

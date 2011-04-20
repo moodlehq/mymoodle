@@ -12,6 +12,7 @@
 		020E06D2134EAD060076B4BA /* SettingsSiteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */; };
 		020E06D4134EDD390076B4BA /* button_red.png in Resources */ = {isa = PBXBuildFile; fileRef = 020E06D3134EDD390076B4BA /* button_red.png */; };
 		0210918F1339ECF700CFE9F7 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 0210918E1339ECF700CFE9F7 /* checkmark.png */; };
+		02288D431356DC35004B654A /* ParticipantListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02288D421356DC35004B654A /* ParticipantListViewController.m */; };
 		0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A67A1336ECBE007BD281 /* SettingsViewController.m */; };
 		0246A6851336FA11007BD281 /* SettingsSiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A6841336FA10007BD281 /* SettingsSiteViewController.m */; };
 		0246A69613370B8B007BD281 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0246A69413370B8B007BD281 /* Localizable.strings */; };
@@ -85,6 +86,8 @@
 		020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsSiteViewController.xib; sourceTree = "<group>"; };
 		020E06D3134EDD390076B4BA /* button_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_red.png; sourceTree = "<group>"; };
 		0210918E1339ECF700CFE9F7 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
+		02288D411356DC35004B654A /* ParticipantListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantListViewController.h; sourceTree = "<group>"; };
+		02288D421356DC35004B654A /* ParticipantListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantListViewController.m; sourceTree = "<group>"; };
 		0246A6791336ECBE007BD281 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		0246A67A1336ECBE007BD281 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		0246A6831336FA10007BD281 /* SettingsSiteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsSiteViewController.h; sourceTree = "<group>"; };
@@ -376,6 +379,8 @@
 				0246A6841336FA10007BD281 /* SettingsSiteViewController.m */,
 				02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */,
 				02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */,
+				02288D411356DC35004B654A /* ParticipantListViewController.h */,
+				02288D421356DC35004B654A /* ParticipantListViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -548,6 +553,7 @@
 				B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */,
 				02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */,
 				B5DFA1AB135405A2001389DF /* NSDataAdditions.m in Sources */,
+				02288D431356DC35004B654A /* ParticipantListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -51,6 +51,7 @@
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
         site = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+        NSLog(@"Site is nil");
     }
 
     if (textFieldBeingEdited != nil)
@@ -68,10 +69,10 @@
                 [site setValue:[tempValues objectForKey:key] forKey:@"url"];
                 break;
             case kUsernameIndex:
-                [site setValue:[tempValues objectForKey:key] forKey:@"username"];
+                [site setValue:[tempValues objectForKey:key] forKeyPath:@"mainuser.username"];
                 break;
             case kPasswordIndex:
-                [site setValue:[tempValues objectForKey:key] forKey:@"password"];
+                [site setValue:[tempValues objectForKey:key] forKeyPath:@"mainuser.password"];
                 break;
             
             default:
@@ -103,9 +104,13 @@
 
     if ([siteinfo isKindOfClass:[NSDictionary class]]) {
         
-        //create participant main user
-        NSEntityDescription *pariticipantEntityDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:[site managedObjectContext]];
-        NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
+        //retrieve participant main user
+        NSManagedObject *user = [site valueForKey:@"mainuser"];
+        if (user == nil) {
+            NSEntityDescription *pariticipantEntityDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:[site managedObjectContext]];
+            user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
+        }
+        
         [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
         [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
         [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
@@ -115,12 +120,22 @@
         [site setValue:sitename forKey:@"name"];
         [site setValue: data forKey: @"logo"];
         [site setValue: token forKey: @"token"];
-        [site setValue:user forKey:@"user"];
+        [site setValue:user forKey:@"mainuser"];
         
         //save the modification
         NSError *error;
         if (![[site managedObjectContext] save:&error]) {
-            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+         //   NSLog(@"Error saving entity: %@", [error localizedDescription]);
+            NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+                }
+            }
+            else {
+                NSLog(@"  %@", [error userInfo]);
+            }
         }
         
         NSArray *allControllers = self.navigationController.viewControllers;
@@ -297,13 +312,13 @@
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else
-                textField.text = [site valueForKeyPath:@"user.username"];
+                textField.text = [site valueForKeyPath:@"mainuser.username"];
             break;
         case kPasswordIndex:
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
             else
-                textField.text = [site valueForKeyPath:@"user.password"];
+                textField.text = [site valueForKeyPath:@"mainuser.password"];
             break;
        
         default:

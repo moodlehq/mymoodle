@@ -1,21 +1,20 @@
 //
-//  ParticipantsViewController.m
+//  ParticipantListViewController.m
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 11/04/11.
+//  Created by jerome Mouneyrac on 14/04/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
-#import "ParticipantsViewController.h"
-#import "Config.h"
-#import "WSClient.h"
 #import "ParticipantListViewController.h"
+#import "WSClient.h"
+#import "Config.h"
 
 
-@implementation ParticipantsViewController
-@synthesize managedObjectContext;
+@implementation ParticipantListViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
-@synthesize participantListViewController;
+@synthesize managedObjectContext=__managedObjectContext;
+@synthesize course;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -43,118 +42,107 @@
 
 - (void)viewDidLoad
 {
-    self.title = NSLocalizedString(@"mycourses", @"My courses title");
     
-    //retrieve the course by webservice
+    //retrieve the participants by webservice
     BOOL offlineMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSelectedOfflineModeKey];
     if (!offlineMode) {
         WSClient *client = [[WSClient alloc] init];
-        NSNumber *userid = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-        NSArray *userparamvalue = [[NSArray alloc] initWithObjects:userid, nil];
-        NSArray *userparamkey = [[NSArray alloc] initWithObjects:@"userid", nil];
-        NSDictionary *userparams = [[NSDictionary alloc] initWithObjects:userparamvalue forKeys:userparamkey];
-        NSArray *subarray = [[NSArray alloc]initWithObjects:userparams, nil];
-        NSArray *wsparams = [[NSArray alloc] initWithObjects:subarray, nil];
+        NSNumber *courseid = [course valueForKey:@"id"];
+        NSNull *nullObject = [[NSNull alloc] init];
+        NSNumber *onlyactive = [[NSNumber alloc] initWithBool:NO];
+        NSArray *paramvalues = [[NSArray alloc] initWithObjects:courseid, @"", nullObject, onlyactive, nil];
+        NSArray *paramkeys = [[NSArray alloc] initWithObjects:@"courseid", @"withcapability", @"groupid", @"onlyactive", nil];
+        NSDictionary *params = [[NSDictionary alloc] initWithObjects:paramvalues forKeys:paramkeys];
+     //   NSArray *subarray = [[NSArray alloc]initWithObjects:params, nil];
+        NSArray *wsparams = [[NSArray alloc] initWithObjects:params, nil];
         NSArray *result;
         @try {
-           result = [client invoke: @"moodle_enrol_get_courses_by_enrolled_users" withParams: wsparams];  
+            result = [client invoke: @"moodle_enrol_get_enrolled_users" withParams: wsparams];  
         }
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
         }
+        [nullObject release];
+        [onlyactive release];
         
-        NSError *error = nil;
-        
-        //look for the site
-        NSEntityDescription *siteEntityDescription = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:managedObjectContext];
-        NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
-        [siteRequest setEntity:siteEntityDescription];
-        NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND token = %@)", [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedSiteUrlKey], [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedSiteTokenKey]];
-        [siteRequest setPredicate:sitePredicate];
-        NSArray *sites = [managedObjectContext executeFetchRequest:siteRequest error:&error];
-
-        //retrieve all course that will need to be deleted from core data
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
-        [request setEntity:entityDescription];
-        
-        NSArray *coursesToDelete = [managedObjectContext executeFetchRequest:request error:&error];
-        NSMutableDictionary *coursesToNotDelete = [[NSMutableDictionary alloc] init];
-        NSLog(@"Courses in core data: %@", coursesToDelete);
-        NSLog(@"Number of course in core data before web service call: %d", [coursesToDelete count]);
-        
+        //retrieve all course participants that will need to be deleted from core data
+//        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+//        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
+//        [request setEntity:entityDescription];
+//        NSError *error = nil;
+//        NSArray *coursesToDelete = [managedObjectContext executeFetchRequest:request error:&error];
+//        NSMutableDictionary *coursesToNotDelete = [[NSMutableDictionary alloc] init];
+//        NSLog(@"Courses in core data: %@", coursesToDelete);
+//        NSLog(@"Number of course in core data before web service call: %d", [coursesToDelete count]);
+//        
         //update core data courses with course from web service call
         if (result != nil) {
             NSLog(@"Result: %@", result);
-            for ( NSDictionary *item in result) {
-             
-                NSArray *mycourses = [item objectForKey:@"courses"];
-                for (NSDictionary *wscourse in mycourses ) {
-                    
-                    NSManagedObject *course;
-                    
-                    //check if the course id is already in core data
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                              @"(id = %@)", [wscourse objectForKey:@"id"]];
-                    [request setPredicate:predicate];
-                    NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
-                    if ([existingCourses count] == 1) {
-                        //retrieve the course to update
-                        course = [existingCourses lastObject];
-                        
-                    } else if ([existingCourses count] ==0) {
-                        //the course is not in core data, we add it
-                        course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
-                         
-                    } else {
-                         NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
-                    }
-                    
-                    //set the course values
-                    [course setValue:[wscourse objectForKey:@"fullname"] forKey:@"fullname"];
-                    [course setValue:[wscourse objectForKey:@"id"] forKey:@"id"];
-                    [course setValue:[wscourse objectForKey:@"shortname"] forKey:@"shortname"];
-                    
-                    [course setValue:[sites lastObject] forKey:@"site"];
-                    
-                    
-                    //save the modification
-                    
-                    if (![[course managedObjectContext] save:&error]) {
-                        NSLog(@"Error saving entity: %@", [error localizedDescription]);
-                    }
-                    
-                    NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
-                    [coursesToNotDelete setObject:courseexist forKey:[wscourse objectForKey:@"id"]];
-                    [courseexist release];
-               
-                }
-            }
+//            for ( NSDictionary *item in result) {
+//                
+//                NSArray *mycourses = [item objectForKey:@"courses"];
+//                for (NSDictionary *wscourse in mycourses ) {
+//                    
+//                    NSManagedObject *course;
+//                    
+//                    //check if the course id is already in core data
+//                    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+//                                              @"(id = %@)", [wscourse objectForKey:@"id"]];
+//                    [request setPredicate:predicate];
+//                    NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
+//                    if ([existingCourses count] == 1) {
+//                        //retrieve the course to update
+//                        course = [existingCourses lastObject];
+//                        
+//                    } else if ([existingCourses count] ==0) {
+//                        //the course is not in core data, we add it
+//                        course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
+//                        
+//                    } else {
+//                        NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
+//                    }
+//                    
+//                    //set the course values
+//                    [course setValue:[wscourse objectForKey:@"fullname"] forKey:@"fullname"];
+//                    [course setValue:[wscourse objectForKey:@"id"] forKey:@"id"];
+//                    [course setValue:[wscourse objectForKey:@"shortname"] forKey:@"shortname"];
+//                    
+//                    //save the modification
+//                    
+//                    if (![[course managedObjectContext] save:&error]) {
+//                        NSLog(@"Error saving entity: %@", [error localizedDescription]);
+//                    }
+//                    
+//                    NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
+//                    [coursesToNotDelete setObject:courseexist forKey:[wscourse objectForKey:@"id"]];
+//                    [courseexist release];
+//                    
+//                }
+//            }
             
             
         }
-           
-      
+        
+        
         //delete the obsolete courses from core data
-        NSLog(@" the course to no detele are %@", coursesToNotDelete);
-        NSLog(@" the course to detele are %@", coursesToDelete);
-        for (NSManagedObject *courseToDelete in coursesToDelete) {
-            NSNumber *thecourseexist = [coursesToNotDelete objectForKey:[courseToDelete valueForKey:@"id"]];
-            if ([thecourseexist intValue] == 0) {
-                NSLog(@"I'm deleting the course %@", courseToDelete);
-                
-                [managedObjectContext deleteObject:courseToDelete];
-            }
-        }
-        
-        //save the modifications
-        if (![managedObjectContext save:&error]) {
-            NSLog(@"Error saving entity: %@", [error localizedDescription]);
-        }
-        
-        [coursesToNotDelete release];
+//        NSLog(@" the course to no detele are %@", coursesToNotDelete);
+//        NSLog(@" the course to detele are %@", coursesToDelete);
+//        for (NSManagedObject *courseToDelete in coursesToDelete) {
+//            NSNumber *thecourseexist = [coursesToNotDelete objectForKey:[courseToDelete valueForKey:@"id"]];
+//            if ([thecourseexist intValue] == 0) {
+//                NSLog(@"I'm deleting the course %@", courseToDelete);
+//                
+//                [managedObjectContext deleteObject:courseToDelete];
+//            }
+//        }
+//        
+//        //save the modifications
+//        if (![managedObjectContext save:&error]) {
+//            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+//        }
+//        
+//        [coursesToNotDelete release];
     }
-    
     
     [super viewDidLoad];
 
@@ -174,8 +162,6 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    participantListViewController.managedObjectContext = self.managedObjectContext;
     [super viewWillAppear:animated];
 }
 
@@ -216,35 +202,36 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"CourseCellIdentifier";
+    static NSString *CellIdentifier = @"ParticipantCellIdentifier";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-    NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSManagedObject *oneParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     // Configure the cell...
-     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
-//    UIImage *image = [UIImage imageNamed:@"profilpicture.jpg"];
-//    cell.imageView.image = image;
+    UIImage *image = [UIImage imageNamed:@"Participants.png"];
+    cell.imageView.image = image;
     
-    CGRect siteNameRect = CGRectMake(15, 5, 290, 30);
-    UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
-    siteName.text = [oneCourse valueForKey:@"fullname"];
-    siteName.font = [UIFont boldSystemFontOfSize:15];
-    [cell.contentView addSubview:siteName];
-    [siteName release];
+    CGRect participantNameRect = CGRectMake(50, 5, 200, 18);
+    UILabel *participantName = [[UILabel alloc] initWithFrame:participantNameRect];
+    participantName.text = [NSString stringWithFormat:@"%@ %@",[oneParticipant valueForKey:@"firstname"],
+                            [oneParticipant valueForKey:@"lastname"]];
+    participantName.font = [UIFont boldSystemFontOfSize:15];
+    [cell.contentView addSubview:participantName];
+    [participantName release];
     
-//    CGRect userNameRect = CGRectMake(15, 26, 200, 12);
-//    UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
-//    userName.text = @"Some course information ???";
-//    userName.font = [UIFont italicSystemFontOfSize:12];
-//    [cell.contentView addSubview:userName];
-//    [userName release];
-    
+    CGRect userNameRect = CGRectMake(50, 26, 200, 12);
+    UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
+    userName.text = [oneParticipant valueForKey:@"username"];
+    userName.font = [UIFont italicSystemFontOfSize:12];
+    [cell.contentView addSubview:userName];
+    [userName release];
+
     return cell;
 }
 
@@ -299,13 +286,6 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
-    
-    NSManagedObject *selectedCourse = [self.fetchedResultsController objectAtIndexPath:indexPath]; 
-    participantListViewController.course = selectedCourse;
-    NSString *participantListViewTitle = NSLocalizedString(@"participants", @"Participants");
-    participantListViewController.title = participantListViewTitle;
-    
-    [self.navigationController pushViewController:participantListViewController animated:YES];
 }
 
 #pragma mark - Fetched results controller
@@ -323,14 +303,14 @@
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"fullname" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastname" ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
