@@ -46,102 +46,102 @@
     //retrieve the participants by webservice
     BOOL offlineMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSelectedOfflineModeKey];
     if (!offlineMode) {
+        
+        NSLog(@"The course is: %@", course);
+        
         WSClient *client = [[WSClient alloc] init];
         NSNumber *courseid = [course valueForKey:@"id"];
-        NSNull *nullObject = [[NSNull alloc] init];
-        NSNumber *onlyactive = [[NSNumber alloc] initWithBool:NO];
-        NSArray *paramvalues = [[NSArray alloc] initWithObjects:courseid, @"", nullObject, onlyactive, nil];
-        NSArray *paramkeys = [[NSArray alloc] initWithObjects:@"courseid", @"withcapability", @"groupid", @"onlyactive", nil];
+        NSArray *paramvalues = [[NSArray alloc] initWithObjects:courseid, nil];
+        NSArray *paramkeys = [[NSArray alloc] initWithObjects:@"courseid", nil];
         NSDictionary *params = [[NSDictionary alloc] initWithObjects:paramvalues forKeys:paramkeys];
-     //   NSArray *subarray = [[NSArray alloc]initWithObjects:params, nil];
-        NSArray *wsparams = [[NSArray alloc] initWithObjects:params, nil];
         NSArray *result;
         @try {
-            result = [client invoke: @"moodle_enrol_get_enrolled_users" withParams: wsparams];  
+            result = [client invoke: @"moodle_enrol_get_enrolled_users" withParams: (NSArray *)params];  
         }
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
         }
-        [nullObject release];
-        [onlyactive release];
         
         //retrieve all course participants that will need to be deleted from core data
-//        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-//        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
-//        [request setEntity:entityDescription];
-//        NSError *error = nil;
-//        NSArray *coursesToDelete = [managedObjectContext executeFetchRequest:request error:&error];
-//        NSMutableDictionary *coursesToNotDelete = [[NSMutableDictionary alloc] init];
-//        NSLog(@"Courses in core data: %@", coursesToDelete);
-//        NSLog(@"Number of course in core data before web service call: %d", [coursesToDelete count]);
-//        
-        //update core data courses with course from web service call
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:self.managedObjectContext];
+        [request setEntity:entityDescription];
+        NSError *error = nil;
+        //TODO: manage multiple userid for different course object (lis of participant should be retrieved for the course object only)
+        NSArray *participantsToDelete = [self.managedObjectContext executeFetchRequest:request error:&error];
+        NSMutableDictionary *participantsToNotDelete = [[NSMutableDictionary alloc] init];
+        NSLog(@"Participants in core data: %@", participantsToDelete);
+        NSLog(@"Number of participants in core data before web service call: %d", [participantsToDelete count]);
+        
+        //update core data participants with participants from web service call
         if (result != nil) {
             NSLog(@"Result: %@", result);
-//            for ( NSDictionary *item in result) {
-//                
-//                NSArray *mycourses = [item objectForKey:@"courses"];
-//                for (NSDictionary *wscourse in mycourses ) {
-//                    
-//                    NSManagedObject *course;
-//                    
-//                    //check if the course id is already in core data
-//                    NSPredicate *predicate = [NSPredicate predicateWithFormat:
-//                                              @"(id = %@)", [wscourse objectForKey:@"id"]];
-//                    [request setPredicate:predicate];
-//                    NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
-//                    if ([existingCourses count] == 1) {
-//                        //retrieve the course to update
-//                        course = [existingCourses lastObject];
-//                        
-//                    } else if ([existingCourses count] ==0) {
-//                        //the course is not in core data, we add it
-//                        course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
-//                        
-//                    } else {
-//                        NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
-//                    }
-//                    
-//                    //set the course values
-//                    [course setValue:[wscourse objectForKey:@"fullname"] forKey:@"fullname"];
-//                    [course setValue:[wscourse objectForKey:@"id"] forKey:@"id"];
-//                    [course setValue:[wscourse objectForKey:@"shortname"] forKey:@"shortname"];
-//                    
-//                    //save the modification
-//                    
-//                    if (![[course managedObjectContext] save:&error]) {
-//                        NSLog(@"Error saving entity: %@", [error localizedDescription]);
-//                    }
-//                    
-//                    NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
-//                    [coursesToNotDelete setObject:courseexist forKey:[wscourse objectForKey:@"id"]];
-//                    [courseexist release];
-//                    
-//                }
-//            }
+            for ( NSDictionary *participant in result) {
             
-            
+                    NSManagedObject *dbparticipant;
+                    
+                    //check if the user id is already in core data participants
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                              @"(userid = %@)", [participant objectForKey:@"userid"]];
+                    [request setPredicate:predicate];
+                    NSArray *existingParticipants = [self.managedObjectContext executeFetchRequest:request error:&error];
+                    if ([existingParticipants count] == 1) {
+                        //retrieve the participant to update
+                        dbparticipant = [existingParticipants lastObject];
+                        
+                    } else if ([existingParticipants count] ==0) {
+                        //the participant is not in core data, we add it
+                        dbparticipant = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:self.managedObjectContext];
+                        
+                    } else { 
+                        NSLog(@"Error !!!!!! There is more than one participant with id == %@", [participant objectForKey:@"userid"]);
+                    }
+                    
+                    //set the course values
+                    [dbparticipant setValue:[participant objectForKey:@"firstname"] forKey:@"firstname"];
+                    [dbparticipant setValue:[participant objectForKey:@"userid"] forKey:@"userid"];
+                    [dbparticipant setValue:[participant objectForKey:@"lastname"] forKey:@"lastname"];
+                    [dbparticipant setValue:[participant objectForKey:@"username"] forKey:@"username"];
+                    //add the course to the list of course of the participant
+                    NSMutableSet *participantcourses;
+                    if ([existingParticipants count] == 1) {
+                        participantcourses = [[NSSet alloc] initWithObjects:course, nil];
+                    } else {
+                        participantcourses = [participant objectForKey:@"courses"];
+                        [participantcourses addObject:course];
+                        
+                    }
+                    [dbparticipant setValue:participantcourses forKey:@"courses"];
+                    
+                    //save the modification
+                    if (![[dbparticipant managedObjectContext] save:&error]) {
+                        NSLog(@"Error saving entity: %@", [error localizedDescription]);
+                    }
+                    
+                    NSNumber *participantexist = [[NSNumber alloc] initWithBool:YES];
+                    [participantsToNotDelete setObject:participantexist forKey:[participant objectForKey:@"userid"]];
+                    [participantexist release];
+            }
         }
         
-        
         //delete the obsolete courses from core data
-//        NSLog(@" the course to no detele are %@", coursesToNotDelete);
-//        NSLog(@" the course to detele are %@", coursesToDelete);
-//        for (NSManagedObject *courseToDelete in coursesToDelete) {
-//            NSNumber *thecourseexist = [coursesToNotDelete objectForKey:[courseToDelete valueForKey:@"id"]];
-//            if ([thecourseexist intValue] == 0) {
-//                NSLog(@"I'm deleting the course %@", courseToDelete);
-//                
-//                [managedObjectContext deleteObject:courseToDelete];
-//            }
-//        }
-//        
-//        //save the modifications
-//        if (![managedObjectContext save:&error]) {
-//            NSLog(@"Error saving entity: %@", [error localizedDescription]);
-//        }
-//        
-//        [coursesToNotDelete release];
+        NSLog(@" the course to no detele are %@", participantsToNotDelete);
+        NSLog(@" the course to detele are %@", participantsToDelete);
+        for (NSManagedObject *participantToDelete in participantsToDelete) {
+            NSNumber *theparticipantexist = [participantsToNotDelete objectForKey:[participantToDelete valueForKey:@"userid"]];
+            if ([theparticipantexist intValue] == 0) {
+                NSLog(@"I'm deleting the course %@", participantToDelete);
+                
+                [self.managedObjectContext deleteObject:participantToDelete];
+            }
+        }
+        
+        //save the modifications
+        if (![self.managedObjectContext save:&error]) {
+            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
+        
+        [participantsToNotDelete release];
     }
     
     [super viewDidLoad];
