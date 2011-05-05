@@ -80,13 +80,13 @@
         }
     }
     // TODO hard coded token here, will get rid of it later
-    NSString *token = @"65b113e44048963fecaefb2fcad2e15d";
-    //NSString *token = @"869232723a601578ac602ff38fca9080";
+    //NSString *token = @"65b113e44048963fecaefb2fcad2e15d";
+    NSString *token = @"30cddd8874fc6baa724a92b4dee8b24e";
     //retrieve the site name
     WSClient *client = [[WSClient alloc] initWithToken: token withHost: [site valueForKey:@"url"]];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
     NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
-    
+    NSLog(@"%@", siteinfo);
     
     //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     //NSString *documentsDirectory = [paths objectAtIndex:0];
@@ -111,16 +111,20 @@
             user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
         }
         
+        //create participant main user
+        //NSEntityDescription *pariticipantEntityDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:[site managedObjectContext]];
+
+        //NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
+
         [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
         [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
         [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
         [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
         
-        //create/update the site
-        [site setValue:sitename forKey:@"name"];
-        [site setValue: data forKey: @"logo"];
-        [site setValue: token forKey: @"token"];
-        [site setValue:user forKey:@"mainuser"];
+        [site setValue: sitename forKey: @"name"];
+        [site setValue: data     forKey: @"logo"];
+        [site setValue: token    forKey: @"token"];
+        [site setValue: user     forKey: @"user"];
         
         //save the modification
         NSError *error;

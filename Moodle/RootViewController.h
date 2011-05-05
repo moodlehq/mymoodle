@@ -11,10 +11,12 @@
 #import <CoreData/CoreData.h>
 
 #import "SettingsViewController.h"
+#import "UploadViewController.h"
 #import "ParticipantsViewController.h"
 
 @interface RootViewController : UIViewController {
-    SettingsViewController *settingsViewController;
+    SettingsViewController     *settingsViewController;
+    UploadViewController       *uploadViewController;
     ParticipantsViewController *participantsViewController;
     NSArray *modules;
 }

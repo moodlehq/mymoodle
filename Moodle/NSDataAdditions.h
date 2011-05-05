@@ -25,5 +25,6 @@
 @interface NSData (NSDataAdditions)
 
 + (NSData *)base64DataFromString: (NSString *)string;
++ (NSString *)base64DataToString: (NSData *)data;
 
 @end

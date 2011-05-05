@@ -18,7 +18,6 @@
 
 -(id)initWithToken: (NSString *)token withHost:(NSString *)host{
     NSString *wsurl = [NSString stringWithFormat: @"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
-    NSLog(@"%@", wsurl);
     self.url = [NSURL URLWithString: wsurl];
     [wsurl release];
     return self;
@@ -30,6 +29,8 @@
         NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
         NSString *wsurl = [NSString stringWithFormat: @"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
         self.url = [NSURL URLWithString: wsurl];
+        [host release];
+        [token release];
         [wsurl release];
     }
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
@@ -42,7 +43,6 @@
 	[http setUseKeychainPersistence: YES];
 	[http setValidatesSecureCertificate: NO];
 	[http setNumberOfTimesToRetryOnTimeout:2];
-	
 	[http appendPostData: [[req source] dataUsingEncoding: NSUTF8StringEncoding]];
 	[http startSynchronous];
 	
@@ -52,11 +52,14 @@
 		NSLog(@"%@", err);
 		return err;
 	}
-	
-	NSLog(@"Before parsing: %@", [http responseString]);
 	XMLRPCResponse *data = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
-	NSLog(@"Done: %@", [data object]);
-	return [data object];
+    [http release];
+    return [data object];
 }
 
+
+- (void)dealloc {
+    [self.url release];
+    [super dealloc];
+}
 @end

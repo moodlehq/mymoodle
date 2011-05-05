@@ -13,6 +13,16 @@
 
 @synthesize managedObjectContext=__managedObjectContext;
 @synthesize modules;
+-(IBAction)displayCameraView: (id)sender {
+    NSLog(@"use camera");
+    if (uploadViewController== nil) {
+        uploadViewController = [[UploadViewController alloc] init];
+    }
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
+    [[self navigationItem] setBackBarButtonItem: newBackButton];
+    [newBackButton release];
+    [self.navigationController pushViewController:uploadViewController animated:YES];
+}
 -(IBAction)displayParticipantsView:(id)sender {
     if (participantsViewController == nil) {
         participantsViewController = [[ParticipantsViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -138,8 +148,14 @@
     UIButton *Btn = (UIButton *)sender;
     int index = Btn.tag;
     switch (index) {
+        case 3:
+            [self displayCameraView:sender];
+            break;
         case 4:
             [self displayParticipantsView:sender];
+            break;
+        default:
+            NSLog(@"ICON %d pressed", index);
             break;
     }
 }

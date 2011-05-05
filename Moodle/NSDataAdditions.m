@@ -24,6 +24,10 @@
 
 @implementation NSData (NSDataAdditions)
 
++ (NSString *)base64DataToString: (NSData *)data {
+    return @"";
+}
+
 + (NSData *)base64DataFromString: (NSString *)string {
     unsigned long ixtext, lentext;
     unsigned char ch, input[4], output[3];
@@ -113,5 +117,4 @@
     
     return result;
 }
-
 @end
