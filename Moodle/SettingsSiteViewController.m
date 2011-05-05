@@ -60,29 +60,41 @@
         [tagAsNum release];
         
     }
+    
+    //retrieve site url (case of creation)
+    NSString *siteurl;
     for (NSNumber *key in [tempValues allKeys])
     {
         switch ([key intValue]) {
             case kUrlIndex:
-                [site setValue:[tempValues objectForKey:key] forKey:@"url"];
+                    siteurl = [[NSString alloc] initWithString:[tempValues objectForKey:key]];
+               
+                NSLog(@"the url is: %@", siteurl);
                 break;
-            case kUsernameIndex:
-                [site setValue:[tempValues objectForKey:key] forKeyPath:@"mainuser.username"];
-                break;
-            case kPasswordIndex:
-                [site setValue:[tempValues objectForKey:key] forKeyPath:@"mainuser.password"];
-                break;
-            
+                //TODO: retrieve username/password
+//            case kUsernameIndex:
+//                [site setValue:[tempValues objectForKey:key] forKeyPath:@"mainuser.username"];
+//                break;
+//            case kPasswordIndex:
+//                [site setValue:[tempValues objectForKey:key] forKeyPath:@"mainuser.password"];
+//                break;
             default:
                 break;
         }
     }
+    
+    //retrieve site url (case of update)
+    if (site != nil) {
+        siteurl = [[NSString alloc] initWithString:[site valueForKey:@"url"]];
+    }
+    
     // TODO hard coded token here, will get rid of it later
-    //NSString *token = @"65b113e44048963fecaefb2fcad2e15d";
-    NSString *token = @"30cddd8874fc6baa724a92b4dee8b24e";
+    NSString *sitetoken = [[NSString alloc] initWithString:@"65b113e44048963fecaefb2fcad2e15d"]; //jerome site, admin 1 ( http://jerome.moodle.local/~jerome/Moodle_iPhone )
+//    NSString *sitetoken = [[NSString alloc] initWithString:@"fe0e9ee8b17af9fd255f76078c70b073"];// jerome site, admin 2 
+//    NSString *sitetoken = [[NSString alloc] initWithString:@"869232723a601578ac602ff38fca9080"]; //donghsheng site ( http://dongsheng.moodle.local/m2 )
+
     //retrieve the site name
-    NSLog(@"the url is: %@", [tempValues objectForKey:kUrlIndex]);
-    WSClient *client = [[WSClient alloc] initWithToken: token withHost: [tempValues objectForKey:kUrlIndex]];
+    WSClient *client = [[WSClient alloc] initWithToken: sitetoken withHost: siteurl];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
     NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
     
@@ -90,7 +102,7 @@
     NSError *error;
     NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
     [siteRequest setEntity:entity];
-    NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", [tempValues objectForKey:kUrlIndex], [siteinfo objectForKey:@"userid"]];
+    NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
     [siteRequest setPredicate:sitePredicate];
     NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
     if ([sites count]>0) {
@@ -123,20 +135,19 @@
             user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
         }
         
-        //create participant main user
-        //NSEntityDescription *pariticipantEntityDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:[site managedObjectContext]];
-
-        //NSManagedObject *user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
-
         [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
         [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
         [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
         [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
         
-        [site setValue: sitename forKey: @"name"];
-        [site setValue: data     forKey: @"logo"];
-        [site setValue: token    forKey: @"token"];
-        [site setValue: user     forKey: @"user"];
+        //create/update the site
+        [site setValue:sitename forKey:@"name"];
+        [site setValue:data forKey: @"logo"];
+        [site setValue:sitetoken forKey: @"token"];
+        [site setValue:user forKey:@"mainuser"];
+        [site setValue:siteurl forKey:@"url"];
+        [siteurl release];
+        [sitetoken release];
         
         //save the modification
         
