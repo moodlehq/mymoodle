@@ -77,7 +77,7 @@
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
         [request setEntity:entityDescription];
-        
+        //TODO: manage multiple course for different site object (lis of course should be retrieve for the site object only)
         NSArray *coursesToDelete = [managedObjectContext executeFetchRequest:request error:&error];
         NSMutableDictionary *coursesToNotDelete = [[NSMutableDictionary alloc] init];
         NSLog(@"Courses in core data: %@", coursesToDelete);

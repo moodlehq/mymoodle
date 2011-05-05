@@ -47,12 +47,10 @@
 - (IBAction)save:(id)sender
 {
     //create the site if it doesn't exist
-    if ( site == nil) {
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-        site = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-        NSLog(@"Site is nil");
-    }
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+    BOOL createsite = ( site == nil)?YES:NO;
+   
 
     if (textFieldBeingEdited != nil)
     {
@@ -83,11 +81,25 @@
     //NSString *token = @"65b113e44048963fecaefb2fcad2e15d";
     NSString *token = @"30cddd8874fc6baa724a92b4dee8b24e";
     //retrieve the site name
-    WSClient *client = [[WSClient alloc] initWithToken: token withHost: [site valueForKey:@"url"]];
+    NSLog(@"the url is: %@", [tempValues objectForKey:kUrlIndex]);
+    WSClient *client = [[WSClient alloc] initWithToken: token withHost: [tempValues objectForKey:kUrlIndex]];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
     NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
-    NSLog(@"%@", siteinfo);
     
+    //check if the site url + userid is already in data core otherwise create a new site
+    NSError *error;
+    NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
+    [siteRequest setEntity:entity];
+    NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", [tempValues objectForKey:kUrlIndex], [siteinfo objectForKey:@"userid"]];
+    [siteRequest setPredicate:sitePredicate];
+    NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
+    if ([sites count]>0) {
+       site = [sites lastObject];
+    } else if (createsite) {
+        site = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+        NSLog(@"Site is nil");
+    }
+
     //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     //NSString *documentsDirectory = [paths objectAtIndex:0];
     //NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"f1.png"];    
@@ -127,7 +139,7 @@
         [site setValue: user     forKey: @"user"];
         
         //save the modification
-        NSError *error;
+        
         if (![[site managedObjectContext] save:&error]) {
          //   NSLog(@"Error saving entity: %@", [error localizedDescription]);
             NSLog(@"Failed to save to data store: %@", [error localizedDescription]);

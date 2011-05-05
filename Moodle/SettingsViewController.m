@@ -42,7 +42,8 @@
     BOOL offlineMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSelectedOfflineModeKey];
     offlineMode = !offlineMode;
     [[NSUserDefaults standardUserDefaults] setBool:offlineMode forKey:kSelectedOfflineModeKey];
-    [NSUserDefaults resetStandardUserDefaults];
+    //[NSUserDefaults resetStandardUserDefaults];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -117,6 +118,8 @@
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
         
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
+    NSNumber *defaultUserId = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
+    NSLog(@"the default site url is: %@", defaultSiteUrl);
     UIImage *image = [UIImage imageWithData: [oneSite valueForKey:@"logo"]];
     cell.imageView.image = image;
     
@@ -137,7 +140,7 @@
     [userName release];
     
     if ((row == oldRow && lastIndexPath != nil) 
-        || [[oneSite valueForKey:@"url"] isEqualToString:defaultSiteUrl]) {
+        || ([[oneSite valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[oneSite valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
         
         UIImage *checkMarkImage = [UIImage imageNamed:@"checkmark.png"];
         CGRect checkMarkRect = CGRectMake(57, 0, 43, 45);
@@ -193,7 +196,8 @@
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-        [NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
+        //[NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
 
 
@@ -295,7 +299,8 @@
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-            [NSUserDefaults resetStandardUserDefaults];
+           // [NSUserDefaults resetStandardUserDefaults];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             //remove the previous checkmark
             if (lastCheckMark != nil) {
                 [lastCheckMark removeFromSuperview];
@@ -313,7 +318,8 @@
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-            [NSUserDefaults resetStandardUserDefaults];
+           // [NSUserDefaults resetStandardUserDefaults];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             break;
             
         case NSFetchedResultsChangeMove:
