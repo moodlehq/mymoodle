@@ -61,13 +61,22 @@
         
     }
     
-    //retrieve site url (case of creation)
+    
     NSString *siteurl;
+    //retrieve site url (case of update)
+    if (site != nil) {
+        siteurl = [[NSString alloc] initWithString:[site valueForKey:@"url"]];
+    } else {
+        //case of creation: just some allocation to not cause a none initialize error during code analyze
+        siteurl = [[NSString alloc] initWithFormat:@""]; //will always be overwritten because
+    }
+    //retrieve site url (case of creation)
     for (NSNumber *key in [tempValues allKeys])
     {
         switch ([key intValue]) {
             case kUrlIndex:
-                    siteurl = [[NSString alloc] initWithString:[tempValues objectForKey:key]];
+                [siteurl release];
+                siteurl = [[NSString alloc] initWithString:[tempValues objectForKey:key]];
                
                 NSLog(@"the url is: %@", siteurl);
                 break;
@@ -83,10 +92,8 @@
         }
     }
     
-    //retrieve site url (case of update)
-    if (site != nil) {
-        siteurl = [[NSString alloc] initWithString:[site valueForKey:@"url"]];
-    }
+         
+    
     
     // TODO hard coded token here, will get rid of it later
     NSString *sitetoken = [[NSString alloc] initWithString:@"65b113e44048963fecaefb2fcad2e15d"]; //jerome site, admin 1 ( http://jerome.moodle.local/~jerome/Moodle_iPhone )
@@ -94,9 +101,10 @@
 //    NSString *sitetoken = [[NSString alloc] initWithString:@"869232723a601578ac602ff38fca9080"]; //donghsheng site ( http://dongsheng.moodle.local/m2 )
 
     //retrieve the site name
-    WSClient *client = [[WSClient alloc] initWithToken: sitetoken withHost: siteurl];
+    WSClient *client = [[[WSClient alloc] initWithToken: sitetoken withHost: siteurl] autorelease];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
     NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
+    [wsparams release];
     
     //check if the site url + userid is already in data core otherwise create a new site
     NSError *error;
@@ -123,8 +131,7 @@
     //[data writeToFile:filePath atomically:true];
     
     NSString *sitename = [siteinfo objectForKey:@"sitename"];   
-    [client release];
-    [wsparams release];
+    
 
     if ([siteinfo isKindOfClass:[NSDictionary class]]) {
         
@@ -139,6 +146,7 @@
         [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
         [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
         [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
+        [user setValue: site forKey:@"site"];
         
         //create/update the site
         [site setValue:sitename forKey:@"name"];
@@ -146,8 +154,7 @@
         [site setValue:sitetoken forKey: @"token"];
         [site setValue:user forKey:@"mainuser"];
         [site setValue:siteurl forKey:@"url"];
-        [siteurl release];
-        [sitetoken release];
+        
         
         //save the modification
         
@@ -176,6 +183,9 @@
         [alert show];
         [alert release];
     }
+    
+    [siteurl release];
+    [sitetoken release];
 }
 
 -(IBAction)textFieldDone:(id)sender {

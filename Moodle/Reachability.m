@@ -249,7 +249,7 @@ static void logNetworkStatus_(const char *name, int line, NetworkStatus status) 
 //Start listening for reachability notifications on the current run loop
 static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info) {
 
-	#pragma unused (target, flags)
+    #pragma unused (target, flags)
 	NSCAssert(info, @"info was NULL in ReachabilityCallback");
 	NSCAssert([(NSObject*) info isKindOfClass: [Reachability class]], @"info was the wrong class in ReachabilityCallback");
 	
@@ -340,7 +340,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 			(addr >> highShift)    & mask, 
 			(addr >> highMidShift) & mask, 
 			(addr >> lowMidShift)  & mask, 
-			 addr                  & mask];
+             addr                  & mask];
 	
 } // makeAddressKey:
 
@@ -412,7 +412,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 // Local   WiFi turned on:   Reachability Flag Status: -R xxxxxxd Reachable.
 //         WiFi turned on:   Reachability Flag Status: -R ct----- Connection down. (Non-intuitive, empirically determined answer.)
 const SCNetworkReachabilityFlags kConnectionDown =  kSCNetworkReachabilityFlagsConnectionRequired | 
-												    kSCNetworkReachabilityFlagsTransientConnection;
+kSCNetworkReachabilityFlagsTransientConnection;
 //         WiFi turned on:   Reachability Flag Status: -R ct-i--- Reachable but it will require user intervention (e.g. enter a WiFi password).
 //         WiFi turned on:   Reachability Flag Status: -R -t----- Reachable via VPN.
 //
@@ -451,7 +451,7 @@ const SCNetworkReachabilityFlags kConnectionDown =  kSCNetworkReachabilityFlagsC
 		
 		// Reachability Flag Status: -R -t---xx Reachable. WiFi + VPN(is up) (Thank you Ling Wang)
 		if (flags & kSCNetworkReachabilityFlagsTransientConnection)  { return kReachableViaWiFi; }
-			
+        
 		// Reachability Flag Status: -R -----xx Reachable.
 		if (flags == 0) { return kReachableViaWiFi; }
 		
@@ -470,7 +470,7 @@ const SCNetworkReachabilityFlags kConnectionDown =  kSCNetworkReachabilityFlagsC
 #endif
 		return kNotReachable;
 
-		}
+        }
 	
 	// Reachability Flag Status: x- xxxxxxx
 	return kNotReachable;
@@ -510,9 +510,9 @@ const SCNetworkReachabilityFlags kConnectionDown =  kSCNetworkReachabilityFlagsC
 	if (SCNetworkReachabilityGetFlags(reachabilityRef, &flags)) {
 		
 //		logReachabilityFlags(flags);
-
+        
 		status = [self networkStatusForFlags: flags];
-
+        
 //		logNetworkStatus(status);
 		
 		return (kNotReachable != status);
@@ -553,7 +553,8 @@ const SCNetworkReachabilityFlags kConnectionDown =  kSCNetworkReachabilityFlagsC
 
 #if (__IPHONE_OS_VERSION_MIN_REQUIRED >= 30000)
 static const SCNetworkReachabilityFlags kOnDemandConnection = kSCNetworkReachabilityFlagsConnectionOnTraffic | 
-                                                              kSCNetworkReachabilityFlagsConnectionOnDemand;
+                                                              
+kSCNetworkReachabilityFlagsConnectionOnDemand;
 #else
 static const SCNetworkReachabilityFlags kOnDemandConnection = kSCNetworkReachabilityFlagsConnectionAutomatic;
 #endif
@@ -612,7 +613,7 @@ static const SCNetworkReachabilityFlags kOnDemandConnection = kSCNetworkReachabi
 		status = [self networkStatusForFlags: flags];
 		
 		return  (kReachableViaWWAN == status);
-			
+            
 	}
 	
 	return NO;
@@ -711,7 +712,7 @@ static const SCNetworkReachabilityFlags kOnDemandConnection = kSCNetworkReachabi
 	if ((flags & kSCNetworkReachabilityFlagsConnectionOnDemand) ||
 		(flags & kSCNetworkReachabilityFlagsConnectionOnTraffic))
 #else
-	if (flags & kSCNetworkReachabilityFlagsConnectionAutomatic)
+    if (flags & kSCNetworkReachabilityFlagsConnectionAutomatic)
 #endif
 		{
 			// ... and the connection is on-demand (or on-traffic) if the

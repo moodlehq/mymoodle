@@ -3776,9 +3776,9 @@ static NSOperationQueue *sharedQueue = nil;
 	for (i=0; i<[persistentConnectionsPool count]; i++) {
 		NSDictionary *existingConnection = [persistentConnectionsPool objectAtIndex:i];
 		if (![existingConnection objectForKey:@"request"] && [[existingConnection objectForKey:@"expires"] timeIntervalSinceNow] <= 0) {
-#if DEBUG_PERSISTENT_CONNECTIONS
+//#if DEBUG_PERSISTENT_CONNECTIONS
 			NSLog(@"Closing connection #%i because it has expired",[[existingConnection objectForKey:@"id"] intValue]);
-#endif
+//#endif
 			NSInputStream *stream = [existingConnection objectForKey:@"stream"];
 			if (stream) {
 				[stream close];

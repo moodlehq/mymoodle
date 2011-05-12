@@ -9,12 +9,15 @@
 #import "ParticipantListViewController.h"
 #import "WSClient.h"
 #import "Config.h"
+#import "HashValue.h"
+#import "Reachability.h"
 
 
 @implementation ParticipantListViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
 @synthesize managedObjectContext=__managedObjectContext;
 @synthesize course;
+@synthesize participantViewController;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -49,6 +52,15 @@
         
         NSLog(@"The course is: %@", course);
         
+        //TEST FOR USER DEFAULT
+        //[[NSUserDefaults standardUserDefaults] synchronize];
+        NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
+        NSLog(@"BEFORE GET PARTICIPANTS WS - the default site url is: %@", defaultSiteUrl);
+        NSString *defaultSiteToken = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
+        NSLog(@"BEFORE GET PARTICIPANTS WS - the default site token is: %@", defaultSiteToken);
+        NSString *defaultSiteUserId = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
+        NSLog(@"BEFORE GET PARTICIPANTS WS - the default site user id is: %@", defaultSiteUserId);
+        
         WSClient *client = [[WSClient alloc] init];
         NSNumber *courseid = [course valueForKey:@"id"];
         NSArray *paramvalues = [[NSArray alloc] initWithObjects:courseid, nil];
@@ -62,12 +74,15 @@
             NSLog(@"%@", exception);
         }
         
+        [client release];
+        
         //retrieve all course participants that will need to be deleted from core data
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:self.managedObjectContext];
         [request setEntity:entityDescription];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY courses = %@)", course];
+        [request setPredicate:predicate];
         NSError *error = nil;
-        //TODO: manage multiple userid for different course object (lis of participant should be retrieved for the course object only)
         NSArray *participantsToDelete = [self.managedObjectContext executeFetchRequest:request error:&error];
         NSMutableDictionary *participantsToNotDelete = [[NSMutableDictionary alloc] init];
         NSLog(@"Participants in core data: %@", participantsToDelete);
@@ -102,6 +117,8 @@
                     [dbparticipant setValue:[participant objectForKey:@"userid"] forKey:@"userid"];
                     [dbparticipant setValue:[participant objectForKey:@"lastname"] forKey:@"lastname"];
                     [dbparticipant setValue:[participant objectForKey:@"username"] forKey:@"username"];
+                    [dbparticipant setValue:[participant objectForKey:@"profileimgurl"] forKey:@"profileimgurl"];
+                    [dbparticipant setValue:[course valueForKey:@"site"] forKey:@"site"];
                     //add the course to the list of course of the participant
                     NSMutableSet *participantcourses;
                     if ([existingParticipants count] == 1) {
@@ -125,15 +142,19 @@
         }
         
         //delete the obsolete courses from core data
-        NSLog(@" the course to no detele are %@", participantsToNotDelete);
-        NSLog(@" the course to detele are %@", participantsToDelete);
+        NSLog(@" the participant to no detele are %@", participantsToNotDelete);
+        NSLog(@" the participant to detele are %@", participantsToDelete);
         for (NSManagedObject *participantToDelete in participantsToDelete) {
+            //if the participant is in the list to not delete
             NSNumber *theparticipantexist = [participantsToNotDelete objectForKey:[participantToDelete valueForKey:@"userid"]];
             if ([theparticipantexist intValue] == 0) {
-                NSLog(@"I'm deleting the course %@", participantToDelete);
+                NSLog(@"I'm deleting the participant %@", participantToDelete);
                 
                 [self.managedObjectContext deleteObject:participantToDelete];
             }
+            //Remove the course from the participant list
+            
+            //If courses is empty then delete the participant
         }
         
         //save the modifications
@@ -162,6 +183,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    participantViewController = [[ParticipantViewController alloc] init];
+    participantViewController.managedObjectContext = self.managedObjectContext;
     [super viewWillAppear:animated];
 }
 
@@ -214,8 +237,36 @@
     // Configure the cell...
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
-    UIImage *image = [UIImage imageNamed:@"Participants.png"];
-    cell.imageView.image = image;
+    //retrieve Documents folder path
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectoryPath = [paths lastObject];
+    //create file path (Documents/md5(profileimgurl))
+    NSString *md5ProfileUrl = [HashValue getMD5FromString:[oneParticipant valueForKey:@"profileimgurl"]];
+    NSString *filePath = [[NSString alloc] initWithFormat:@"%@/%@", documentsDirectoryPath, md5ProfileUrl];
+    
+    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    NSData *imageData;
+    BOOL displayDefaultImg = NO;
+    if (fileExists) {
+         imageData = [[NSData alloc] initWithContentsOfFile:filePath];
+        NSLog(@"the file exists: %@", filePath);
+    } else if ([Reachability reachabilityForInternetConnection]) {
+        imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:[oneParticipant valueForKey:@"profileimgurl"]]];
+        NSLog(@"the file doesn't exist: %@", filePath);
+    } else {
+        displayDefaultImg = YES;
+    }
+    
+    if (displayDefaultImg) {
+         //no cached profile picture and no connection, display a dummy picture
+         cell.imageView.image = [UIImage imageNamed:@"Participants.png"];
+    } else {
+        [imageData writeToFile:filePath atomically:YES];
+        cell.imageView.image = [UIImage imageWithData: imageData];
+        [imageData release];
+    }
+    [filePath release];
+    
     
     CGRect participantNameRect = CGRectMake(50, 5, 200, 18);
     UILabel *participantName = [[UILabel alloc] initWithFrame:participantNameRect];
@@ -277,15 +328,13 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+{    
+    NSManagedObject *selectedParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath]; 
+    participantViewController.participant = selectedParticipant;
+    NSString *participantViewTitle = [NSString stringWithFormat:@"%@ %@", [selectedParticipant valueForKey:@"firstname"], [selectedParticipant valueForKey:@"lastname"]];
+    participantViewController.title = participantViewTitle;
+    
+    [self.navigationController pushViewController:participantViewController animated:YES];
 }
 
 #pragma mark - Fetched results controller
@@ -305,6 +354,10 @@
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
+    
+    // Only retrieve the participant for the current course
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY courses = %@)", course];
+    [fetchRequest setPredicate:predicate];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];

@@ -17,7 +17,8 @@
 @synthesize url;
 
 -(id)initWithToken: (NSString *)token withHost:(NSString *)host{
-    NSString *wsurl = [NSString stringWithFormat: @"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
+    //Note: [NSString stringWithFormat] => autorelease, I changed it for alloc, note I could also have choosen to comment [wsurl release] line instead to do alloc manually
+    NSString *wsurl = [[NSString alloc] initWithFormat:@"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
     self.url = [NSURL URLWithString: wsurl];
     [wsurl release];
     return self;
@@ -27,10 +28,10 @@
     if (self.url == nil) {
         NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
         NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
-        NSString *wsurl = [NSString stringWithFormat: @"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
+        NSString *wsurl = [[NSString alloc] initWithFormat:@"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
         self.url = [NSURL URLWithString: wsurl];
-        [host release];
-        [token release];
+        //[host release]; //Note for dongsheng => no needed, autorelease.  Anything in Cocoa that is not alloc, copy or new are autoreleased before they are returned to the caller
+        //[token release];
         [wsurl release];
     }
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
@@ -49,7 +50,8 @@
 	NSError *err = [http error];
 	
 	if (err) {
-		NSLog(@"%@", err);
+        NSLog(@"%@", err);
+        [http release];
 		return err;
 	}
 	XMLRPCResponse *data = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
@@ -59,7 +61,7 @@
 
 
 - (void)dealloc {
-    [self.url release];
+    //[self.url release]; //you didn't create it
     [super dealloc];
 }
 @end

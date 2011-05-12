@@ -121,7 +121,7 @@
         
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
     NSNumber *defaultUserId = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-    NSLog(@"the default site url is: %@", defaultSiteUrl);
+    NSLog(@"CELLFORROW - the default site url is: %@", defaultSiteUrl);
     UIImage *image = [UIImage imageWithData: [oneSite valueForKey:@"logo"]];
     cell.imageView.image = image;
     
@@ -198,7 +198,6 @@
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
         [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-        //[NSUserDefaults resetStandardUserDefaults]; //needed to synchronize the user preference
         [[NSUserDefaults standardUserDefaults] synchronize];
         
 
@@ -301,8 +300,16 @@
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-           // [NSUserDefaults resetStandardUserDefaults];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            //TEST FOR USER DEFAULT
+            NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
+            NSLog(@"AFTER INSERT - the default site url is: %@", defaultSiteUrl);
+            NSString *defaultSiteToken = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
+            NSLog(@"AFTER INSERT - the default site token is: %@", defaultSiteToken);
+            NSString *defaultSiteUserId = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
+            NSLog(@"AFTER INSERT - the default site user id is: %@", defaultSiteUserId);
+            
             //remove the previous checkmark
             if (lastCheckMark != nil) {
                 [lastCheckMark removeFromSuperview];
@@ -320,7 +327,6 @@
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
             [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-           // [NSUserDefaults resetStandardUserDefaults];
             [[NSUserDefaults standardUserDefaults] synchronize];
             break;
             
