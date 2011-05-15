@@ -13,8 +13,24 @@
 
 @synthesize managedObjectContext=__managedObjectContext;
 @synthesize modules;
--(IBAction)displayCameraView: (id)sender {
-    NSLog(@"use camera");
+
+-(void)displaySettingsView {
+    if (settingsViewController == nil) {
+        settingsViewController = [[SettingsViewController alloc] initWithStyle:UITableViewStylePlain];
+    }
+    settingsViewController.managedObjectContext = self.managedObjectContext;
+    //set the dashboard back button just before to push the settings view
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
+    [[self navigationItem] setBackBarButtonItem: newBackButton];
+    [newBackButton release];
+    [self.navigationController pushViewController:settingsViewController animated:YES];
+}
+
+/**
+ * Display upload interface
+ *
+ */
+-(IBAction)displayUploadView: (id)sender {
     if (uploadViewController== nil) {
         uploadViewController = [[UploadViewController alloc] init];
     }
@@ -23,6 +39,11 @@
     [newBackButton release];
     [self.navigationController pushViewController:uploadViewController animated:YES];
 }
+
+/**
+ * Display participants view
+ *
+ */
 -(IBAction)displayParticipantsView:(id)sender {
     if (participantsViewController == nil) {
         participantsViewController = [[ParticipantsViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -36,6 +57,10 @@
     
 }
 
+/**
+ * Set up dashboard
+ *
+ */
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -123,14 +148,13 @@
         label.textAlignment = UITextAlignmentCenter;
         
         [icon setBackgroundColor:[UIColor clearColor]];
-        [icon addTarget:self action:@selector(btnPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [icon addTarget:self action:@selector(iconPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:icon];
         [self.view addSubview:label];
         
         // release objects
         [icon release];
         [label release];
-        
     }
 
     self.title = @"Moodle.org";
@@ -144,12 +168,12 @@
     [contentView release];
 }
 
--(void)btnPressed:(id)sender{
+-(void)iconPressed:(id)sender{
     UIButton *Btn = (UIButton *)sender;
     int index = Btn.tag;
     switch (index) {
         case 3:
-            [self displayCameraView:sender];
+            [self displayUploadView:sender];
             break;
         case 4:
             [self displayParticipantsView:sender];
@@ -158,18 +182,6 @@
             NSLog(@"ICON %d pressed", index);
             break;
     }
-}
-
--(void)displaySettingsView {
-    if (settingsViewController == nil) {
-        settingsViewController = [[SettingsViewController alloc] initWithStyle:UITableViewStylePlain];
-    }
-    settingsViewController.managedObjectContext = self.managedObjectContext;
-    //set the dashboard back button just before to push the settings view
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
-    [[self navigationItem] setBackBarButtonItem: newBackButton];
-    [newBackButton release];
-    [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated

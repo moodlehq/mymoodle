@@ -9,14 +9,12 @@
 #import <UIKit/UIKit.h>
 
 
-@interface UploadViewController : UIViewController 
-    <UINavigationControllerDelegate,
-    UIImagePickerControllerDelegate> {
-    IBOutlet UIImageView *imageView;
-    UIImagePickerController *imagePicker;
-    
+@interface UploadViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
+    UIImagePickerController *imagePicker;    
 }
-
-@property (nonatomic, retain) UIImageView *imageView;
-
+- (void)uploadFile: (NSData *)fileData withFilename: (NSString *)filename;
+- (IBAction)loadGallery: (id)sender;
+- (IBAction)loadCamera: (id)sender;
+- (IBAction)loadRecorder: (id)sender;
+- (IBAction)loadFileBrowser: (id)sender;
 @end

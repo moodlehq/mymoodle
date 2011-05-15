@@ -37,7 +37,9 @@
 		02A0F5D81352AD7A00FAD4D4 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A0F5DA1352AD7A00FAD4D4 /* RootViewController.xib */; };
 		02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */; };
 		320AF8492C47A4D819F7C451 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 320AF8492C47A4D819F7C450 /* QuartzCore.framework */; };
+		B54E8735137E9CC000FB7CFE /* UploadViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B54E8734137E9CC000FB7CFE /* UploadViewController.xib */; };
 		B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B54EFAA0133C7CB500CE8F87 /* WSClient.m */; };
+		B5609F3A137F8DC000C59271 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5609F39137F8DC000C59271 /* AudioToolbox.framework */; };
 		B57CD153133C785D00CCB81A /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD152133C785D00CCB81A /* libz.1.2.3.dylib */; };
 		B57CD156133C787F00CCB81A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD155133C787F00CCB81A /* CFNetwork.framework */; };
 		B57CD158133C788900CCB81A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD157133C788900CCB81A /* MobileCoreServices.framework */; };
@@ -72,6 +74,7 @@
 		B5DFA1AB135405A2001389DF /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DFA1AA135405A2001389DF /* NSDataAdditions.m */; };
 		B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E047F5137280FA00314B60 /* ParticipantListViewController.m */; };
 		B5F193521354444A00F45441 /* view_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B5F193511354444A00F45441 /* view_bg.jpg */; };
+		B5F9CB6A137D3484007FCA28 /* ASIFormDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B5F9CB69137D3484007FCA28 /* ASIFormDataRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,8 +130,10 @@
 		02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantsViewController.h; sourceTree = "<group>"; };
 		02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantsViewController.m; sourceTree = "<group>"; };
 		320AF8492C47A4D819F7C450 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B54E8734137E9CC000FB7CFE /* UploadViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadViewController.xib; sourceTree = "<group>"; };
 		B54EFA9F133C7CB500CE8F87 /* WSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSClient.h; sourceTree = "<group>"; };
 		B54EFAA0133C7CB500CE8F87 /* WSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSClient.m; sourceTree = "<group>"; };
+		B5609F39137F8DC000C59271 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B57CD152133C785D00CCB81A /* libz.1.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.3.dylib; path = usr/lib/libz.1.2.3.dylib; sourceTree = SDKROOT; };
 		B57CD155133C787F00CCB81A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		B57CD157133C788900CCB81A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -184,6 +189,8 @@
 		B5E047F4137280FA00314B60 /* ParticipantListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantListViewController.h; sourceTree = "<group>"; };
 		B5E047F5137280FA00314B60 /* ParticipantListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantListViewController.m; sourceTree = "<group>"; };
 		B5F193511354444A00F45441 /* view_bg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = view_bg.jpg; sourceTree = "<group>"; };
+		B5F9CB68137D3484007FCA28 /* ASIFormDataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIFormDataRequest.h; sourceTree = "<group>"; };
+		B5F9CB69137D3484007FCA28 /* ASIFormDataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIFormDataRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +198,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5609F3A137F8DC000C59271 /* AudioToolbox.framework in Frameworks */,
 				320AF8492C47A4D819F7C451 /* QuartzCore.framework in Frameworks */,
 				B57CD15A133C78BE00CCB81A /* SystemConfiguration.framework in Frameworks */,
 				B57CD156133C787F00CCB81A /* CFNetwork.framework in Frameworks */,
@@ -248,6 +256,7 @@
 		02618A101331A581008D3037 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B5609F39137F8DC000C59271 /* AudioToolbox.framework */,
 				320AF8492C47A4D819F7C450 /* QuartzCore.framework */,
 				B57CD159133C78BE00CCB81A /* SystemConfiguration.framework */,
 				B57CD157133C788900CCB81A /* MobileCoreServices.framework */,
@@ -328,6 +337,8 @@
 				B57CD164133C793400CCB81A /* ASIDataCompressor.m */,
 				B57CD165133C793400CCB81A /* ASIDataDecompressor.h */,
 				B57CD166133C793400CCB81A /* ASIDataDecompressor.m */,
+				B5F9CB68137D3484007FCA28 /* ASIFormDataRequest.h */,
+				B5F9CB69137D3484007FCA28 /* ASIFormDataRequest.m */,
 				B57CD167133C793400CCB81A /* ASIInputStream.h */,
 				B57CD168133C793400CCB81A /* ASIInputStream.m */,
 				B57CD169133C793400CCB81A /* ASICacheDelegate.h */,
@@ -372,6 +383,7 @@
 				023AF82C137A2CF500BCDEEF /* ParticipantViewController.xib */,
 				02618A281331A582008D3037 /* MainWindow.xib */,
 				02A0F5DA1352AD7A00FAD4D4 /* RootViewController.xib */,
+				B54E8734137E9CC000FB7CFE /* UploadViewController.xib */,
 				0246A69413370B8B007BD281 /* Localizable.strings */,
 				020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */,
 			);
@@ -525,6 +537,7 @@
 				B5D4EFFB13726F8F00FD121F /* ToolGuide.png in Resources */,
 				B5D4EFFC13726F8F00FD121F /* Upload.png in Resources */,
 				023AF82E137A2CF600BCDEEF /* ParticipantViewController.xib in Resources */,
+				B54E8735137E9CC000FB7CFE /* UploadViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,6 +600,7 @@
 				B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */,
 				023AF82D137A2CF600BCDEEF /* ParticipantViewController.m in Sources */,
 				023AF832137A817A00BCDEEF /* HashValue.m in Sources */,
+				B5F9CB6A137D3484007FCA28 /* ASIFormDataRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

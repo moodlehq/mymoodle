@@ -10,10 +10,12 @@
 
 #import "NSStringAdditions.h"
 
-#import "WSClient.h"
+#import "Config.h"
+#import "ASIFormDataRequest.h"
 
 @implementation UploadViewController
-@synthesize imageView;
+
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -45,21 +47,15 @@
 }
 */
 
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad
-{
-    imagePicker = [[UIImagePickerController alloc] init];
-    imagePicker.delegate = self;
-    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    [self presentModalViewController:imagePicker animated:YES];
-    [super viewDidLoad];
-}
+//- (void)viewDidLoad
+//{
+//   [super viewDidLoad];
+//}
 
 
 - (void)viewDidUnload
 {
-    [imagePicker release];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -71,64 +67,64 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+-(void) uploadFile: (NSData *)fileData withFilename: (NSString *)filename
+{
+    NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
+    NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
+    NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/files/upload.php", host];
+    
+    NSURL *url = [NSURL URLWithString:uploadurl];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request addPostValue:token forKey:@"token"];
+    [request addData:fileData withFileName:filename andContentType:@"image/jpeg" forKey:@"thefile"];
+    [request startSynchronous];
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *image;
     NSURL *mediaUrl;
     mediaUrl = (NSURL *)[info valueForKey:UIImagePickerControllerMediaURL];
+    
     if (mediaUrl == nil) {
         image = (UIImage *) [info valueForKey:UIImagePickerControllerEditedImage];
         if (image == nil) { //---original image selected--- 
             image = (UIImage *) [info valueForKey: UIImagePickerControllerOriginalImage];
             //---display the image---
-            imageView.image = image;
+            //imageView.image = image;
         } else { //---edited image picked---
         }
     } else {
     }
+    
     NSData *imageData = UIImageJPEGRepresentation(image, 1.0f);
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"f1.jpg"];
-    [imageData writeToURL:[NSURL fileURLWithPath:filePath] atomically:YES];
-    
-    WSClient *client = [[WSClient alloc] init];
-    NSNumber *contextid = [NSNumber numberWithInt:13];
-    NSString *component = @"user";
-    NSString *filearea  = @"private";
-    NSNumber *itemid    = [NSNumber numberWithInt:0];
-    NSString *filepath = @"/";
-    NSString *filename = @"f1.jpg";
-    NSString *filecontent = [NSString base64StringFromData:imageData length:[imageData length]];
-    NSArray *wsparams = [[NSArray alloc] initWithObjects:
-                         contextid, component, filearea, itemid,
-                         filepath, filename, filecontent, nil];
-    NSArray *result;
-    @try {
-        result = [client invoke: @"moodle_file_upload" withParams: wsparams];  
-        NSLog(@"%@", result);
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
-    
-    
-    //
-    
-    //---get the cropping rectangle applied to the image---
-    //CGRect rect = [[info valueForKey:UIImagePickerControllerCropRect]
-    //               CGRectValue]; //---display the image---
-    imageView.image = image;
-    //---video picked--- //--implement this later--
-    //---hide the Image Picker---
-    [picker dismissModalViewControllerAnimated:YES];
-    
-    
+    [self uploadFile:imageData withFilename:@"testfile2.jpg"];
+    [picker dismissModalViewControllerAnimated:NO];
 }
-
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    //---user did not select image/video; hide the Image Picker--- 
-    [picker dismissModalViewControllerAnimated:YES];
+    [picker dismissModalViewControllerAnimated:NO];
 }
 
+- (IBAction)loadGallery:(id)sender {
+    imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    [self presentModalViewController:imagePicker animated:YES];  
+    
+}
+
+- (IBAction)loadCamera:(id)sender {
+    imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    [self presentModalViewController:imagePicker animated:YES];  
+}
+
+- (IBAction)loadRecorder:(id)sender {
+    NSLog(@"Load audio recorder");
+}
+
+- (IBAction)loadFileBrowser:(id)sender {
+    NSLog(@"Load local file browser");
+}
 @end

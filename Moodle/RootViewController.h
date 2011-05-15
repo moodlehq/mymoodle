@@ -15,15 +15,14 @@
 #import "ParticipantsViewController.h"
 
 @interface RootViewController : UIViewController {
+    /** view controllers*/
     SettingsViewController     *settingsViewController;
     UploadViewController       *uploadViewController;
     ParticipantsViewController *participantsViewController;
+    /** modules */
     NSArray *modules;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSArray *modules;
--(IBAction)displayParticipantsView:(id)sender;
--(void)displaySettingsView;
--(void)btnPressed:(id)sender;
 @end
