@@ -87,17 +87,20 @@
     
     if (mediaUrl == nil) {
         image = (UIImage *) [info valueForKey:UIImagePickerControllerEditedImage];
-        if (image == nil) { //---original image selected--- 
+        if (image == nil) {
+            //---original image selected--- 
             image = (UIImage *) [info valueForKey: UIImagePickerControllerOriginalImage];
-            //---display the image---
-            //imageView.image = image;
-        } else { //---edited image picked---
+            
+            NSData *imageData = UIImageJPEGRepresentation(image, 1.0f);
+            NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *strtimestamp = [NSString stringWithFormat:@"%d.jpg", (int)timestamp];
+            [self uploadFile:imageData withFilename:strtimestamp];
+        } else {
+            //---edited image picked---
         }
     } else {
     }
-    
-    NSData *imageData = UIImageJPEGRepresentation(image, 1.0f);
-    [self uploadFile:imageData withFilename:@"testfile2.jpg"];
+
     [picker dismissModalViewControllerAnimated:NO];
 }
 
