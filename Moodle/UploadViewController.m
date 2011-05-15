@@ -27,6 +27,8 @@
 
 - (void)dealloc
 {
+    [fileData release];
+    [fileName release];
     [super dealloc];
 }
 
@@ -56,6 +58,8 @@
 
 - (void)viewDidUnload
 {
+    fileName = nil;
+    fileData = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -67,7 +71,7 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
--(void) uploadFile: (NSData *)fileData withFilename: (NSString *)filename
+- (void)uploadFile
 {
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
     NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
@@ -76,13 +80,21 @@
     NSURL *url = [NSURL URLWithString:uploadurl];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request addPostValue:token forKey:@"token"];
-    [request addData:fileData withFileName:filename andContentType:@"image/jpeg" forKey:@"thefile"];
+    [request addData:fileData withFileName:fileName andContentType:@"image/jpeg" forKey:@"thefile"];
     [request startSynchronous];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *image;
     NSURL *mediaUrl;
+    
+    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    [self.navigationController.view addSubview:HUD];
+	
+    // Regiser for HUD callbacks so we can remove it from the window at the right time
+    HUD.delegate = self;
+    
     mediaUrl = (NSURL *)[info valueForKey:UIImagePickerControllerMediaURL];
     
     if (mediaUrl == nil) {
@@ -94,7 +106,10 @@
             NSData *imageData = UIImageJPEGRepresentation(image, 1.0f);
             NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
             NSString *strtimestamp = [NSString stringWithFormat:@"%d.jpg", (int)timestamp];
-            [self uploadFile:imageData withFilename:strtimestamp];
+            fileName = strtimestamp;
+            fileData = imageData;
+            // Show the HUD while the provided method executes in a new thread
+            [HUD showWhileExecuting:@selector(uploadFile) onTarget:self withObject:nil animated:YES];
         } else {
             //---edited image picked---
         }
@@ -130,4 +145,13 @@
 - (IBAction)loadFileBrowser:(id)sender {
     NSLog(@"Load local file browser");
 }
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+- (void)hudWasHidden {
+    // Remove HUD from screen when the HUD was hidded
+    [HUD removeFromSuperview];
+    [HUD release];
+	HUD = nil;
+}
+
 @end

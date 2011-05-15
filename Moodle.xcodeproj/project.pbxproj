@@ -37,6 +37,7 @@
 		02A0F5D81352AD7A00FAD4D4 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A0F5DA1352AD7A00FAD4D4 /* RootViewController.xib */; };
 		02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */; };
 		320AF8492C47A4D819F7C451 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 320AF8492C47A4D819F7C450 /* QuartzCore.framework */; };
+		B5031AD3138007AB005BB407 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = B5031AD2138007AB005BB407 /* MBProgressHUD.m */; };
 		B54E8735137E9CC000FB7CFE /* UploadViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B54E8734137E9CC000FB7CFE /* UploadViewController.xib */; };
 		B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B54EFAA0133C7CB500CE8F87 /* WSClient.m */; };
 		B5609F3A137F8DC000C59271 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5609F39137F8DC000C59271 /* AudioToolbox.framework */; };
@@ -130,6 +131,8 @@
 		02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantsViewController.h; sourceTree = "<group>"; };
 		02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantsViewController.m; sourceTree = "<group>"; };
 		320AF8492C47A4D819F7C450 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B5031AD1138007AB005BB407 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = SOURCE_ROOT; };
+		B5031AD2138007AB005BB407 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = SOURCE_ROOT; };
 		B54E8734137E9CC000FB7CFE /* UploadViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadViewController.xib; sourceTree = "<group>"; };
 		B54EFA9F133C7CB500CE8F87 /* WSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSClient.h; sourceTree = "<group>"; };
 		B54EFAA0133C7CB500CE8F87 /* WSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSClient.m; sourceTree = "<group>"; };
@@ -314,9 +317,19 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		B5031AD5138007B9005BB407 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B5031AD1138007AB005BB407 /* MBProgressHUD.h */,
+				B5031AD2138007AB005BB407 /* MBProgressHUD.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B5031AD5138007B9005BB407 /* Utils */,
 				023AF82F137A815E00BCDEEF /* HashValue */,
 				B57CD18E133C79D500CCB81A /* Controllers */,
 				B57CD15D133C791500CCB81A /* XMLRPC */,
@@ -601,6 +614,7 @@
 				023AF82D137A2CF600BCDEEF /* ParticipantViewController.m in Sources */,
 				023AF832137A817A00BCDEEF /* HashValue.m in Sources */,
 				B5F9CB6A137D3484007FCA28 /* ASIFormDataRequest.m in Sources */,
+				B5031AD3138007AB005BB407 /* MBProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
