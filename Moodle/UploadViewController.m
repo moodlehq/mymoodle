@@ -137,8 +137,14 @@
 }
 
 - (IBAction)loadRecorder:(id)sender {
-    NSLog(@"Load audio recorder");
-}
+    if (recorderViewController == nil) {
+        recorderViewController = [[RecorderViewController alloc] init];
+    }
+    //set the dashboard back button just before to push the settings view
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
+    [[self navigationItem] setBackBarButtonItem: newBackButton];
+    [newBackButton release];
+    [self.navigationController pushViewController:recorderViewController animated:YES];}
 
 - (IBAction)loadFileBrowser:(id)sender {
     NSLog(@"Load local file browser");
