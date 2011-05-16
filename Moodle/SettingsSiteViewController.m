@@ -96,11 +96,11 @@
     
     
     // TODO hard coded token here, will get rid of it later
-    //NSString *sitetoken = [[NSString alloc] initWithString:@"65b113e44048963fecaefb2fcad2e15d"]; //jerome site, admin 1 ( http://jerome.moodle.local/~jerome/Moodle_iPhone )
+    NSString *sitetoken = [[NSString alloc] initWithString:@"65b113e44048963fecaefb2fcad2e15d"]; //jerome site, admin 1 ( http://jerome.moodle.local/~jerome/Moodle_iPhone )
 //    NSString *sitetoken = [[NSString alloc] initWithString:@"fe0e9ee8b17af9fd255f76078c70b073"];// jerome site, admin 2 
     // NSString *sitetoken = [[NSString alloc] initWithString:@"30cddd8874fc6baa724a92b4dee8b24e"]; //donghsheng site ( http://dongsheng.moodle.local/m2 )
-    NSString *sitetoken = [[NSString alloc] initWithFormat:@"9afbd2e0145c072f7ae51716ea973228"]; // dongsheng site (http://localhost/moodlews)
-
+    //NSString *sitetoken = [[NSString alloc] initWithFormat:@"9afbd2e0145c072f7ae51716ea973228"]; // dongsheng site (http://localhost/moodlews)
+    NSLog(@"site url:", siteurl);
     //retrieve the site name
     WSClient *client = [[[WSClient alloc] initWithToken: sitetoken withHost: siteurl] autorelease];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
@@ -343,6 +343,12 @@
             else {
                 textField.text = [site valueForKey:@"url"];
                 }
+            //DEBUG MODE - comment out
+            if (site == nil) {
+                textField.text = @"http://jerome.moodle.local/~jerome/Moodle_iPhone"; //Jerome's site
+                //textField.text = @"http://dongsheng.moodle.local/m2"; // Dongsheng's site
+                [tempValues setObject:textField.text forKey:[[NSNumber alloc] initWithInt:textField.tag]];
+            }
             break;
         case kUsernameIndex:
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;

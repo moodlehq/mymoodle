@@ -97,7 +97,7 @@
                     
                     //check if the user id is already in core data participants
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                              @"(userid = %@)", [participant objectForKey:@"userid"]];
+                                              @"(userid = %@ AND (ANY courses = %@))", [participant objectForKey:@"userid"], course];
                     [request setPredicate:predicate];
                     NSArray *existingParticipants = [self.managedObjectContext executeFetchRequest:request error:&error];
                     if ([existingParticipants count] == 1) {
@@ -122,13 +122,14 @@
                     //add the course to the list of course of the participant
                     NSMutableSet *participantcourses;
                     if ([existingParticipants count] == 1) {
-                        participantcourses = [[NSSet alloc] initWithObjects:course, nil];
+                        participantcourses = [[NSMutableSet alloc] initWithObjects:course, nil];
                     } else {
-                        participantcourses = [participant objectForKey:@"courses"];
-                        [participantcourses addObject:course];
-                        
-                    }
+                        participantcourses = [[NSMutableSet alloc] initWithSet:[participant objectForKey:@"courses"]];
+                        [participantcourses addObject:course];                        
+                    } 
+                
                     [dbparticipant setValue:participantcourses forKey:@"courses"];
+                    [participantcourses release];
                     
                     //save the modification
                     if (![[dbparticipant managedObjectContext] save:&error]) {
