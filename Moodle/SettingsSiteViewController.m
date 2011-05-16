@@ -343,6 +343,11 @@
             else {
                 textField.text = [site valueForKey:@"url"];
                 }
+            //DEBUG MODE - comment out
+            if (site == nil) {
+                textField.text = @"http://jerome.moodle.local/~jerome/Moodle_iPhone"; //Jerome's site
+                //textField.text = @"http://dongsheng.moodle.local/m2"; // Dongsheng's site
+            }
             break;
         case kUsernameIndex:
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
