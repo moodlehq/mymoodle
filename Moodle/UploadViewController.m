@@ -8,11 +8,6 @@
 
 #import "UploadViewController.h"
 
-#import "NSStringAdditions.h"
-
-#import "Config.h"
-#import "ASIFormDataRequest.h"
-
 @implementation UploadViewController
 
 
@@ -71,17 +66,19 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)uploadFile
-{
-    NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
-    NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
-    NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/files/upload.php", host];
-    
-    NSURL *url = [NSURL URLWithString:uploadurl];
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-    [request addPostValue:token forKey:@"token"];
-    [request addData:fileData withFileName:fileName andContentType:@"image/jpeg" forKey:@"thefile"];
-    [request startSynchronous];
+
+
+-(void)loadPreview: (id)data withFilename: (NSString *)filename {
+    if (previewViewController == nil) {
+        previewViewController = [[PreviewViewController alloc] init];
+    }
+    //set the dashboard back button just before to push the settings view
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
+    [[self navigationItem] setBackBarButtonItem: newBackButton];
+    [newBackButton release];
+    [self.navigationController pushViewController:previewViewController animated:YES];
+    previewViewController.imageView.image = (UIImage *)data;
+    previewViewController.fileName = filename;
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -89,11 +86,11 @@
     NSURL *mediaUrl;
     
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
-    [self.navigationController.view addSubview:HUD];
+    //HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    //[self.navigationController.view addSubview:HUD];
 	
     // Regiser for HUD callbacks so we can remove it from the window at the right time
-    HUD.delegate = self;
+    //HUD.delegate = self;
     
     mediaUrl = (NSURL *)[info valueForKey:UIImagePickerControllerMediaURL];
     
@@ -102,14 +99,9 @@
         if (image == nil) {
             //---original image selected--- 
             image = (UIImage *) [info valueForKey: UIImagePickerControllerOriginalImage];
-            
-            NSData *imageData = UIImageJPEGRepresentation(image, 1.0f);
             NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
             NSString *strtimestamp = [NSString stringWithFormat:@"%d.jpg", (int)timestamp];
-            fileName = strtimestamp;
-            fileData = imageData;
-            // Show the HUD while the provided method executes in a new thread
-            [HUD showWhileExecuting:@selector(uploadFile) onTarget:self withObject:nil animated:YES];
+            [self loadPreview:image withFilename:strtimestamp];
         } else {
             //---edited image picked---
         }
@@ -132,10 +124,16 @@
 }
 
 - (IBAction)loadCamera:(id)sender {
-    imagePicker = [[UIImagePickerController alloc] init];
-    imagePicker.delegate = self;
-    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    [self presentModalViewController:imagePicker animated:YES];  
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        [self presentModalViewController:imagePicker animated:YES];  
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error accessing camera" message:@"Device does not support a camera" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
+    }
 }
 
 - (IBAction)loadRecorder:(id)sender {
@@ -144,14 +142,6 @@
 
 - (IBAction)loadFileBrowser:(id)sender {
     NSLog(@"Load local file browser");
-}
-#pragma mark -
-#pragma mark MBProgressHUDDelegate methods
-- (void)hudWasHidden {
-    // Remove HUD from screen when the HUD was hidded
-    [HUD removeFromSuperview];
-    [HUD release];
-	HUD = nil;
 }
 
 @end

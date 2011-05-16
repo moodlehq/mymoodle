@@ -44,6 +44,8 @@
 		B5031B02138013A8005BB407 /* ASIFormDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B5031AF7138013A8005BB407 /* ASIFormDataRequest.m */; };
 		B5031B03138013A8005BB407 /* ASIHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B5031AF9138013A8005BB407 /* ASIHTTPRequest.m */; };
 		B5031B04138013A8005BB407 /* ASIInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = B5031AFD138013A8005BB407 /* ASIInputStream.m */; };
+		B52DE3D51380FA9F004F3692 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B52DE3D31380FA9F004F3692 /* PreviewViewController.m */; };
+		B52DE3D61380FA9F004F3692 /* PreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B52DE3D41380FA9F004F3692 /* PreviewViewController.xib */; };
 		B54E8735137E9CC000FB7CFE /* UploadViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B54E8734137E9CC000FB7CFE /* UploadViewController.xib */; };
 		B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B54EFAA0133C7CB500CE8F87 /* WSClient.m */; };
 		B5609F3A137F8DC000C59271 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5609F39137F8DC000C59271 /* AudioToolbox.framework */; };
@@ -149,6 +151,9 @@
 		B5031AFC138013A8005BB407 /* ASIInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASIInputStream.h; path = "asi-http-request/Classes/ASIInputStream.h"; sourceTree = SOURCE_ROOT; };
 		B5031AFD138013A8005BB407 /* ASIInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASIInputStream.m; path = "asi-http-request/Classes/ASIInputStream.m"; sourceTree = SOURCE_ROOT; };
 		B5031AFE138013A8005BB407 /* ASIProgressDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASIProgressDelegate.h; path = "asi-http-request/Classes/ASIProgressDelegate.h"; sourceTree = SOURCE_ROOT; };
+		B52DE3D21380FA9F004F3692 /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreviewViewController.h; path = Moodle.xcodeproj/PreviewViewController.h; sourceTree = SOURCE_ROOT; };
+		B52DE3D31380FA9F004F3692 /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreviewViewController.m; path = Moodle.xcodeproj/PreviewViewController.m; sourceTree = SOURCE_ROOT; };
+		B52DE3D41380FA9F004F3692 /* PreviewViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PreviewViewController.xib; path = Moodle.xcodeproj/PreviewViewController.xib; sourceTree = SOURCE_ROOT; };
 		B54E8734137E9CC000FB7CFE /* UploadViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadViewController.xib; sourceTree = "<group>"; };
 		B54EFA9F133C7CB500CE8F87 /* WSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSClient.h; sourceTree = "<group>"; };
 		B54EFAA0133C7CB500CE8F87 /* WSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSClient.m; sourceTree = "<group>"; };
@@ -397,6 +402,7 @@
 				02618A281331A582008D3037 /* MainWindow.xib */,
 				02A0F5DA1352AD7A00FAD4D4 /* RootViewController.xib */,
 				B54E8734137E9CC000FB7CFE /* UploadViewController.xib */,
+				B52DE3D41380FA9F004F3692 /* PreviewViewController.xib */,
 				0246A69413370B8B007BD281 /* Localizable.strings */,
 				020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */,
 			);
@@ -434,6 +440,8 @@
 				B5E047F5137280FA00314B60 /* ParticipantListViewController.m */,
 				B5D4EFFD13726FF000FD121F /* UploadViewController.h */,
 				B5D4EFFE13726FF000FD121F /* UploadViewController.m */,
+				B52DE3D21380FA9F004F3692 /* PreviewViewController.h */,
+				B52DE3D31380FA9F004F3692 /* PreviewViewController.m */,
 				023AF82A137A2CF400BCDEEF /* ParticipantViewController.h */,
 				023AF82B137A2CF500BCDEEF /* ParticipantViewController.m */,
 			);
@@ -551,6 +559,7 @@
 				B5D4EFFC13726F8F00FD121F /* Upload.png in Resources */,
 				023AF82E137A2CF600BCDEEF /* ParticipantViewController.xib in Resources */,
 				B54E8735137E9CC000FB7CFE /* UploadViewController.xib in Resources */,
+				B52DE3D61380FA9F004F3692 /* PreviewViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -615,6 +624,7 @@
 				B5031B02138013A8005BB407 /* ASIFormDataRequest.m in Sources */,
 				B5031B03138013A8005BB407 /* ASIHTTPRequest.m in Sources */,
 				B5031B04138013A8005BB407 /* ASIInputStream.m in Sources */,
+				B52DE3D51380FA9F004F3692 /* PreviewViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

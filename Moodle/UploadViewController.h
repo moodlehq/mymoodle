@@ -7,15 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MBProgressHUD.h"
+#import "PreviewViewController.h"
+#import "Config.h"
 
-@interface UploadViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, MBProgressHUDDelegate> {
+@interface UploadViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
     UIImagePickerController *imagePicker;
-    MBProgressHUD *HUD;
+    PreviewViewController *previewViewController;
     NSData *fileData;
     NSString *fileName;
 }
-- (void)uploadFile;
 - (IBAction)loadGallery: (id)sender;
 - (IBAction)loadCamera: (id)sender;
 - (IBAction)loadRecorder: (id)sender;
