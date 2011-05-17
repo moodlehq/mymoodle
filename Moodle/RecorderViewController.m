@@ -39,7 +39,6 @@
 }
 
 #pragma mark - View lifecycle
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -154,7 +153,7 @@
     theAudio.delegate = self;
     [theAudio play];
 }
-- (void)uploadAudio:(id)sender
+- (void)uploadAudio
 {
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
     NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
@@ -176,12 +175,22 @@
     // Regiser for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;
     // Show the HUD while the provided method executes in a new thread
-    [HUD showWhileExecuting:@selector(uploadFile) onTarget:self withObject:nil animated:YES];
+    [HUD showWhileExecuting:@selector(uploadAudio) onTarget:self withObject:nil animated:YES];
 }
+
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *) aRecorder successfully:(BOOL)flag
 {
     
     NSLog (@"audioRecorderDidFinishRecording:successfully:");    
+}
+
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+- (void)hudWasHidden {
+    // Remove HUD from screen when the HUD was hidded
+    [HUD removeFromSuperview];
+    [HUD release];
+	HUD = nil;
 }
 
 @end

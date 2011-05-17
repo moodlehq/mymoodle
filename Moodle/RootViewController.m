@@ -12,7 +12,6 @@
 @implementation RootViewController
 
 @synthesize managedObjectContext=__managedObjectContext;
-@synthesize modules;
 
 -(void)displaySettingsView {
     if (settingsViewController == nil) {
@@ -71,6 +70,7 @@
                                     action:@selector(displaySettingsView)];
     self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
+    
     NSDictionary *grade        = [[NSDictionary alloc] initWithObjectsAndKeys:@"Grade.png", @"icon",
                                   NSLocalizedString(@"grade", "grade"), @"title", nil];
     NSDictionary *message      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Message.png", @"icon",
@@ -99,7 +99,7 @@
                       poll,
                       toolguide,
                       moodlehelp, nil];
-    self.modules = array;
+    modules = array;
     [grade release];
     [message release];
     [calendar release];
@@ -109,7 +109,6 @@
     [poll release];
     [toolguide release];
     [moodlehelp release];
-    [array release];
     
     UIButton *icon;
     UILabel  *label;
@@ -156,8 +155,6 @@
         [icon release];
         [label release];
     }
-
-    self.title = @"Moodle.org";
 }
 
 - (void)loadView {
@@ -221,19 +218,22 @@
 
 - (void)viewDidUnload
 {
-    self.modules = nil;
+    settingsViewController = nil;
+    uploadViewController = nil;
+    participantsViewController = nil;
     [super viewDidUnload];
-
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 }
 
 - (void)dealloc
 {
-    [self.modules release];
-//    [__fetchedResultsController release];
-    [__managedObjectContext release];
+    // release view controllers
     [settingsViewController release];
+    [uploadViewController release];
+    [participantsViewController release];
+
+    [__managedObjectContext release];
     [super dealloc];
 }
 

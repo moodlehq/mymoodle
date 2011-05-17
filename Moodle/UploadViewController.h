@@ -12,9 +12,6 @@
 #import "Config.h"
 
 @interface UploadViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
-    UIImagePickerController *imagePicker;
-    PreviewViewController *previewViewController;
-    RecorderViewController *recorderViewController;
     NSData *fileData;
     NSString *fileName;
 }

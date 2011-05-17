@@ -12,6 +12,7 @@
 @implementation PreviewViewController
 @synthesize imageView;
 @synthesize fileName;
+@synthesize filePath;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -23,6 +24,9 @@
 
 - (void)dealloc
 {
+    [imageView release];
+    [fileName release];
+    [filePath release];
     [super dealloc];
 }
 
@@ -30,7 +34,6 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -40,6 +43,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    imageView.image = [UIImage imageWithContentsOfFile:filePath];
 }
 
 - (void)viewDidUnload
@@ -47,6 +51,9 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    imageView = nil;
+    fileName = nil;
+    filePath = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -64,8 +71,11 @@
     NSURL *url = [NSURL URLWithString:uploadurl];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request addPostValue:token forKey:@"token"];
-    [request addData:UIImageJPEGRepresentation([self.imageView image], 1.0f) withFileName:fileName andContentType:@"image/jpeg" forKey:@"thefile"];
+    [request setFile:filePath forKey:@"thefile"];
     [request startSynchronous];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    [fileManager removeItemAtPath:filePath error:nil];
+    NSLog(@"Done deleted");
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -80,9 +90,11 @@
     // Show the HUD while the provided method executes in a new thread
     [HUD showWhileExecuting:@selector(uploadFile) onTarget:self withObject:nil animated:YES];
 }
+
 - (IBAction)cancelPressed: (id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 #pragma mark -
 #pragma mark MBProgressHUDDelegate methods
 - (void)hudWasHidden {

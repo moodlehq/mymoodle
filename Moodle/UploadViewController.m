@@ -66,24 +66,39 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-
-
--(void)loadPreview: (id)data withFilename: (NSString *)filename {
-    if (previewViewController == nil) {
-        previewViewController = [[PreviewViewController alloc] init];
-    }
+-(void)loadPreview: (NSString *)filepath withFilename: (NSString *)filename {
+    PreviewViewController *previewViewController = [[PreviewViewController alloc] init];
     //set the dashboard back button just before to push the settings view
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
     [[self navigationItem] setBackBarButtonItem: newBackButton];
     [newBackButton release];
-    [self.navigationController pushViewController:previewViewController animated:YES];
-    previewViewController.imageView.image = (UIImage *)data;
     previewViewController.fileName = filename;
+    previewViewController.filePath = filepath;
+    [self.navigationController pushViewController:previewViewController animated:YES];
+    [previewViewController release];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *image;
-    NSURL *mediaUrl;
+    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSString *strtimestamp = [now description];
+    //NSURL *mediaUrl;
+    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+    if ([mediaType isEqualToString:@"public.image"]) {
+        UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+        NSLog(@"image found");
+        NSString *filename = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
+        NSString *filepath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, filename];
+        [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filepath atomically:YES];
+        [self loadPreview:filepath withFilename:filename];
+    } else if ([mediaType isEqualToString:@"public.movie"]) {
+        NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
+        NSString *filename = [NSString stringWithFormat:@"%@.mov", strtimestamp];
+        NSLog(@"Found a video");
+        NSData *data = [NSData dataWithContentsOfURL:videoURL];
+        NSString *filepath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, filename];
+        [data writeToFile:filepath atomically:YES];
+        [self loadPreview:filepath withFilename:filename];
+    }
     
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
     //HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
@@ -91,22 +106,24 @@
 	
     // Regiser for HUD callbacks so we can remove it from the window at the right time
     //HUD.delegate = self;
-    
-    mediaUrl = (NSURL *)[info valueForKey:UIImagePickerControllerMediaURL];
-    
-    if (mediaUrl == nil) {
-        image = (UIImage *) [info valueForKey:UIImagePickerControllerEditedImage];
-        if (image == nil) {
+
+    //mediaUrl = (NSURL *)[info valueForKey:UIImagePickerControllerMediaURL];
+
+    //if (mediaUrl == nil) {
+        //image = (UIImage *) [info valueForKey:UIImagePickerControllerEditedImage];
+        //if (image == nil) {
             //---original image selected--- 
-            image = (UIImage *) [info valueForKey: UIImagePickerControllerOriginalImage];
-            NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
-            NSString *strtimestamp = [NSString stringWithFormat:@"%d.jpg", (int)timestamp];
-            [self loadPreview:image withFilename:strtimestamp];
-        } else {
+//            NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
+//            NSString *strtimestamp = [NSString stringWithFormat:@"%d.jpg", (int)timestamp];
+    
+    
+            // Create a new dated files
+            //
+        //} else {
             //---edited image picked---
-        }
-    } else {
-    }
+        //}
+    //} else {
+    //}
 
     [picker dismissModalViewControllerAnimated:NO];
 }
@@ -116,19 +133,22 @@
 }
 
 - (IBAction)loadGallery:(id)sender {
-    imagePicker = [[UIImagePickerController alloc] init];
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     imagePicker.delegate = self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    [self presentModalViewController:imagePicker animated:YES];  
+    [self presentModalViewController:imagePicker animated:YES]; 
+    [imagePicker release];
     
 }
 
 - (IBAction)loadCamera:(id)sender {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        imagePicker = [[UIImagePickerController alloc] init];
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        [self presentModalViewController:imagePicker animated:YES];  
+        imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType: imagePicker.sourceType];
+        [self presentModalViewController:imagePicker animated:YES];
+        [imagePicker release];
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error accessing camera" message:@"Device does not support a camera" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
@@ -137,14 +157,13 @@
 }
 
 - (IBAction)loadRecorder:(id)sender {
-    if (recorderViewController == nil) {
-        recorderViewController = [[RecorderViewController alloc] init];
-    }
-    //set the dashboard back button just before to push the settings view
+    RecorderViewController *recorderViewController = [[RecorderViewController alloc] init];    //set the dashboard back button just before to push the settings view
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
     [[self navigationItem] setBackBarButtonItem: newBackButton];
     [newBackButton release];
-    [self.navigationController pushViewController:recorderViewController animated:YES];}
+    [self.navigationController pushViewController:recorderViewController animated:YES];
+    [recorderViewController release];
+}
 
 - (IBAction)loadFileBrowser:(id)sender {
     NSLog(@"Load local file browser");

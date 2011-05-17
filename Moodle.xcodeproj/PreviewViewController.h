@@ -14,11 +14,14 @@
 @interface PreviewViewController : UIViewController <UINavigationControllerDelegate, MBProgressHUDDelegate> {
     UIImageView *imageView;
     NSString *fileName;
+    NSString *filePath;
+    // will be released by delegate method
     MBProgressHUD *HUD;
     
 }
 @property (nonatomic, retain) IBOutlet UIImageView *imageView;
 @property (nonatomic, retain) NSString *fileName;
+@property (nonatomic, retain) NSString *filePath;
 - (IBAction)uploadPressed: (id)sender;
 - (IBAction)cancelPressed: (id)sender;
 @end

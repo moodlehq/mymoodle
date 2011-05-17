@@ -28,5 +28,5 @@
 - (IBAction) stopRecording: (id)sender;
 - (IBAction) startRecording: (id)sender;
 - (IBAction) replayAudio: (id)sender;
-- (IBAction) uploadAudio: (id)sender;
+- (IBAction) uploadAudio;
 @end
