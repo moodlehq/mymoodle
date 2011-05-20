@@ -24,13 +24,12 @@
     [newBackButton release];
     [self.navigationController pushViewController:settingsViewController animated:YES];
 }
-
 /**
  * Display upload interface
  *
  */
 -(IBAction)displayUploadView: (id)sender {
-    if (uploadViewController== nil) {
+    if (uploadViewController == nil) {
         uploadViewController = [[UploadViewController alloc] init];
     }
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
@@ -71,16 +70,16 @@
     self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
     
-    NSDictionary *grade        = [[NSDictionary alloc] initWithObjectsAndKeys:@"Grade.png", @"icon",
-                                  NSLocalizedString(@"grade", "grade"), @"title", nil];
-    NSDictionary *message      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Message.png", @"icon",
-                                  NSLocalizedString(@"message", "message"), @"title", nil];
-    NSDictionary *calendar     = [[NSDictionary alloc] initWithObjectsAndKeys:@"Calendar.png", @"icon",
-                                  NSLocalizedString(@"calendar", "calendar"), @"title", nil];
+    NSDictionary *resources    = [[NSDictionary alloc] initWithObjectsAndKeys:@"Resources.png", @"icon",
+                                      NSLocalizedString(@"resources", "resources"), @"title", nil];
     NSDictionary *upload       = [[NSDictionary alloc] initWithObjectsAndKeys:@"Upload.png", @"icon",
                                   NSLocalizedString(@"upload", "upload"), @"title", nil];
     NSDictionary *participants = [[NSDictionary alloc] initWithObjectsAndKeys:@"Participants.png", @"icon",
                                   NSLocalizedString(@"participants", "participants"), @"title", nil];
+    NSDictionary *message      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Message.png", @"icon",
+                                  NSLocalizedString(@"message", "message"), @"title", nil];
+    NSDictionary *calendar     = [[NSDictionary alloc] initWithObjectsAndKeys:@"Calendar.png", @"icon",
+                                  NSLocalizedString(@"calendar", "calendar"), @"title", nil];
     NSDictionary *attendance   = [[NSDictionary alloc] initWithObjectsAndKeys:@"Attendance.png", @"icon",
                                   NSLocalizedString(@"attendance", "attendance"), @"title", nil];
     NSDictionary *poll         = [[NSDictionary alloc] initWithObjectsAndKeys:@"Poll.png",   @"icon",
@@ -90,17 +89,17 @@
     NSDictionary *moodlehelp   = [[NSDictionary alloc] initWithObjectsAndKeys:@"MoodleHelp.png", @"icon",
                                   NSLocalizedString(@"moodlehelp", "moodlehelp"), @"title", nil];
     NSArray *array = [NSArray arrayWithObjects:
-                      grade,
-                      message,
-                      calendar,
+                      resources,
                       upload,
                       participants,
+                      message,
+                      calendar,
                       attendance,
                       poll,
                       toolguide,
                       moodlehelp, nil];
     modules = array;
-    [grade release];
+    [resources release];
     [message release];
     [calendar release];
     [upload release];
@@ -117,7 +116,7 @@
     int h_span = 42;
     int v_span = 24;
     int frame_width = 59;
-    int frame_height = 75;
+    int frame_height = 60;
     int label_height = 16;
     int label_width = frame_width;
     for (int i=0; i<[modules count]; i++) {
@@ -132,6 +131,8 @@
         frame.origin.x = (i%3)*(frame_width+h_span)+left;
         frame.origin.y = floor(i/3)*(frame_height+v_span)+top;
         [icon setFrame:frame];
+//        [icon.layer setCornerRadius:5.0];
+//        [icon.layer setBorderWidth:1.0];
         
         CGRect labelFrame;
         labelFrame.size.width = label_width;
@@ -145,9 +146,13 @@
         label.shadowOffset = CGSizeMake(0,1);
         label.backgroundColor = [UIColor clearColor];
         label.textAlignment = UITextAlignmentCenter;
-        
+//        [label.layer setCornerRadius:5.0];
+//        [label.layer setBorderWidth:1.0];
+
         [icon setBackgroundColor:[UIColor clearColor]];
-        [icon addTarget:self action:@selector(iconPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [icon addTarget:self action:@selector(iconTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+        [icon addTarget:self action:@selector(iconTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [icon addTarget:self action:@selector(iconTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
         [self.view addSubview:icon];
         [self.view addSubview:label];
         
@@ -165,20 +170,29 @@
     [contentView release];
 }
 
--(void)iconPressed:(id)sender{
-    UIButton *Btn = (UIButton *)sender;
-    int index = Btn.tag;
+-(void)iconTouchDown:(id)sender{
+    NSLog(@"Touch down");
+}
+-(void)iconTouchUpInside:(id)sender{
+    UIButton *button = (UIButton *)sender;
+    int index = button.tag;
+    NSLog(@"Touch up inside");
     switch (index) {
-        case 3:
+        case 0:
+            break;
+        case 1:
             [self displayUploadView:sender];
             break;
-        case 4:
+        case 2:
             [self displayParticipantsView:sender];
             break;
         default:
             NSLog(@"ICON %d pressed", index);
             break;
     }
+}
+- (void)iconTouchUpOutside: (id)sender {
+    NSLog(@"Touch up outside");
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -235,6 +249,10 @@
 
     [__managedObjectContext release];
     [super dealloc];
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"touches begin");
 }
 
 @end

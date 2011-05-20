@@ -12,7 +12,6 @@
 @implementation RecorderViewController
 
 @synthesize buttonRecord;
-@synthesize buttonStop;
 @synthesize buttonReplay;
 @synthesize buttonUpload;
 
@@ -27,6 +26,9 @@
 
 - (void)dealloc
 {
+    [buttonRecord release];
+    [buttonReplay release];
+    [buttonUpload release];
     [super dealloc];
 }
 
@@ -43,10 +45,17 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    //[timerLabel setFont:[UIFont fontWithName:@"DBLCDTempBlack" size:36.0]];
+	timerLabel.text = @"00:00:00";
+    recording = NO;
+    playing = NO;
 }
 
 - (void)viewDidUnload
 {
+    buttonRecord = nil;
+    buttonReplay = nil;
+    buttonUpload = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -55,104 +64,9 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return NO;
 }
 
-- (IBAction) startRecording: (id)sender {
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    NSError *err = nil;
-    [audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:&err];
-    if (err) {
-        NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-        return;
-    }
-    [audioSession setActive:YES error:&err];
-    err = nil;
-    if(err){
-        NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-        return;
-    }
-
-    NSMutableDictionary *recordSetting = [[NSMutableDictionary alloc] init];
-    
-    [recordSetting setValue :[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
-    [recordSetting setValue:[NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey]; 
-    [recordSetting setValue:[NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
-    
-    [recordSetting setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
-    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
-    [recordSetting setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
-
-    // Create a new dated file
-    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSString *caldate = [now description];
-    recorderFilePath = [[NSString stringWithFormat:@"%@/%@.aac", DOCUMENTS_FOLDER, caldate] retain];
-    
-    NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
-    err = nil;
-    recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
-    if(!recorder){
-        NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-        UIAlertView *alert =
-        [[UIAlertView alloc] initWithTitle: @"Warning"
-                                   message: [err localizedDescription]
-                                  delegate: nil
-                         cancelButtonTitle:@"OK"
-                         otherButtonTitles:nil];
-        [alert show];
-        [alert release];
-        return;
-    }
-    
-    //prepare to record
-    [recorder setDelegate:self];
-    [recorder prepareToRecord];
-    recorder.meteringEnabled = YES;
-    
-    BOOL audioHWAvailable = audioSession.inputIsAvailable;
-    if (! audioHWAvailable) {
-        UIAlertView *cantRecordAlert =
-        [[UIAlertView alloc] initWithTitle: @"Warning"
-                                   message: @"Audio input hardware not available"
-                                  delegate: nil
-                         cancelButtonTitle:@"OK"
-                         otherButtonTitles:nil];
-        [cantRecordAlert show];
-        [cantRecordAlert release]; 
-        return;
-    }
-    
-    // start recording
-    [recorder record];
-}
-
-- (IBAction) stopRecording: (id)sender {
-    [recorder stop];
-    
-    NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
-    NSError *err = nil;
-    NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
-    if(!audioData)
-        NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-    //[editedObject setValue:[NSData dataWithContentsOfURL:url] forKey:editedFieldKey];   
-    
-    //[recorder deleteRecording];
-
-    //NSFileManager *fm = [NSFileManager defaultManager];
-
-    //err = nil;
-    //[fm removeItemAtPath:[url path] error:&err];
-    //if(err) {
-    //    NSLog(@"File Manager: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-    //}
-}
-
-- (IBAction) replayAudio: (id)sender {
-    //NSString *path = [[NSBundle mainBundle] pathForResource:@"mysound" ofType:@"mp3"];
-    AVAudioPlayer* theAudio=[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recorderFilePath] error:NULL];
-    theAudio.delegate = self;
-    [theAudio play];
-}
 - (void)uploadAudio
 {
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
@@ -164,7 +78,118 @@
     [request addPostValue:token forKey:@"token"];
     [request setFile:recorderFilePath forKey:@"thefile"];
     [request startSynchronous];
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSError *err;
+    [fm removeItemAtPath:recorderFilePath error:&err];
+    if(err) {
+        NSLog(@"File Manager: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+    }
     [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)onTimer: (NSTimer *)theTimer {
+    static int count = 0;
+    count += 1;
+    int seconds_in_minute = count % 60;
+    int minutes_in_hour = (count / 60) % 60;
+    int hour_in_day = (count / 3600) %24;
+    
+    timerLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d", hour_in_day, minutes_in_hour, seconds_in_minute];
+}
+
+- (IBAction) startRecording: (id)sender {
+    if (recording == NO) {
+        timer = [NSTimer scheduledTimerWithTimeInterval:(1.0) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        NSError *err = nil;
+        [audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:&err];
+        if (err) {
+            NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+            return;
+        }
+        [audioSession setActive:YES error:&err];
+        err = nil;
+        if(err){
+            NSLog(@"audioSession: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+            return;
+        }
+
+        NSMutableDictionary *settings = [[NSMutableDictionary alloc] init];
+        
+        [settings setValue :[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
+        [settings setValue:[NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey]; 
+        [settings setValue:[NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
+        
+        [settings setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
+        [settings setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
+        [settings setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
+
+        // Create a new dated file
+        NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
+        NSString *caldate = [now description];
+        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.aac", DOCUMENTS_FOLDER, caldate] retain];
+        
+        NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
+        err = nil;
+        recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:settings error:&err];
+        if(!recorder){
+            NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+            UIAlertView *alert =
+            [[UIAlertView alloc] initWithTitle: @"Warning"
+                                       message: [err localizedDescription]
+                                      delegate: nil
+                             cancelButtonTitle:@"OK"
+                             otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+            return;
+        }
+        [settings release];
+        
+        //prepare to record
+        [recorder setDelegate:self];
+        [recorder prepareToRecord];
+        recorder.meteringEnabled = YES;
+        
+        BOOL audioHWAvailable = audioSession.inputIsAvailable;
+        if (! audioHWAvailable) {
+            UIAlertView *cantRecordAlert =
+            [[UIAlertView alloc] initWithTitle: @"Warning"
+                                       message: @"Audio input hardware not available"
+                                      delegate: nil
+                             cancelButtonTitle:@"OK"
+                             otherButtonTitles:nil];
+            [cantRecordAlert show];
+            [cantRecordAlert release]; 
+            return;
+        }
+        
+        // start recording
+        [recorder record];
+        recording = YES;
+        buttonReplay.enabled = NO;
+        [buttonReplay setTitle:@"test"];
+        [buttonRecord setTitle:@"Stop"];
+    } else {
+        [recorder stop];
+        [timer invalidate];
+        recording = NO;
+        [buttonRecord setTitle:@"Record"];
+        NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
+        NSError *err = nil;
+        NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
+        if(!audioData) {
+            NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+        } 
+    }
+}
+
+- (IBAction) replayAudio: (id)sender {
+    AVAudioPlayer* player =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recorderFilePath] error:NULL];
+    player.delegate = self;
+    UInt32 audioRoute = kAudioSessionOverrideAudioRoute_Speaker;
+    AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(audioRoute), &audioRoute);
+    [player play];
 }
 
 - (IBAction)uploadPressed: (id)sender {
@@ -178,10 +203,17 @@
     [HUD showWhileExecuting:@selector(uploadAudio) onTarget:self withObject:nil animated:YES];
 }
 
+#pragma mark -
+#pragma mark AVAudioRecorderDelegate method
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *) aRecorder successfully:(BOOL)flag
 {
-    
-    NSLog (@"audioRecorderDidFinishRecording:successfully:");    
+    [aRecorder release];
+}
+
+#pragma mark -
+#pragma mark AVAudioPlayerDelegate method
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+    [player release];
 }
 
 #pragma mark -

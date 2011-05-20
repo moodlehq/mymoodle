@@ -73,8 +73,13 @@
 						<int key="IBUIBarStyle">2</int>
 						<object class="NSMutableArray" key="IBUIItems">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBUIBarButtonItem" id="1043336457">
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<reference key="IBUIToolbar" ref="35730150"/>
+								<int key="IBUISystemItemIdentifier">5</int>
+							</object>
 							<object class="IBUIBarButtonItem" id="1008976765">
-								<string key="IBUITitle">Use</string>
+								<string key="IBUITitle">Send to Moodle</string>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="35730150"/>
@@ -83,12 +88,6 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIToolbar" ref="35730150"/>
 								<int key="IBUISystemItemIdentifier">5</int>
-							</object>
-							<object class="IBUIBarButtonItem" id="183339532">
-								<string key="IBUITitle">Cancel</string>
-								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<int key="IBUIStyle">1</int>
-								<reference key="IBUIToolbar" ref="35730150"/>
 							</object>
 						</object>
 					</object>
@@ -137,14 +136,6 @@
 					<int key="connectionID">10</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">cancelPressed:</string>
-						<reference key="source" ref="183339532"/>
-						<reference key="destination" ref="372490531"/>
-					</object>
-					<int key="connectionID">11</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">imageView</string>
 						<reference key="source" ref="372490531"/>
@@ -167,8 +158,8 @@
 						<reference key="object" ref="191373211"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="35730150"/>
 							<reference ref="142076328"/>
+							<reference ref="35730150"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -188,20 +179,15 @@
 						<reference key="object" ref="35730150"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="1008976765"/>
-							<reference ref="183339532"/>
 							<reference ref="754036535"/>
+							<reference ref="1008976765"/>
+							<reference ref="1043336457"/>
 						</object>
 						<reference key="parent" ref="191373211"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">5</int>
 						<reference key="object" ref="1008976765"/>
-						<reference key="parent" ref="35730150"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">6</int>
-						<reference key="object" ref="183339532"/>
 						<reference key="parent" ref="35730150"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -219,6 +205,11 @@
 						<reference key="object" ref="839374086"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">16</int>
+						<reference key="object" ref="1043336457"/>
+						<reference key="parent" ref="35730150"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -231,9 +222,9 @@
 					<string>1.IBPluginDependency</string>
 					<string>12.CustomClassName</string>
 					<string>12.IBPluginDependency</string>
+					<string>16.IBPluginDependency</string>
 					<string>4.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
-					<string>6.IBPluginDependency</string>
 					<string>7.IBPluginDependency</string>
 					<string>8.IBPluginDependency</string>
 				</object>
@@ -264,7 +255,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">14</int>
+			<int key="maxID">16</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
