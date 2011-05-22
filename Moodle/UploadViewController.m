@@ -8,17 +8,8 @@
 
 #import "UploadViewController.h"
 
+
 @implementation UploadViewController
-
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)dealloc
 {
@@ -41,12 +32,47 @@
 /**
  *TODO: adding title to this view
  */
-/*
+
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
+    [super loadView];
+    UIImageView *contentView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [contentView setImage:[UIImage imageNamed:@"view_bg.jpg"]];
+    [contentView setUserInteractionEnabled:YES];
+    self.view = contentView;
+    [contentView release];
+//    - (IBAction)loadGallery: (id)sender;
+//    - (IBAction)loadCamera: (id)sender;
+//    - (IBAction)loadRecorder: (id)sender;
+//    - (IBAction)loadFileBrowser: (id)sender;
+    TTButton *button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Browse photo albums", "Browse photo albums")];
+    [button addTarget:self 
+               action:@selector(loadGallery:)
+                forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"Browse photo albums" forState:UIControlStateNormal];
+    button.frame = CGRectMake(80.0, 50.0, 160.0, 40.0);
+    [self.view addSubview:button];
+    
+
+    button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Take a picture or video", "Take a picture or video")];
+    [button addTarget:self 
+               action:@selector(loadCamera:)
+     forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"Take a picture or video" forState:UIControlStateNormal];
+    button.frame = CGRectMake(80.0, 110.0, 160.0, 40.0);
+    [self.view addSubview:button];
+    
+    
+    button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Record audio", "Record audio")];
+    [button addTarget:self 
+               action:@selector(loadRecorder:)
+     forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"Record audio" forState:UIControlStateNormal];
+    button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+    [self.view addSubview:button];
 }
-*/
+
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 //- (void)viewDidLoad
@@ -103,37 +129,11 @@
         [data writeToFile:filepath atomically:YES];
         [self loadPreview:filepath withFilename:filename];
     }
-    
-    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-    //HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
-    //[self.navigationController.view addSubview:HUD];
-	
-    // Regiser for HUD callbacks so we can remove it from the window at the right time
-    //HUD.delegate = self;
-
-    //mediaUrl = (NSURL *)[info valueForKey:UIImagePickerControllerMediaURL];
-
-    //if (mediaUrl == nil) {
-        //image = (UIImage *) [info valueForKey:UIImagePickerControllerEditedImage];
-        //if (image == nil) {
-            //---original image selected--- 
-//            NSTimeInterval timestamp = [[NSDate date] timeIntervalSince1970];
-//            NSString *strtimestamp = [NSString stringWithFormat:@"%d.jpg", (int)timestamp];
-    
-    
-            // Create a new dated files
-            //
-        //} else {
-            //---edited image picked---
-        //}
-    //} else {
-    //}
-
-    [picker dismissModalViewControllerAnimated:NO];
+    [picker dismissModalViewControllerAnimated:YES];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissModalViewControllerAnimated:NO];
+    [picker dismissModalViewControllerAnimated:YES];
 }
 
 - (IBAction)loadGallery:(id)sender {

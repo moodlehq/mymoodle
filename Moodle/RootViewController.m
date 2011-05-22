@@ -8,6 +8,10 @@
 
 #import "RootViewController.h"
 #import "Config.h"
+#import "AppDelegate.h"
+#import "MoodleButtonStyleSheet.h"
+
+
 
 @implementation RootViewController
 
@@ -17,42 +21,13 @@
     if (settingsViewController == nil) {
         settingsViewController = [[SettingsViewController alloc] initWithStyle:UITableViewStylePlain];
     }
+    self.managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     settingsViewController.managedObjectContext = self.managedObjectContext;
     //set the dashboard back button just before to push the settings view
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
     [[self navigationItem] setBackBarButtonItem: newBackButton];
     [newBackButton release];
     [self.navigationController pushViewController:settingsViewController animated:YES];
-}
-/**
- * Display upload interface
- *
- */
--(IBAction)displayUploadView: (id)sender {
-    if (uploadViewController == nil) {
-        uploadViewController = [[UploadViewController alloc] init];
-    }
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
-    [[self navigationItem] setBackBarButtonItem: newBackButton];
-    [newBackButton release];
-    [self.navigationController pushViewController:uploadViewController animated:YES];
-}
-
-/**
- * Display participants view
- *
- */
--(IBAction)displayParticipantsView:(id)sender {
-    if (participantsViewController == nil) {
-        participantsViewController = [[ParticipantsViewController alloc] initWithStyle:UITableViewStylePlain];
-    }
-    participantsViewController.managedObjectContext = self.managedObjectContext;
-    //set the dashboard back button just before to push the settings view
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
-    [[self navigationItem] setBackBarButtonItem: newBackButton];
-    [newBackButton release];
-    [self.navigationController pushViewController:participantsViewController animated:YES];
-    
 }
 
 /**
@@ -70,129 +45,39 @@
     self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
     
-    NSDictionary *resources    = [[NSDictionary alloc] initWithObjectsAndKeys:@"Resources.png", @"icon",
-                                      NSLocalizedString(@"resources", "resources"), @"title", nil];
-    NSDictionary *upload       = [[NSDictionary alloc] initWithObjectsAndKeys:@"Upload.png", @"icon",
-                                  NSLocalizedString(@"upload", "upload"), @"title", nil];
-    NSDictionary *participants = [[NSDictionary alloc] initWithObjectsAndKeys:@"Participants.png", @"icon",
-                                  NSLocalizedString(@"participants", "participants"), @"title", nil];
-    NSDictionary *message      = [[NSDictionary alloc] initWithObjectsAndKeys:@"Message.png", @"icon",
-                                  NSLocalizedString(@"message", "message"), @"title", nil];
-    NSDictionary *calendar     = [[NSDictionary alloc] initWithObjectsAndKeys:@"Calendar.png", @"icon",
-                                  NSLocalizedString(@"calendar", "calendar"), @"title", nil];
-    NSDictionary *attendance   = [[NSDictionary alloc] initWithObjectsAndKeys:@"Attendance.png", @"icon",
-                                  NSLocalizedString(@"attendance", "attendance"), @"title", nil];
-    NSDictionary *poll         = [[NSDictionary alloc] initWithObjectsAndKeys:@"Poll.png",   @"icon",
-                                  NSLocalizedString(@"poll", "poll"),       @"title", nil];
-    NSDictionary *toolguide    = [[NSDictionary alloc] initWithObjectsAndKeys:@"ToolGuide.png",     @"icon",
-                                  NSLocalizedString(@"toolguide", "toolguide"), @"title", nil];
-    NSDictionary *moodlehelp   = [[NSDictionary alloc] initWithObjectsAndKeys:@"MoodleHelp.png", @"icon",
-                                  NSLocalizedString(@"moodlehelp", "moodlehelp"), @"title", nil];
-    NSArray *array = [NSArray arrayWithObjects:
-                      resources,
-                      upload,
-                      participants,
-                      message,
-                      calendar,
-                      attendance,
-                      poll,
-                      toolguide,
-                      moodlehelp, nil];
-    modules = array;
-    [resources release];
-    [message release];
-    [calendar release];
-    [upload release];
-    [participants release];
-    [attendance release];
-    [poll release];
-    [toolguide release];
-    [moodlehelp release];
-    
-    UIButton *icon;
-    UILabel  *label;
-    int top = 20;
-    int left = 30;
-    int h_span = 42;
-    int v_span = 24;
-    int frame_width = 59;
-    int frame_height = 60;
-    int label_height = 16;
-    int label_width = frame_width;
-    for (int i=0; i<[modules count]; i++) {
-        CGRect frame;
-        NSDictionary *module = [modules objectAtIndex:i];
-        icon = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-        [icon setImage:[UIImage imageNamed:[module valueForKey:@"icon"]] forState:UIControlStateNormal];        
-        icon.tag = i;
-        
-        frame.size.width = frame_width;
-        frame.size.height = frame_height;
-        frame.origin.x = (i%3)*(frame_width+h_span)+left;
-        frame.origin.y = floor(i/3)*(frame_height+v_span)+top;
-        [icon setFrame:frame];
-//        [icon.layer setCornerRadius:5.0];
-//        [icon.layer setBorderWidth:1.0];
-        
-        CGRect labelFrame;
-        labelFrame.size.width = label_width;
-        labelFrame.size.height = label_height;
-        labelFrame.origin.x = frame.origin.x;
-        labelFrame.origin.y = frame.origin.y + frame.size.height;
-        label = [[UILabel alloc] initWithFrame:labelFrame];
-        [label setText:[module valueForKey:@"title"]];
-        label.font = [UIFont systemFontOfSize:11];
-        label.shadowColor = [UIColor grayColor];
-        label.shadowOffset = CGSizeMake(0,1);
-        label.backgroundColor = [UIColor clearColor];
-        label.textAlignment = UITextAlignmentCenter;
-//        [label.layer setCornerRadius:5.0];
-//        [label.layer setBorderWidth:1.0];
-
-        [icon setBackgroundColor:[UIColor clearColor]];
-        [icon addTarget:self action:@selector(iconTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-        [icon addTarget:self action:@selector(iconTouchDown:) forControlEvents:UIControlEventTouchDown];
-        [icon addTarget:self action:@selector(iconTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
-        [self.view addSubview:icon];
-        [self.view addSubview:label];
-        
-        // release objects
-        [icon release];
-        [label release];
-    }
 }
 
 - (void)loadView {
-    UIImageView *contentView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [TTStyleSheet setGlobalStyleSheet:[[[MoodleButtonStyleSheet alloc] init] autorelease]];
+    [super loadView];
+    CGRect rect = [[UIScreen mainScreen] applicationFrame];
+    UIImageView *contentView = [[UIImageView alloc] initWithFrame: rect];
     [contentView setImage:[UIImage imageNamed:@"view_bg.jpg"]];
     [contentView setUserInteractionEnabled:YES];
     self.view = contentView;
     [contentView release];
-}
 
--(void)iconTouchDown:(id)sender{
-    NSLog(@"Touch down");
-}
--(void)iconTouchUpInside:(id)sender{
-    UIButton *button = (UIButton *)sender;
-    int index = button.tag;
-    NSLog(@"Touch up inside");
-    switch (index) {
-        case 0:
-            break;
-        case 1:
-            [self displayUploadView:sender];
-            break;
-        case 2:
-            [self displayParticipantsView:sender];
-            break;
-        default:
-            NSLog(@"ICON %d pressed", index);
-            break;
-    }
-}
-- (void)iconTouchUpOutside: (id)sender {
-    NSLog(@"Touch up outside");
+    launcherView = [[TTLauncherView alloc]
+                                    initWithFrame:self.view.bounds];
+    launcherView.backgroundColor = [UIColor clearColor];
+    launcherView.columnCount = 2;
+    launcherView.pages = [NSArray arrayWithObjects:
+                            [NSArray arrayWithObjects:
+                                [self launcherItemWithTitle:@"Upload" image: @"bundle://Upload.png" URL:@"tt://upload/"],
+                                [self launcherItemWithTitle:@"Participants" image: @"bundle://Participants.png" URL:@"tt://participants/"],
+                                [self launcherItemWithTitle:@"Tool guide" image: @"bundle://ToolGuide.png" URL:@"http://moodle.org"],
+                                [self launcherItemWithTitle:@"Help" image: @"bundle://MoodleHelp.png" URL:@"http://docs.moodle.org/"],
+                                nil]
+                          , nil];
+    launcherView.delegate = self;
+    
+    [self.view addSubview: launcherView];
+    TTButton *button = [TTButton buttonWithStyle:@"notificationButton:" title: @"SYNC"];
+    [button addTarget:self
+               action:@selector(launchNotification:) forControlEvents:UIControlEventTouchDown];
+    button.frame = CGRectMake(-5, rect.size.height-72.0, rect.size.width+10, 36.0);
+    [self.view addSubview:button];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -233,9 +118,9 @@
 - (void)viewDidUnload
 {
     settingsViewController = nil;
-    uploadViewController = nil;
-    participantsViewController = nil;
     [super viewDidUnload];
+    [launcherView release];
+    launcherView = nil;
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 }
@@ -244,15 +129,43 @@
 {
     // release view controllers
     [settingsViewController release];
-    [uploadViewController release];
-    [participantsViewController release];
-
     [__managedObjectContext release];
     [super dealloc];
 }
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touches begin");
+#pragma mark -
+#pragma mark Private methods
+
+
+
+- (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url {
+	TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle 
+																   image:image
+																	 URL:url canDelete:YES];
+    launcherItem.canDelete = NO;
+	return [launcherItem autorelease];
 }
 
+
+#pragma mark -
+#pragma mark TTLauncherViewDelegate methods
+
+- (void)launcherViewDidBeginEditing:(TTLauncherView*)launcher {
+	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
+	self.navigationItem.leftBarButtonItem = doneButton;
+	[doneButton release];
+}
+
+- (void)launcherViewDidEndEditing:(TTLauncherView*)launcher {
+	//UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:launcherView action:@selector(endEditing)];
+	self.navigationItem.leftBarButtonItem = nil;
+	//[editButton release];
+}
+
+- (void)launcherView:(TTLauncherView *)launcher didSelectItem:(TTLauncherItem *)item {
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:item.URL] applyAnimated:YES]];        
+}
+- (void)launchNotification: (id)sender {
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://notification/"] applyAnimated:YES]];        
+}
 @end

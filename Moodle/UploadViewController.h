@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Three20/Three20.h>
 #import "PreviewViewController.h"
 #import "RecorderViewController.h"
 #import "Config.h"
@@ -18,5 +19,4 @@
 - (IBAction)loadGallery: (id)sender;
 - (IBAction)loadCamera: (id)sender;
 - (IBAction)loadRecorder: (id)sender;
-- (IBAction)loadFileBrowser: (id)sender;
 @end

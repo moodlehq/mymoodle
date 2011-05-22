@@ -2,17 +2,16 @@
 //  MoodleAppDelegate.h
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 17/03/11.
+//  Created by Dongsheng Cai on 20/05/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import <Three20/Three20.h>
 
-@interface MoodleAppDelegate : NSObject <UIApplicationDelegate> {
+@interface AppDelegate : NSObject <UIApplicationDelegate> {
 
 }
-
-@property (nonatomic, retain) IBOutlet UIWindow *window;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
@@ -20,7 +19,5 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
-
-@property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
 
 @end

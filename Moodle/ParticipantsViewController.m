@@ -10,7 +10,7 @@
 #import "Config.h"
 #import "WSClient.h"
 #import "ParticipantListViewController.h"
-
+#import "AppDelegate.h"
 
 @implementation ParticipantsViewController
 @synthesize managedObjectContext;
@@ -53,8 +53,7 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
-    
+    self.managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
 }
 
 - (void)viewDidUnload

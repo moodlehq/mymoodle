@@ -1,19 +1,20 @@
 //
-//  MoodleAppDelegate.m
+//  MoodleAppDelegate.h
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 17/03/11.
+//  Created by Dongsheng Cai on 20/05/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
-#import "MoodleAppDelegate.h"
+#import "AppDelegate.h"
 
 #import "RootViewController.h"
+#import "UploadViewController.h"
+#import "ParticipantViewController.h"
+#import "WebViewController.h"
+#import "NotificationViewController.h"
 
-@implementation MoodleAppDelegate
-
-
-@synthesize window=_window;
+@implementation AppDelegate
 
 @synthesize managedObjectContext=__managedObjectContext;
 
@@ -21,14 +22,22 @@
 
 @synthesize persistentStoreCoordinator=__persistentStoreCoordinator;
 
-@synthesize navigationController=_navigationController;
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     // Add the navigation controller's view to the window and display.
-    self.window.rootViewController = self.navigationController;
-    [self.window makeKeyAndVisible];
+    
+    TTNavigator *navigator = [TTNavigator navigator];
+    navigator.persistenceMode = TTNavigatorPersistenceModeAll;
+    // register component
+    [navigator.URLMap from: @"*" toViewController: [WebViewController class]];
+    [navigator.URLMap from: @"tt://dashboard/" toViewController:[RootViewController class]];
+    [navigator.URLMap from: @"tt://upload/" toViewController:[UploadViewController class]];
+    [navigator.URLMap from: @"tt://participants/" toViewController:[ParticipantsViewController class]];
+    [navigator.URLMap from: @"tt://notification/" toModalViewController: [NotificationViewController class]];
+    if (![navigator restoreViewControllers]) {
+        [navigator openURLAction:[TTURLAction actionWithURLPath:@"http://dashboard/"]];
+    }
     return YES;
 }
 
@@ -70,18 +79,10 @@
 
 - (void)dealloc
 {
-    [_window release];
     [__managedObjectContext release];
     [__managedObjectModel release];
     [__persistentStoreCoordinator release];
-    [_navigationController release];
     [super dealloc];
-}
-
-- (void)awakeFromNib
-{
-    RootViewController *rootViewController = (RootViewController *)[self.navigationController topViewController];
-    rootViewController.managedObjectContext = self.managedObjectContext;
 }
 
 - (void)saveContext
@@ -196,5 +197,13 @@
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (BOOL)navigator:(TTNavigator*)navigator shouldOpenURL:(NSURL*)URL {
+    return YES;
+}
 
+- (BOOL)application:(UIApplication*)application handleOpenURL:(NSURL*)URL {
+	TTOpenURL([URL absoluteString]);
+	return YES;
+}
 @end
