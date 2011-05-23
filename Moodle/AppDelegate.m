@@ -36,7 +36,7 @@
     [navigator.URLMap from: @"tt://participants/" toViewController:[ParticipantsViewController class]];
     [navigator.URLMap from: @"tt://notification/" toModalViewController: [NotificationViewController class]];
     if (![navigator restoreViewControllers]) {
-        [navigator openURLAction:[TTURLAction actionWithURLPath:@"http://dashboard/"]];
+        [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
     }
     return YES;
 }
