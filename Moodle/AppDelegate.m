@@ -13,6 +13,7 @@
 #import "ParticipantViewController.h"
 #import "WebViewController.h"
 #import "NotificationViewController.h"
+#import "RecorderViewController.h"
 
 @implementation AppDelegate
 
@@ -28,13 +29,14 @@
     // Add the navigation controller's view to the window and display.
     
     TTNavigator *navigator = [TTNavigator navigator];
-    navigator.persistenceMode = TTNavigatorPersistenceModeAll;
+    navigator.persistenceMode = TTNavigatorPersistenceModeNone;
     // register component
     [navigator.URLMap from: @"*" toViewController: [WebViewController class]];
     [navigator.URLMap from: @"tt://dashboard/" toViewController:[RootViewController class]];
     [navigator.URLMap from: @"tt://upload/" toViewController:[UploadViewController class]];
     [navigator.URLMap from: @"tt://participants/" toViewController:[ParticipantsViewController class]];
     [navigator.URLMap from: @"tt://notification/" toModalViewController: [NotificationViewController class]];
+    [navigator.URLMap from: @"tt://recorder/" toViewController:[RecorderViewController class]];
     if (![navigator restoreViewControllers]) {
         [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
     }

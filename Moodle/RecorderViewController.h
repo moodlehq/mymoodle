@@ -10,26 +10,22 @@
 #import "Config.h"
 #import "MBProgressHUD.h"
 #import "ASIFormDataRequest.h"
+#import <Three20/Three20.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-@interface RecorderViewController : UIViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate> {
+@interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate> {
     NSString *recorderFilePath;
+    UIToolbar *_toolbar;
     AVAudioRecorder *recorder;
-    IBOutlet UILabel *timerLabel;
+    TTStyledTextLabel *timerLabel;
     NSTimer *timer;
     BOOL recording;
     BOOL playing;
-    IBOutlet UIBarButtonItem *buttonRecord;
-    IBOutlet UIBarButtonItem *buttonReplay;
-    IBOutlet UIBarButtonItem *buttonUpload;
+    UIBarButtonItem *buttonRecord;
+    UIBarButtonItem *buttonReplay;
+    UIBarButtonItem *buttonUpload;
     MBProgressHUD *HUD;
 }
-@property (nonatomic, retain) UIBarButtonItem *buttonRecord;
-@property (nonatomic, retain) UIBarButtonItem *buttonReplay;
-@property (nonatomic, retain) UIBarButtonItem *buttonUpload;
 
-- (IBAction) startRecording: (id)sender;
-- (IBAction) replayAudio: (id)sender;
-- (IBAction) uploadAudio;
 @end

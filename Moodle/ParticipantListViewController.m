@@ -45,20 +45,20 @@
 
 - (void)viewDidLoad
 {
-    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     //retrieve the participants by webservice
-    BOOL offlineMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSelectedOfflineModeKey];
+    BOOL offlineMode = [defaults boolForKey:kSelectedOfflineModeKey];
     if (!offlineMode) {
         
         NSLog(@"The course is: %@", course);
         
         //TEST FOR USER DEFAULT
         //[[NSUserDefaults standardUserDefaults] synchronize];
-        NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
+        NSString *defaultSiteUrl = [defaults objectForKey:kSelectedSiteUrlKey];
         NSLog(@"BEFORE GET PARTICIPANTS WS - the default site url is: %@", defaultSiteUrl);
-        NSString *defaultSiteToken = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
+        NSString *defaultSiteToken = [defaults objectForKey:kSelectedSiteTokenKey];
         NSLog(@"BEFORE GET PARTICIPANTS WS - the default site token is: %@", defaultSiteToken);
-        NSString *defaultSiteUserId = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
+        NSString *defaultSiteUserId = [defaults objectForKey:kSelectedUserIdKey];
         NSLog(@"BEFORE GET PARTICIPANTS WS - the default site user id is: %@", defaultSiteUserId);
         
         WSClient *client = [[WSClient alloc] init];
@@ -87,10 +87,9 @@
         NSMutableDictionary *participantsToNotDelete = [[NSMutableDictionary alloc] init];
         NSLog(@"Participants in core data: %@", participantsToDelete);
         NSLog(@"Number of participants in core data before web service call: %d", [participantsToDelete count]);
-        
         //update core data participants with participants from web service call
         if (result != nil) {
-            NSLog(@"Result: %@", result);
+            NSLog(@"Result----: %@", result);
             for ( NSDictionary *participant in result) {
             
                     NSManagedObject *dbparticipant;
@@ -157,12 +156,10 @@
             
             //If courses is empty then delete the participant
         }
-        
         //save the modifications
         if (![self.managedObjectContext save:&error]) {
             NSLog(@"Error saving entity: %@", [error localizedDescription]);
         }
-        
         [participantsToNotDelete release];
     }
     

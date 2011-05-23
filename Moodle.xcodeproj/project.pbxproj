@@ -59,7 +59,7 @@
 		B57CD156133C787F00CCB81A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD155133C787F00CCB81A /* CFNetwork.framework */; };
 		B57CD158133C788900CCB81A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD157133C788900CCB81A /* MobileCoreServices.framework */; };
 		B57CD15A133C78BE00CCB81A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD159133C78BE00CCB81A /* SystemConfiguration.framework */; };
-		B5A6C65C1389792A007B46F0 /* MoodleButtonStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6C65B1389792A007B46F0 /* MoodleButtonStyleSheet.m */; };
+		B5A6C65C1389792A007B46F0 /* MoodleStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */; };
 		B5B0EAEF1383ACFE000A9330 /* Attendance.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAE51383ACFE000A9330 /* Attendance.png */; };
 		B5B0EAF01383ACFE000A9330 /* Calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAE61383ACFE000A9330 /* Calendar.png */; };
 		B5B0EAF11383ACFE000A9330 /* Resources.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAE71383ACFE000A9330 /* Resources.png */; };
@@ -73,7 +73,6 @@
 		B5B0EAFD1383AD7E000A9330 /* button_red.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAF91383AD7D000A9330 /* button_red.png */; };
 		B5B0EAFE1383AD7E000A9330 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAFA1383AD7D000A9330 /* checkmark.png */; };
 		B5B0EAFF1383AD7E000A9330 /* redbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAFB1383AD7E000A9330 /* redbutton.png */; };
-		B5B0EB001383AD7E000A9330 /* view_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAFC1383AD7E000A9330 /* view_bg.jpg */; };
 		B5B0EB031383ADBB000A9330 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EB011383ADBB000A9330 /* icon.png */; };
 		B5B0EB041383ADBB000A9330 /* iconhd.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EB021383ADBB000A9330 /* iconhd.png */; };
 		B5B0EB171383AEB6000A9330 /* CTidy.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB061383AEB6000A9330 /* CTidy.m */; };
@@ -328,8 +327,8 @@
 		B57CD155133C787F00CCB81A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		B57CD157133C788900CCB81A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		B57CD159133C78BE00CCB81A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		B5A6C65A1389792A007B46F0 /* MoodleButtonStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleButtonStyleSheet.h; sourceTree = "<group>"; };
-		B5A6C65B1389792A007B46F0 /* MoodleButtonStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleButtonStyleSheet.m; sourceTree = "<group>"; };
+		B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleStyleSheet.h; sourceTree = "<group>"; };
+		B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleStyleSheet.m; sourceTree = "<group>"; };
 		B5B0EAE51383ACFE000A9330 /* Attendance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Attendance.png; path = Icons/Attendance.png; sourceTree = SOURCE_ROOT; };
 		B5B0EAE61383ACFE000A9330 /* Calendar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Calendar.png; path = Icons/Calendar.png; sourceTree = SOURCE_ROOT; };
 		B5B0EAE71383ACFE000A9330 /* Resources.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Resources.png; path = Icons/Resources.png; sourceTree = SOURCE_ROOT; };
@@ -343,7 +342,6 @@
 		B5B0EAF91383AD7D000A9330 /* button_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button_red.png; path = Images/button_red.png; sourceTree = SOURCE_ROOT; };
 		B5B0EAFA1383AD7D000A9330 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkmark.png; path = Images/checkmark.png; sourceTree = SOURCE_ROOT; };
 		B5B0EAFB1383AD7E000A9330 /* redbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redbutton.png; path = Images/redbutton.png; sourceTree = SOURCE_ROOT; };
-		B5B0EAFC1383AD7E000A9330 /* view_bg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = view_bg.jpg; path = Images/view_bg.jpg; sourceTree = SOURCE_ROOT; };
 		B5B0EB011383ADBB000A9330 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = Icons/icon.png; sourceTree = SOURCE_ROOT; };
 		B5B0EB021383ADBB000A9330 /* iconhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iconhd.png; path = Icons/iconhd.png; sourceTree = SOURCE_ROOT; };
 		B5B0EB051383AEB6000A9330 /* CTidy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CTidy.h; path = XMLRPC/CTidy.h; sourceTree = SOURCE_ROOT; };
@@ -667,7 +665,6 @@
 				B5B0EAF91383AD7D000A9330 /* button_red.png */,
 				B5B0EAFA1383AD7D000A9330 /* checkmark.png */,
 				B5B0EAFB1383AD7E000A9330 /* redbutton.png */,
-				B5B0EAFC1383AD7E000A9330 /* view_bg.jpg */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -700,8 +697,8 @@
 				B5C3C75613896F300004783D /* NotificationViewController.m */,
 				B56983CA13896647003FECD2 /* WebViewController.h */,
 				B56983CB13896648003FECD2 /* WebViewController.m */,
-				B5A6C65A1389792A007B46F0 /* MoodleButtonStyleSheet.h */,
-				B5A6C65B1389792A007B46F0 /* MoodleButtonStyleSheet.m */,
+				B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */,
+				B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -971,7 +968,6 @@
 				B5B0EAFD1383AD7E000A9330 /* button_red.png in Resources */,
 				B5B0EAFE1383AD7E000A9330 /* checkmark.png in Resources */,
 				B5B0EAFF1383AD7E000A9330 /* redbutton.png in Resources */,
-				B5B0EB001383AD7E000A9330 /* view_bg.jpg in Resources */,
 				B5B0EB031383ADBB000A9330 /* icon.png in Resources */,
 				B5B0EB041383ADBB000A9330 /* iconhd.png in Resources */,
 				B5C3C786138975310004783D /* sync.gif in Resources */,
@@ -1043,7 +1039,7 @@
 				B5B0EB231383AFDC000A9330 /* Reachability.m in Sources */,
 				B56983CC13896648003FECD2 /* WebViewController.m in Sources */,
 				B5C3C75713896F300004783D /* NotificationViewController.m in Sources */,
-				B5A6C65C1389792A007B46F0 /* MoodleButtonStyleSheet.m in Sources */,
+				B5A6C65C1389792A007B46F0 /* MoodleStyleSheet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

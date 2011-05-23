@@ -7,22 +7,10 @@
 //
 
 #import "RecorderViewController.h"
+#import "Config.h"
 
 
 @implementation RecorderViewController
-
-@synthesize buttonRecord;
-@synthesize buttonReplay;
-@synthesize buttonUpload;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)dealloc
 {
@@ -40,14 +28,59 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (void)loadView {
+    [super loadView];
+    TTLabel *_ttLabel = [[TTLabel alloc] initWithText:@"ttffffffflabel"];
+    _ttLabel.frame = CGRectMake(10, 50, 50, 50);
+    _ttLabel.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_ttLabel];
+    
+    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
+    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
+    
+    buttonRecord = [[UIBarButtonItem alloc] initWithTitle:@"Record"
+                                                    style:UIBarButtonItemStyleBordered target:self action:@selector(startRecording)];
+    buttonRecord.tag = 1;
+    buttonRecord.enabled = YES;
+    
+    
+    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
+                    UIBarButtonSystemItemPlay target:self action:@selector(replayAudio)];
+    buttonReplay.tag = 2;
+    buttonReplay.enabled = NO;
+
+
+    buttonUpload = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
+                    UIBarButtonSystemItemDone target:self action:@selector(uploadPressed)];
+    buttonUpload.tag = 3;
+    buttonUpload.title = @"Upload";
+    buttonUpload.enabled = NO;
+    
+    UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
+                         UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
+    
+    
+    _toolbar = [[UIToolbar alloc] initWithFrame:
+                CGRectMake(0, self.view.bounds.size.height - TTToolbarHeight(),
+                           self.view.bounds.size.width, TTToolbarHeight())];
+    _toolbar.autoresizingMask =
+    UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+    _toolbar.tintColor = TTSTYLEVAR(toolbarTintColor);
+    _toolbar.items = [NSArray arrayWithObjects:
+                      buttonRecord,
+                      space,
+                      buttonReplay,
+                      buttonUpload,
+                      nil];
+    [self.view addSubview:_toolbar];
+}
+
 #pragma mark - View lifecycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    //[timerLabel setFont:[UIFont fontWithName:@"DBLCDTempBlack" size:36.0]];
-	timerLabel.text = @"00:00:00";
-    recording = NO;
+    //[timerLabel setFont:[UIFont fontWithName:@"DBLCDTempBlack" size:36.0]];    recording = NO;
     playing = NO;
 }
 
@@ -61,6 +94,10 @@
     // e.g. self.myOutlet = nil;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -69,6 +106,7 @@
 
 - (void)uploadAudio
 {
+    NSLog(@"Uploading audio");
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
     NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
     NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/files/upload.php", host];
@@ -78,14 +116,12 @@
     [request addPostValue:token forKey:@"token"];
     [request setFile:recorderFilePath forKey:@"thefile"];
     [request startSynchronous];
-    
+    NSLog(@"end uploading");
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://upload/"] applyAnimated:YES]];    
+
     NSFileManager *fm = [NSFileManager defaultManager];
     NSError *err;
     [fm removeItemAtPath:recorderFilePath error:&err];
-    if(err) {
-        NSLog(@"File Manager: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-    }
-    [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)onTimer: (NSTimer *)theTimer {
     static int count = 0;
@@ -97,7 +133,7 @@
     timerLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d", hour_in_day, minutes_in_hour, seconds_in_minute];
 }
 
-- (IBAction) startRecording: (id)sender {
+- (IBAction) startRecording {
     if (recording == NO) {
         timer = [NSTimer scheduledTimerWithTimeInterval:(1.0) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -116,7 +152,7 @@
 
         NSMutableDictionary *settings = [[NSMutableDictionary alloc] init];
         
-        [settings setValue :[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
+        [settings setValue :[NSNumber numberWithInt:kAudioFormatMPEGLayer3] forKey:AVFormatIDKey];
         [settings setValue:[NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey]; 
         [settings setValue:[NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
         
@@ -127,7 +163,7 @@
         // Create a new dated file
         NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
         NSString *caldate = [now description];
-        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.aac", DOCUMENTS_FOLDER, caldate] retain];
+        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.mp3", DOCUMENTS_FOLDER, caldate] retain];
         
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         err = nil;
@@ -168,13 +204,13 @@
         [recorder record];
         recording = YES;
         buttonReplay.enabled = NO;
-        [buttonReplay setTitle:@"test"];
         [buttonRecord setTitle:@"Stop"];
     } else {
         [recorder stop];
         [timer invalidate];
         recording = NO;
         [buttonRecord setTitle:@"Record"];
+        buttonReplay.enabled = YES;
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         NSError *err = nil;
         NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
@@ -184,7 +220,7 @@
     }
 }
 
-- (IBAction) replayAudio: (id)sender {
+- (IBAction) replayAudio {
     AVAudioPlayer* player =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recorderFilePath] error:NULL];
     player.delegate = self;
     UInt32 audioRoute = kAudioSessionOverrideAudioRoute_Speaker;
@@ -192,7 +228,7 @@
     [player play];
 }
 
-- (IBAction)uploadPressed: (id)sender {
+- (IBAction)uploadPressed {
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
     HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
     [self.navigationController.view addSubview:HUD];

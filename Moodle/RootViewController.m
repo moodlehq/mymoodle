@@ -9,7 +9,7 @@
 #import "RootViewController.h"
 #import "Config.h"
 #import "AppDelegate.h"
-#import "MoodleButtonStyleSheet.h"
+#import "MoodleStyleSheet.h"
 
 
 
@@ -48,31 +48,31 @@
 }
 
 - (void)loadView {
-    [TTStyleSheet setGlobalStyleSheet:[[[MoodleButtonStyleSheet alloc] init] autorelease]];
+    [TTStyleSheet setGlobalStyleSheet:[[[MoodleStyleSheet alloc] init] autorelease]];
     [super loadView];
     CGRect rect = [[UIScreen mainScreen] applicationFrame];
-    UIImageView *contentView = [[UIImageView alloc] initWithFrame: rect];
-    [contentView setImage:[UIImage imageNamed:@"view_bg.jpg"]];
-    [contentView setUserInteractionEnabled:YES];
-    self.view = contentView;
-    [contentView release];
+//    UIImageView *contentView = [[UIImageView alloc] initWithFrame: rect];
+//    [contentView setImage:[UIImage imageNamed:@"view_bg.jpg"]];
+//    [contentView setUserInteractionEnabled:YES];
+//    self.view = contentView;
+//    [contentView release];
 
     launcherView = [[TTLauncherView alloc]
                                     initWithFrame:self.view.bounds];
-    launcherView.backgroundColor = [UIColor clearColor];
+    launcherView.backgroundColor = UIColorFromRGB(ColorBackground);
     launcherView.columnCount = 2;
     launcherView.pages = [NSArray arrayWithObjects:
                             [NSArray arrayWithObjects:
-                                [self launcherItemWithTitle:@"Upload" image: @"bundle://Upload.png" URL:@"tt://upload/"],
-                                [self launcherItemWithTitle:@"Participants" image: @"bundle://Participants.png" URL:@"tt://participants/"],
-                                [self launcherItemWithTitle:@"Tool guide" image: @"bundle://ToolGuide.png" URL:@"http://moodle.org"],
-                                [self launcherItemWithTitle:@"Help" image: @"bundle://MoodleHelp.png" URL:@"http://docs.moodle.org/"],
+                                [self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image: @"bundle://Upload.png" URL:@"tt://upload/"],
+                                [self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image: @"bundle://Participants.png" URL:@"tt://participants/"],
+                                [self launcherItemWithTitle:NSLocalizedString(@"Web", "Web") image: @"bundle://ToolGuide.png" URL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]],
+                                [self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image: @"bundle://MoodleHelp.png" URL:@"http://docs.moodle.org/"],
                                 nil]
                           , nil];
     launcherView.delegate = self;
     
     [self.view addSubview: launcherView];
-    TTButton *button = [TTButton buttonWithStyle:@"notificationButton:" title: @"SYNC"];
+    TTButton *button = [TTButton buttonWithStyle:@"notificationButton:" title: NSLocalizedString(@"Sync", "Sync") ];
     [button addTarget:self
                action:@selector(launchNotification:) forControlEvents:UIControlEventTouchDown];
     button.frame = CGRectMake(-5, rect.size.height-72.0, rect.size.width+10, 36.0);
@@ -82,6 +82,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
     [super viewWillAppear:animated];
 }
@@ -143,6 +144,7 @@
 																   image:image
 																	 URL:url canDelete:YES];
     launcherItem.canDelete = NO;
+    launcherItem.style = @"MoodleLauncherButton:";
 	return [launcherItem autorelease];
 }
 

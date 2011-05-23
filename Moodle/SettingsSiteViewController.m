@@ -44,7 +44,7 @@
     }
 }
 
-- (IBAction)save:(id)sender
+- (IBAction)saveButtonPressed:(id)sender
 {
     //create the site if it doesn't exist
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -243,7 +243,7 @@
                                    initWithTitle:NSLocalizedString(@"save", "save button label") 
                                    style:UIBarButtonItemStyleDone
                                    target:self
-                                   action:@selector(save:)];
+                                   action:@selector(saveButtonPressed:)];
     self.navigationItem.rightBarButtonItem = saveButton;
     [saveButton release];
     
@@ -346,7 +346,7 @@
             //DEBUG MODE - comment out
             if (site == nil) {
                 //textField.text = @"http://jerome.moodle.local/~jerome/Moodle_iPhone"; //Jerome's site
-                textField.text = @"http://dongsheng.moodle.local/m2"; // Dongsheng's site
+                textField.text = @"http://macosx.local/moodlews"; // Dongsheng's site
                 //textField.text = @"http://jerome.moodle.net"; // Internet
                 [tempValues setObject:textField.text forKey:[[NSNumber alloc] initWithInt:textField.tag]];
             }

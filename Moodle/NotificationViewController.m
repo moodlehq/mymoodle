@@ -7,6 +7,7 @@
 //
 
 #import "NotificationViewController.h"
+#import "Config.h"
 
 
 @implementation NotificationViewController
@@ -42,6 +43,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
                                               initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered
                                               target:self action:@selector(dismiss)] autorelease];

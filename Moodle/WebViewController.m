@@ -7,8 +7,18 @@
 //
 
 #import "WebViewController.h"
-
+#import "Config.h"
 
 @implementation WebViewController
+
+- (void)loadView {
+    [super loadView];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
+    [super viewWillAppear:animated];
+}
 
 @end

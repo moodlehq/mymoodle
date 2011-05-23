@@ -294,6 +294,7 @@
       newIndexPath:(NSIndexPath *)newIndexPath
 {
     UITableView *tableView = self.tableView;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     switch(type)
     {
@@ -302,12 +303,19 @@
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];       
              settingsSiteViewController.site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];  
             //save the current site into user preference
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
+            [defaults setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+            [defaults setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+            [defaults setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+            [defaults setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+            [defaults synchronize];    
+            NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         [settingsSiteViewController.site valueForKey:@"url"], kSelectedSiteUrlKey, 
+                                         [settingsSiteViewController.site valueForKey:@"name"], kSelectedSiteNameKey,
+                                         [settingsSiteViewController.site valueForKey:@"token"], kSelectedSiteTokenKey,
+                                         [settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"], kSelectedUserIdKey,
+                                         nil];
+
+            [defaults registerDefaults:appDefaults];
             //TEST FOR USER DEFAULT
             NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
             NSLog(@"AFTER INSERT - the default site url is: %@", defaultSiteUrl);
@@ -315,6 +323,7 @@
             NSLog(@"AFTER INSERT - the default site token is: %@", defaultSiteToken);
             NSString *defaultSiteUserId = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
             NSLog(@"AFTER INSERT - the default site user id is: %@", defaultSiteUserId);
+            NSLog(@"%@", defaults);
             
             //remove the previous checkmark
             if (lastCheckMark != nil) {
@@ -329,11 +338,11 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
-            [[NSUserDefaults standardUserDefaults] setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [defaults setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+            [defaults setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+            [defaults setObject:[settingsSiteViewController.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+            [defaults setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+            [defaults synchronize];
             break;
             
         case NSFetchedResultsChangeMove:

@@ -7,6 +7,7 @@
 //
 
 #import "UploadViewController.h"
+#import "Config.h"
 
 
 @implementation UploadViewController
@@ -37,21 +38,17 @@
 - (void)loadView
 {
     [super loadView];
-    UIImageView *contentView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-    [contentView setImage:[UIImage imageNamed:@"view_bg.jpg"]];
-    [contentView setUserInteractionEnabled:YES];
-    self.view = contentView;
-    [contentView release];
-//    - (IBAction)loadGallery: (id)sender;
-//    - (IBAction)loadCamera: (id)sender;
-//    - (IBAction)loadRecorder: (id)sender;
-//    - (IBAction)loadFileBrowser: (id)sender;
+    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
+    int x = 40;
+    int y = 60;
+    int width = 240;
+    int height = 60;
     TTButton *button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Browse photo albums", "Browse photo albums")];
     [button addTarget:self 
                action:@selector(loadGallery:)
                 forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Browse photo albums" forState:UIControlStateNormal];
-    button.frame = CGRectMake(80.0, 50.0, 160.0, 40.0);
+    button.frame = CGRectMake(x, y, width, height);
     [self.view addSubview:button];
     
 
@@ -60,7 +57,7 @@
                action:@selector(loadCamera:)
      forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Take a picture or video" forState:UIControlStateNormal];
-    button.frame = CGRectMake(80.0, 110.0, 160.0, 40.0);
+    button.frame = CGRectMake(x, (2*y) + height, width, height);
     [self.view addSubview:button];
     
     
@@ -69,8 +66,9 @@
                action:@selector(loadRecorder:)
      forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Record audio" forState:UIControlStateNormal];
-    button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+    button.frame = CGRectMake(x, (3*y) + (2*height), width, height);
     [self.view addSubview:button];
+    self.title = NSLocalizedString(@"Upload", "Upload");
 }
 
 
@@ -161,12 +159,13 @@
 }
 
 - (IBAction)loadRecorder:(id)sender {
-    RecorderViewController *recorderViewController = [[RecorderViewController alloc] init];    //set the dashboard back button just before to push the settings view
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
-    [[self navigationItem] setBackBarButtonItem: newBackButton];
-    [newBackButton release];
-    [self.navigationController pushViewController:recorderViewController animated:YES];
-    [recorderViewController release];
+//    RecorderViewController *recorderViewController = [[RecorderViewController alloc] init];    //set the dashboard back button just before to push the settings view
+//    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
+//    [[self navigationItem] setBackBarButtonItem: newBackButton];
+//    [newBackButton release];
+//    [self.navigationController pushViewController:recorderViewController animated:YES];
+//    [recorderViewController release];
+        [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]]; 
 }
 
 - (IBAction)loadFileBrowser:(id)sender {

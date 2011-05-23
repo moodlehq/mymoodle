@@ -29,7 +29,7 @@
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 - (IBAction)cancel:(id)sender;
-- (IBAction)save:(id)sender;
+- (IBAction)saveButtonPressed:(id)sender;
 - (IBAction)textFieldDone:(id)sender;
 - (void)deleteSite;
 
