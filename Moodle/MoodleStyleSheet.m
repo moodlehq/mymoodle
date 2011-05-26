@@ -7,7 +7,7 @@
 //
 
 #import "MoodleStyleSheet.h"
-#import "Config.h"
+#import "Constants.h"
 
 @implementation MoodleStyleSheet
 - (TTStyle*)notificationButton:(UIControlState)state {

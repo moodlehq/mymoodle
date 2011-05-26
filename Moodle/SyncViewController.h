@@ -9,7 +9,7 @@
 #import <Three20/Three20.h>
 
 
-@interface NotificationViewController : TTViewController {
+@interface SyncViewController : TTViewController {
     
 }
 

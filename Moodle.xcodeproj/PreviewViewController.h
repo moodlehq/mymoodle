@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MBProgressHUD.h"
 #import "ASIFormDataRequest.h"
-#import "Config.h"
+#import "Constants.h"
 
 @interface PreviewViewController : UIViewController <UINavigationControllerDelegate, MBProgressHUDDelegate> {
     UIImageView *imageView;

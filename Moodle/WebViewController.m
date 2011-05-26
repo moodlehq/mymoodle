@@ -7,7 +7,7 @@
 //
 
 #import "WebViewController.h"
-#import "Config.h"
+#import "Constants.h"
 
 @implementation WebViewController
 

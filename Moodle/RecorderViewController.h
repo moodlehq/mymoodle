@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Config.h"
+#import "Constants.h"
 #import "MBProgressHUD.h"
 #import "ASIFormDataRequest.h"
 #import <Three20/Three20.h>

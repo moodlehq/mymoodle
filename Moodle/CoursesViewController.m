@@ -6,14 +6,13 @@
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
-#import "ParticipantsViewController.h"
-#import "Config.h"
+#import "CoursesViewController.h"
+#import "Constants.h"
 #import "WSClient.h"
 #import "ParticipantListViewController.h"
 #import "AppDelegate.h"
 
-@implementation ParticipantsViewController
-@synthesize managedObjectContext;
+@implementation CoursesViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
 @synthesize participantListViewController;
 @synthesize site;
@@ -44,6 +43,7 @@
 
 - (void)viewDidLoad
 {
+    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
@@ -62,19 +62,16 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
-    self.managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    participantListViewController.managedObjectContext = self.managedObjectContext;
     
     //look for the site
-    NSEntityDescription *siteEntityDescription = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *siteEntityDescription = [NSEntityDescription entityForName:@"Site" inManagedObjectContext: managedObjectContext];
     NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
     [siteRequest setEntity:siteEntityDescription];
     NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND token = %@)", [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedSiteUrlKey], [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedSiteTokenKey]];
     [siteRequest setPredicate:sitePredicate];
     NSError *error = nil;
-    NSArray *sites = [self.managedObjectContext executeFetchRequest:siteRequest error:&error];
+    NSArray *sites = [managedObjectContext executeFetchRequest:siteRequest error:&error];
     self.site = [sites lastObject];
     
     
@@ -90,6 +87,7 @@
     self.title = NSLocalizedString(@"mycourses", @"My courses title");
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSLog(@"%@", [defaults valueForKey:kSelectedUserIdKey]);
     //retrieve the course by webservice
     BOOL offlineMode = [defaults boolForKey:kSelectedOfflineModeKey];
     if (!offlineMode) {
@@ -122,11 +120,11 @@
 
         //retrieve all courses that will need to be deleted from core data if they are not returned by the web service call
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:self.managedObjectContext];
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
         [request setEntity:entityDescription];
         NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", self.site];
         [request setPredicate:coursePredicate];
-        NSArray *coursesToDelete = [self.managedObjectContext executeFetchRequest:request error:&error];
+        NSArray *coursesToDelete = [managedObjectContext executeFetchRequest:request error:&error];
         NSMutableDictionary *coursesToNotDelete = [[NSMutableDictionary alloc] init];
         NSLog(@"Courses in core data: %@", coursesToDelete);
         NSLog(@"Number of course in core data before web service call: %d", [coursesToDelete count]);
@@ -220,25 +218,17 @@
         //        NSLog(@"AFTER GET COURSE WS - 3 the default site token is: %@", defaultSiteToken22);
         //        NSString *defaultSiteUserId22 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
         //        NSLog(@"AFTER GET COURSE WS - 3 the default site user id is: %@", defaultSiteUserId22);
-  
-        NSString *defaultSiteUserId22 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-        NSLog(@"AFTER GET COURSE WS - 3 the default site user id is: %@", defaultSiteUserId22);
-        NSLog(@"%@", defaults);
-        
+
         //save the modifications
-        @try {
-            if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Start %@", managedObjectContext);
+        if (managedObjectContext != nil) {
+            if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+            //if (![managedObjectContext save:&error]) {
                 NSLog(@"Error saving entity: %@", [error localizedDescription]);
             }
         }
-        @catch (NSException *exception) {
-            NSLog(@"%@", exception);
-        }
-        defaultSiteUserId22 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-        NSLog(@"AFTER GET COURSE WS - 3 the default site user id is: %@", defaultSiteUserId22);
-        NSLog(@"%@", defaults);
 
-        
+        NSLog(@"end");
         [coursesToNotDelete release];
     }
 
@@ -391,7 +381,7 @@
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
     [fetchRequest setEntity:entity];
     
     //Set the predicate for only current site
@@ -409,7 +399,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     

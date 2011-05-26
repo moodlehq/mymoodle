@@ -2,12 +2,13 @@
 //  SettingsSite.m
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 21/03/11.
+//  Created by Jerome Mouneyrac on 21/03/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
 #import "SettingsSiteViewController.h"
 #import "WSClient.h"
+#import "Constants.h"
 #import "XMLRPCRequest.h"
 #import "NSDataAdditions.h"
 
@@ -15,15 +16,20 @@
 @synthesize fieldLabels;
 @synthesize tempValues;
 @synthesize textFieldBeingEdited;
-@synthesize site;
-@synthesize fetchedResultsController;
 
+# pragma mark - Button actions
 -(IBAction)cancel:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 -(void)deleteSite {
-    UIActionSheet *deleteActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"deletesite", "Delete the site") delegate:self cancelButtonTitle:NSLocalizedString(@"donotdeletesite", "Do not delete the site") destructiveButtonTitle: NSLocalizedString(@"dodeletesite", "Do delete the site") otherButtonTitles:nil];
-    [deleteActionSheet showInView:self.view];
+    UIActionSheet *deleteActionSheet = [[UIActionSheet alloc]
+                                            initWithTitle:NSLocalizedString(@"deletesite", "Delete the site")
+                                            delegate:self
+                                            cancelButtonTitle: NSLocalizedString(@"donotdeletesite", "Do not delete the site")
+                                            destructiveButtonTitle: NSLocalizedString(@"dodeletesite", "Do delete the site")
+                                            otherButtonTitles:nil];
+    [deleteActionSheet showInView: self.view];
     [deleteActionSheet release];
 }
 
@@ -31,9 +37,9 @@
     //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
     if (buttonIndex != [actionSheet cancelButtonIndex]) {
         //delete the entry
-        [[site managedObjectContext] deleteObject:site];
+        [appDelegate.managedObjectContext deleteObject: appDelegate.site];
         NSError *error;
-        if (![[site managedObjectContext] save:&error]) {
+        if (![appDelegate.managedObjectContext save:&error]) {
             NSLog(@"Error saving entity: %@", [error localizedDescription]);
         }
         //return the list of sites
@@ -44,14 +50,9 @@
     }
 }
 
-- (IBAction)saveButtonPressed:(id)sender
+- (IBAction)saveButtonPressed: (id)sender
 {
-    //create the site if it doesn't exist
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    BOOL createsite = ( site == nil)?YES:NO;
-   
-
+    NSManagedObjectContext *context = appDelegate.managedObjectContext;
     if (textFieldBeingEdited != nil)
     {
         NSNumber *tagAsNum= [[NSNumber alloc] 
@@ -60,24 +61,21 @@
         [tagAsNum release];
         
     }
-    
-    
+
     NSString *siteurl;
-    //retrieve site url (case of update)
-    if (site != nil) {
-        siteurl = [[NSString alloc] initWithString:[site valueForKey:@"url"]];
+    if (!newEntry) {
+        //retrieve site url (case of update)
+        siteurl = [[NSString alloc] initWithString: [appDelegate.site valueForKey:@"url"]];
     } else {
         //case of creation: just some allocation to not cause a none initialize error during code analyze
-        siteurl = [[NSString alloc] initWithFormat:@""]; //will always be overwritten because
+        siteurl = [[NSString alloc] initWithFormat:@""];
     }
     //retrieve site url (case of creation)
     for (NSNumber *key in [tempValues allKeys])
     {
         switch ([key intValue]) {
             case kUrlIndex:
-                [siteurl release];
-                siteurl = [[NSString alloc] initWithString:[tempValues objectForKey:key]];
-               
+                siteurl = [tempValues objectForKey:key];
                 NSLog(@"the url is: %@", siteurl);
                 break;
                 //TODO: retrieve username/password
@@ -91,15 +89,13 @@
                 break;
         }
     }
-    
-         
-    
-    
-    // TODO hard coded token here, will get rid of it later
+    NSLog(@"Start ws call %@", siteurl);
+
+
 //    NSString *sitetoken = [[NSString alloc] initWithString:@"65b113e44048963fecaefb2fcad2e15d"]; //jerome site, admin 1 ( http://jerome.moodle.local/~jerome/Moodle_iPhone )
 //    NSString *sitetoken = [[NSString alloc] initWithString:@"fe0e9ee8b17af9fd255f76078c70b073"];// jerome site, admin 2 
-    NSString *sitetoken = [[NSString alloc] initWithFormat:@"9afbd2e0145c072f7ae51716ea973228"]; // dongsheng token
-    //NSString *sitetoken = [[NSString alloc] initWithString:@"a80cb4f7b6e8af791ac01d201e1df4b0"]; //jerome.moodle.net ( http://jerome.moodle.net)
+//    NSString *sitetoken = [[NSString alloc] initWithString:@"a80cb4f7b6e8af791ac01d201e1df4b0"]; //jerome.moodle.net ( http://jerome.moodle.net)
+    NSString *sitetoken = [[NSString alloc] initWithFormat:@"9afbd2e0145c072f7ae51716ea973228"];
 
     //retrieve the site name
     WSClient *client = [[[WSClient alloc] initWithToken: sitetoken withHost: siteurl] autorelease];
@@ -107,78 +103,69 @@
     NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
     [wsparams release];
     
-    //check if the site url + userid is already in data core otherwise create a new site
-    NSError *error;
-    NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
-    [siteRequest setEntity:entity];
-    NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
-    [siteRequest setPredicate:sitePredicate];
-    NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
-    if ([sites count]>0) {
-       site = [sites lastObject];
-    } else if (createsite) {
-        site = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-        NSLog(@"Site is nil");
-    }
+    if ([siteinfo isKindOfClass: [NSDictionary class]]) {
+        //check if the site url + userid is already in data core otherwise create a new site
+        NSError *error;
+        NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
+        NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:context];
+        [siteRequest setEntity: siteEntity];
+        NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
+        [siteRequest setPredicate:sitePredicate];
+        NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
+        NSLog(@"Sites info %@", sites);
 
-    //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    //NSString *documentsDirectory = [paths objectAtIndex:0];
-    //NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"f1.png"];    
-    // profile pictre
-    NSString *picture = [siteinfo objectForKey:@"profilepicture"];
-    // base64 decode
-    NSData *data = [NSData base64DataFromString:picture];
-    
-    //[data writeToFile:filePath atomically:true];
-    
-    NSString *sitename = [siteinfo objectForKey:@"sitename"];   
-    
-
-    if ([siteinfo isKindOfClass:[NSDictionary class]]) {
-        
-        //retrieve participant main user
-        NSManagedObject *user = [site valueForKey:@"mainuser"];
-        if (user == nil) {
-            NSEntityDescription *pariticipantEntityDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:[site managedObjectContext]];
-            user = [NSEntityDescription insertNewObjectForEntityForName:[pariticipantEntityDescription name] inManagedObjectContext:[site managedObjectContext]];
+        if ([sites count] > 0) {
+            MLog(@"Site existed");
+            appDelegate.site = [sites lastObject];
+        } else {
+            MLog(@"Creating new site");
+            appDelegate.site = [NSEntityDescription insertNewObjectForEntityForName: [siteEntity name] inManagedObjectContext:context];
         }
-        
+        // profile pictre
+        NSString  *picture = [siteinfo objectForKey:@"profilepicture"];
+        // base64 decode
+        NSData       *data = [NSData base64DataFromString:picture];
+        NSString *sitename = [siteinfo objectForKey:@"sitename"];   
+        //create/update the site
+        [appDelegate.site setValue: sitename  forKey: @"name"];
+        [appDelegate.site setValue: data      forKey: @"logo"];
+        [appDelegate.site setValue: sitetoken forKey: @"token"];
+        [appDelegate.site setValue: siteurl   forKey: @"url"];
+
+
+        NSManagedObject *user;
+        //retrieve participant main user
+        if (newEntry) {
+            NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
+            user = [NSEntityDescription insertNewObjectForEntityForName: [mainUserDesc name]
+                                                 inManagedObjectContext: context];
+        } else {
+            user = [appDelegate.site valueForKey:@"mainuser"];
+        }
+    
         [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
         [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
         [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
         [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
-        [user setValue: site forKey:@"site"];
-        
-        //create/update the site
-        [site setValue:sitename forKey:@"name"];
-        [site setValue:data forKey: @"logo"];
-        [site setValue:sitetoken forKey: @"token"];
-        [site setValue:user forKey:@"mainuser"];
-        [site setValue:siteurl forKey:@"url"];
-        
+        [user setValue: appDelegate.site forKey:@"site"];
+
+        [appDelegate.site setValue: user forKey: @"mainuser"];
         
         //save the modification
-        
-        if (![[site managedObjectContext] save:&error]) {
-         //   NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        if (![context save: &error]) {
             NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
-            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            NSArray *detailedErrors = [[error userInfo] objectForKey: NSDetailedErrorsKey];
             if(detailedErrors != nil && [detailedErrors count] > 0) {
                 for(NSError* detailedError in detailedErrors) {
-                    NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+                    NSLog(@"Detailed Error: %@", [detailedError userInfo]);
                 }
             }
             else {
                 NSLog(@"  %@", [error userInfo]);
             }
         }
-        
-        NSArray *allControllers = self.navigationController.viewControllers;
-        
-        [self.navigationController popViewControllerAnimated:YES];
-        
-        UITableViewController *parent = [allControllers lastObject];
-        [parent.tableView reloadData];
+        [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sites/"] applyAnimated:YES]];
+
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Web service call failed" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
         [alert show];
@@ -212,22 +199,39 @@
     [nextField becomeFirstResponder];
 }
 
+#pragma mark - View lifecycle
+
+- (id)initWithNew: (NSString *)new {
+    if ((self = [self init])) {
+    }
+    NSLog(@"init param: %@", new);
+    if ([new isEqualToString:@"no"]) {
+        newEntry = NO;
+    } else {
+        newEntry = YES;
+    }
+
+    return self;
+}
+
 - (void)dealloc {
     [textFieldBeingEdited release];
     [tempValues release];
     [fieldLabels release];
-    [site release];
     [super dealloc];
 }
 
-#pragma mark - View lifecycle
-
 - (void)viewDidLoad {
+    [super viewDidLoad];
+    NSLog(@"Settings view did load");
+    if (newEntry) {
+        NSLog(@"It's new entry");
+    } else {
+        NSLog(@"Update existing entry");
+    }
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
-    
-    
-    NSArray *array = [[NSArray alloc] initWithObjects:@"URL:", @"Username:", 
-                      @"Password:", nil];
+    NSArray *array = [[NSArray alloc] initWithObjects:@"URL:", @"Username:", @"Password:", nil];
     self.fieldLabels = array;
     [array release];
     
@@ -240,7 +244,7 @@
     [cancelButton release];
     
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
-                                   initWithTitle:NSLocalizedString(@"save", "save button label") 
+                                   initWithTitle: NSLocalizedString(@"save", "Save") 
                                    style:UIBarButtonItemStyleDone
                                    target:self
                                    action:@selector(saveButtonPressed:)];
@@ -250,12 +254,11 @@
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     self.tempValues = dict;
     [dict release];
-    
-   
-    if ( site != nil) {
+
+    if (!newEntry) {
         // case of Updating a site
         self.title = NSLocalizedString(@"updatesite", @"Update the site");
-       
+
         //create a footer view on the bottom of the tabeview with a Delete button
         UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 270)];
         //Cacaco framework doesn't have a style for the 'Delete contact' red button! We need to simulate it with a background image
@@ -266,7 +269,7 @@
         btnDelete.frame = CGRectMake(0, 170, 300, 40); //button position at the bottom of the screen (a bit clunky)
         [btnDelete setTitle:NSLocalizedString(@"delete", "delete") forState:UIControlStateNormal];
         [btnDelete.titleLabel setFont:[UIFont boldSystemFontOfSize:20]];
-       // [btnDelete setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        // [btnDelete setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [btnDelete addTarget:self action:@selector(deleteSite) forControlEvents:UIControlEventTouchUpInside];
         //add the button to the footer
         [footerView addSubview:btnDelete];
@@ -277,14 +280,6 @@
         //case of Adding a new site
         self.title = NSLocalizedString(@"addasite", @"add a site");
     }
-    
-    [super viewDidLoad];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{   
-    //set the site value
-    [super viewWillAppear:animated];
 }
 
 #pragma mark - Table view data source
@@ -338,39 +333,48 @@
         case kUrlIndex:
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             textField.autocorrectionType = UITextAutocorrectionTypeNo;
-            if ([[tempValues allKeys] containsObject:rowAsNum])
+            if ([[tempValues allKeys] containsObject:rowAsNum]) {
                 textField.text = [tempValues objectForKey:rowAsNum];
-            else {
-                textField.text = [site valueForKey:@"url"];
+            } else {
+                if (!newEntry) {
+                    textField.text = [appDelegate.site valueForKey:@"url"];
                 }
+            }
             //DEBUG MODE - comment out
-            if (site == nil) {
+            if (newEntry) {
                 //textField.text = @"http://jerome.moodle.local/~jerome/Moodle_iPhone"; //Jerome's site
-                textField.text = @"http://macosx.local/moodlews"; // Dongsheng's site
                 //textField.text = @"http://jerome.moodle.net"; // Internet
+                textField.text = @"http://macosx.local/moodlews"; // Dongsheng's site
                 [tempValues setObject:textField.text forKey:[[NSNumber alloc] initWithInt:textField.tag]];
             }
             break;
         case kUsernameIndex:
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             textField.autocorrectionType = UITextAutocorrectionTypeNo;
-            if ([[tempValues allKeys] containsObject:rowAsNum])
+            if ([[tempValues allKeys] containsObject:rowAsNum]) {
                 textField.text = [tempValues objectForKey:rowAsNum];
-            else
-                textField.text = [site valueForKeyPath:@"mainuser.username"];
+            } else {
+                if (!newEntry) {
+                    textField.text = [appDelegate.site valueForKeyPath:@"mainuser.username"];
+                }
+            }
             break;
         case kPasswordIndex:
             if ([[tempValues allKeys] containsObject:rowAsNum])
                 textField.text = [tempValues objectForKey:rowAsNum];
-            else
-                textField.text = [site valueForKeyPath:@"mainuser.password"];
+            else {
+                if (!newEntry) {
+                    textField.text = [appDelegate.site valueForKeyPath:@"mainuser.password"];
+                }
+            }
             break;
        
         default:
             break;
     }
-    if (textFieldBeingEdited == textField)
+    if (textFieldBeingEdited == textField) {
         textFieldBeingEdited = nil;
+    }
     
     textField.tag = row;
     [rowAsNum release];
@@ -393,6 +397,4 @@
     [tempValues setObject:textField.text forKey:tagAsNum];
     [tagAsNum release];
 }
-
-
 @end

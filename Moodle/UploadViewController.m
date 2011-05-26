@@ -7,7 +7,9 @@
 //
 
 #import "UploadViewController.h"
-#import "Config.h"
+#import "Constants.h"
+#import "PreviewViewController.h"
+#import "RecorderViewController.h"
 
 
 @implementation UploadViewController
@@ -29,15 +31,11 @@
 
 #pragma mark - View lifecycle
 
-
-/**
- *TODO: adding title to this view
- */
-
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
     [super loadView];
+    self.title = NSLocalizedString(@"Upload", "Upload");
     self.view.backgroundColor = UIColorFromRGB(ColorBackground);
     int x = 40;
     int y = 60;
@@ -68,7 +66,6 @@
     [button setTitle:@"Record audio" forState:UIControlStateNormal];
     button.frame = CGRectMake(x, (3*y) + (2*height), width, height);
     [self.view addSubview:button];
-    self.title = NSLocalizedString(@"Upload", "Upload");
 }
 
 
@@ -88,11 +85,6 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
 
 -(void)loadPreview: (NSString *)filepath withFilename: (NSString *)filename {
     PreviewViewController *previewViewController = [[PreviewViewController alloc] init];
@@ -111,21 +103,24 @@
     NSString *strtimestamp = [now description];
     //NSURL *mediaUrl;
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+    NSLog(@"%@", info);
     if ([mediaType isEqualToString:@"public.image"]) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        NSLog(@"image found");
         NSString *filename = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
         NSString *filepath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, filename];
         [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filepath atomically:YES];
-        [self loadPreview:filepath withFilename:filename];
+        if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
+            NSLog(@"picked from camera");
+        } else {
+            [self loadPreview: filepath withFilename: filename];
+        }
     } else if ([mediaType isEqualToString:@"public.movie"]) {
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
         NSString *filename = [NSString stringWithFormat:@"%@.mov", strtimestamp];
-        NSLog(@"Found a video");
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
         NSString *filepath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, filename];
         [data writeToFile:filepath atomically:YES];
-        [self loadPreview:filepath withFilename:filename];
+        [self loadPreview: filepath withFilename: filename];
     }
     [picker dismissModalViewControllerAnimated:YES];
 }
@@ -134,8 +129,9 @@
     [picker dismissModalViewControllerAnimated:YES];
 }
 
-- (IBAction)loadGallery:(id)sender {
+- (void)loadGallery:(id)sender {
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    [[[UIApplication sharedApplication] keyWindow] setRootViewController: imagePicker];
     imagePicker.delegate = self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     [self presentModalViewController:imagePicker animated:YES]; 
@@ -143,9 +139,10 @@
     
 }
 
-- (IBAction)loadCamera:(id)sender {
+- (void)loadCamera:(id)sender {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        [[[UIApplication sharedApplication] keyWindow] setRootViewController: imagePicker];
         imagePicker.delegate = self;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType: imagePicker.sourceType];
@@ -158,18 +155,7 @@
     }
 }
 
-- (IBAction)loadRecorder:(id)sender {
-//    RecorderViewController *recorderViewController = [[RecorderViewController alloc] init];    //set the dashboard back button just before to push the settings view
-//    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
-//    [[self navigationItem] setBackBarButtonItem: newBackButton];
-//    [newBackButton release];
-//    [self.navigationController pushViewController:recorderViewController animated:YES];
-//    [recorderViewController release];
-        [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]]; 
+- (void)loadRecorder:(id)sender {
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]]; 
 }
-
-- (IBAction)loadFileBrowser:(id)sender {
-    NSLog(@"Load local file browser");
-}
-
 @end

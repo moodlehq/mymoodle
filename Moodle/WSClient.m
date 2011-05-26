@@ -10,7 +10,7 @@
 #import "ASIHTTPRequest.h"
 #import "XMLRPCRequest.h"
 #import "XMLRPCResponse.h"
-#import "Config.h"
+#import "Constants.h"
 
 @implementation WSClient
 

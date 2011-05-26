@@ -7,7 +7,7 @@
 //
 
 #import "RecorderViewController.h"
-#import "Config.h"
+#import "Constants.h"
 
 
 @implementation RecorderViewController
@@ -152,18 +152,17 @@
 
         NSMutableDictionary *settings = [[NSMutableDictionary alloc] init];
         
-        [settings setValue :[NSNumber numberWithInt:kAudioFormatMPEGLayer3] forKey:AVFormatIDKey];
-        [settings setValue:[NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey]; 
-        [settings setValue:[NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
-        
-        [settings setValue :[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
-        [settings setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
-        [settings setValue :[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
+        [settings setValue: [NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
+        [settings setValue: [NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey]; 
+        [settings setValue: [NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
+        [settings setValue: [NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
+        [settings setValue: [NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
+        [settings setValue: [NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
 
         // Create a new dated file
         NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
         NSString *caldate = [now description];
-        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.mp3", DOCUMENTS_FOLDER, caldate] retain];
+        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.mp4", DOCUMENTS_FOLDER, caldate] retain];
         
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         err = nil;

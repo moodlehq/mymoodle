@@ -13,10 +13,9 @@
 @interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
     NSManagedObject *course;
     ParticipantViewController *participantViewController;
-    
+    NSManagedObjectContext *managedObjectContext;
 }
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSManagedObject *course;
 @property (nonatomic, retain) ParticipantViewController *participantViewController;
 

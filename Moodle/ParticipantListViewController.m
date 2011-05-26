@@ -8,14 +8,13 @@
 
 #import "ParticipantListViewController.h"
 #import "WSClient.h"
-#import "Config.h"
+#import "Constants.h"
 #import "HashValue.h"
 #import "Reachability.h"
-
+#import "AppDelegate.h"
 
 @implementation ParticipantListViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
-@synthesize managedObjectContext=__managedObjectContext;
 @synthesize course;
 @synthesize participantViewController;
 
@@ -45,6 +44,7 @@
 
 - (void)viewDidLoad
 {
+    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     //retrieve the participants by webservice
     BOOL offlineMode = [defaults boolForKey:kSelectedOfflineModeKey];
@@ -78,12 +78,12 @@
         
         //retrieve all course participants that will need to be deleted from core data
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:self.managedObjectContext];
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:managedObjectContext];
         [request setEntity:entityDescription];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY courses = %@)", course];
         [request setPredicate:predicate];
         NSError *error = nil;
-        NSArray *participantsToDelete = [self.managedObjectContext executeFetchRequest:request error:&error];
+        NSArray *participantsToDelete = [managedObjectContext executeFetchRequest:request error:&error];
         NSMutableDictionary *participantsToNotDelete = [[NSMutableDictionary alloc] init];
         NSLog(@"Participants in core data: %@", participantsToDelete);
         NSLog(@"Number of participants in core data before web service call: %d", [participantsToDelete count]);
@@ -98,14 +98,14 @@
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:
                                               @"(userid = %@ AND (ANY courses = %@))", [participant objectForKey:@"userid"], course];
                     [request setPredicate:predicate];
-                    NSArray *existingParticipants = [self.managedObjectContext executeFetchRequest:request error:&error];
+                    NSArray *existingParticipants = [managedObjectContext executeFetchRequest:request error:&error];
                     if ([existingParticipants count] == 1) {
                         //retrieve the participant to update
                         dbparticipant = [existingParticipants lastObject];
                         
                     } else if ([existingParticipants count] ==0) {
                         //the participant is not in core data, we add it
-                        dbparticipant = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:self.managedObjectContext];
+                        dbparticipant = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
                         
                     } else { 
                         NSLog(@"Error !!!!!! There is more than one participant with id == %@", [participant objectForKey:@"userid"]);
@@ -150,14 +150,14 @@
             if ([theparticipantexist intValue] == 0) {
                 NSLog(@"I'm deleting the participant %@", participantToDelete);
                 
-                [self.managedObjectContext deleteObject:participantToDelete];
+                [managedObjectContext deleteObject:participantToDelete];
             }
             //Remove the course from the participant list
             
             //If courses is empty then delete the participant
         }
         //save the modifications
-        if (![self.managedObjectContext save:&error]) {
+        if (![managedObjectContext save:&error]) {
             NSLog(@"Error saving entity: %@", [error localizedDescription]);
         }
         [participantsToNotDelete release];
@@ -182,7 +182,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     participantViewController = [[ParticipantViewController alloc] init];
-    participantViewController.managedObjectContext = self.managedObjectContext;
+    participantViewController.managedObjectContext = managedObjectContext;
     [super viewWillAppear:animated];
 }
 
@@ -350,7 +350,7 @@
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Only retrieve the participant for the current course
@@ -368,7 +368,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     

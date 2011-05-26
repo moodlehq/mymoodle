@@ -6,11 +6,11 @@
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
-#import "NotificationViewController.h"
-#import "Config.h"
+#import "SyncViewController.h"
+#import "Constants.h"
 
 
-@implementation NotificationViewController
+@implementation SyncViewController
 
 - (void)dismiss {
     [self dismissModalViewControllerAnimated:YES];

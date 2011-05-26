@@ -10,19 +10,21 @@
 
 #import <CoreData/CoreData.h>
 #import <Three20/Three20.h>
-#import <Three20UI/Three20UI.h>
 
-#import "SettingsViewController.h"
+#import "SitesViewController.h"
 #import "UploadViewController.h"
-#import "ParticipantsViewController.h"
+#import "CoursesViewController.h"
+#import "Reachability.h"
 
 @interface RootViewController : TTViewController <TTLauncherViewDelegate> {
     /** view controllers*/
-    SettingsViewController     *settingsViewController;
+    SitesViewController *settingsViewController;
     /** modules */
     NSArray *modules;
     TTLauncherView *launcherView;
+    TTLauncherItem *webLauncherItem;
+    NSManagedObjectContext *managedObjectContext;
+    Reachability *reachability;
 }
 - (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @end

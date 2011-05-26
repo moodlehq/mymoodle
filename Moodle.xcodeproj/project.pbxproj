@@ -11,7 +11,6 @@
 		023AF82D137A2CF600BCDEEF /* ParticipantViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 023AF82B137A2CF500BCDEEF /* ParticipantViewController.m */; };
 		023AF82E137A2CF600BCDEEF /* ParticipantViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 023AF82C137A2CF500BCDEEF /* ParticipantViewController.xib */; };
 		023AF832137A817A00BCDEEF /* HashValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 023AF831137A817A00BCDEEF /* HashValue.m */; };
-		0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A67A1336ECBE007BD281 /* SettingsViewController.m */; };
 		0246A6851336FA11007BD281 /* SettingsSiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0246A6841336FA10007BD281 /* SettingsSiteViewController.m */; };
 		0246A69613370B8B007BD281 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0246A69413370B8B007BD281 /* Localizable.strings */; };
 		02618A121331A581008D3037 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A111331A581008D3037 /* UIKit.framework */; };
@@ -30,7 +29,6 @@
 		02618A421331A582008D3037 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 02618A401331A582008D3037 /* InfoPlist.strings */; };
 		02618A451331A582008D3037 /* MoodleTests.h in Resources */ = {isa = PBXBuildFile; fileRef = 02618A441331A582008D3037 /* MoodleTests.h */; };
 		02618A471331A582008D3037 /* MoodleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A461331A582008D3037 /* MoodleTests.m */; };
-		02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */; };
 		3201088596B4756681693705 /* libThree20UICommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3201088596B4756681693704 /* libThree20UICommon.a */; };
 		320A2827FEC940B25BC42C65 /* libThree20Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320A2827FEC940B25BC42C64 /* libThree20Core.a */; };
 		320A5A189C235877202780D5 /* libThree20Network.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320A5A189C235877202780D4 /* libThree20Network.a */; };
@@ -85,9 +83,13 @@
 		B5B0EB1E1383AEB6000A9330 /* XMLRPCResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB141383AEB6000A9330 /* XMLRPCResponse.m */; };
 		B5B0EB1F1383AEB6000A9330 /* XMLValueDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */; };
 		B5B0EB231383AFDC000A9330 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB221383AFDC000A9330 /* Reachability.m */; };
-		B5C3C75713896F300004783D /* NotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5C3C75613896F300004783D /* NotificationViewController.m */; };
 		B5C3C786138975310004783D /* sync.gif in Resources */ = {isa = PBXBuildFile; fileRef = B5C3C785138975310004783D /* sync.gif */; };
 		B5D4EFFF13726FF000FD121F /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5D4EFFE13726FF000FD121F /* UploadViewController.m */; };
+		B5DABB22138E2BF6004AE472 /* CoursesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB1D138E2BF6004AE472 /* CoursesViewController.m */; };
+		B5DABB23138E2BF6004AE472 /* SitesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB1F138E2BF6004AE472 /* SitesViewController.m */; };
+		B5DABB24138E2BF6004AE472 /* SyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB21138E2BF6004AE472 /* SyncViewController.m */; };
+		B5DABB28138E2C2A004AE472 /* MoodleSite.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB27138E2C2A004AE472 /* MoodleSite.m */; };
+		B5DABB2B138E2C30004AE472 /* Participant.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB2A138E2C30004AE472 /* Participant.m */; };
 		B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E047F5137280FA00314B60 /* ParticipantListViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -249,15 +251,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		020E06C7134D9D6C0076B4BA /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		020E06D1134EAD060076B4BA /* SettingsSiteViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsSiteViewController.xib; sourceTree = "<group>"; };
 		023AF82A137A2CF400BCDEEF /* ParticipantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantViewController.h; sourceTree = "<group>"; };
 		023AF82B137A2CF500BCDEEF /* ParticipantViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantViewController.m; sourceTree = "<group>"; };
 		023AF82C137A2CF500BCDEEF /* ParticipantViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ParticipantViewController.xib; sourceTree = "<group>"; };
 		023AF830137A817A00BCDEEF /* HashValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HashValue.h; sourceTree = "<group>"; };
 		023AF831137A817A00BCDEEF /* HashValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HashValue.m; sourceTree = "<group>"; };
-		0246A6791336ECBE007BD281 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		0246A67A1336ECBE007BD281 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		0246A6831336FA10007BD281 /* SettingsSiteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsSiteViewController.h; sourceTree = "<group>"; };
 		0246A6841336FA10007BD281 /* SettingsSiteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsSiteViewController.m; sourceTree = "<group>"; };
 		0246A69513370B8B007BD281 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -282,8 +281,6 @@
 		02618A431331A582008D3037 /* MoodleTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MoodleTests-Prefix.pch"; sourceTree = "<group>"; };
 		02618A441331A582008D3037 /* MoodleTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoodleTests.h; sourceTree = "<group>"; };
 		02618A461331A582008D3037 /* MoodleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoodleTests.m; sourceTree = "<group>"; };
-		02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantsViewController.h; sourceTree = "<group>"; };
-		02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantsViewController.m; sourceTree = "<group>"; };
 		3201088596B4756681693700 /* Three20UICommon.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20UICommon.xcodeproj; path = three20/src/Three20UICommon/Three20UICommon.xcodeproj; sourceTree = SOURCE_ROOT; };
 		320A2827FEC940B25BC42C60 /* Three20Core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20Core.xcodeproj; path = three20/src/Three20Core/Three20Core.xcodeproj; sourceTree = SOURCE_ROOT; };
 		320A5A189C235877202780D0 /* Three20Network.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20Network.xcodeproj; path = three20/src/Three20Network/Three20Network.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -364,11 +361,20 @@
 		B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLValueDecoder.m; path = XMLRPC/XMLValueDecoder.m; sourceTree = SOURCE_ROOT; };
 		B5B0EB211383AFDC000A9330 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = Reachability/Reachability.h; sourceTree = SOURCE_ROOT; };
 		B5B0EB221383AFDC000A9330 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = Reachability/Reachability.m; sourceTree = SOURCE_ROOT; };
-		B5C3C75513896F300004783D /* NotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationViewController.h; sourceTree = "<group>"; };
-		B5C3C75613896F300004783D /* NotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationViewController.m; sourceTree = "<group>"; };
 		B5C3C785138975310004783D /* sync.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = sync.gif; path = Icons/sync.gif; sourceTree = SOURCE_ROOT; };
 		B5D4EFFD13726FF000FD121F /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
 		B5D4EFFE13726FF000FD121F /* UploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadViewController.m; sourceTree = "<group>"; };
+		B5DABB1B138E2BF6004AE472 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		B5DABB1C138E2BF6004AE472 /* CoursesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoursesViewController.h; sourceTree = "<group>"; };
+		B5DABB1D138E2BF6004AE472 /* CoursesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoursesViewController.m; sourceTree = "<group>"; };
+		B5DABB1E138E2BF6004AE472 /* SitesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SitesViewController.h; sourceTree = "<group>"; };
+		B5DABB1F138E2BF6004AE472 /* SitesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SitesViewController.m; sourceTree = "<group>"; };
+		B5DABB20138E2BF6004AE472 /* SyncViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncViewController.h; sourceTree = "<group>"; };
+		B5DABB21138E2BF6004AE472 /* SyncViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncViewController.m; sourceTree = "<group>"; };
+		B5DABB26138E2C2A004AE472 /* MoodleSite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleSite.h; sourceTree = "<group>"; };
+		B5DABB27138E2C2A004AE472 /* MoodleSite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleSite.m; sourceTree = "<group>"; };
+		B5DABB29138E2C30004AE472 /* Participant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Participant.h; sourceTree = "<group>"; };
+		B5DABB2A138E2C30004AE472 /* Participant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Participant.m; sourceTree = "<group>"; };
 		B5E047F4137280FA00314B60 /* ParticipantListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantListViewController.h; sourceTree = "<group>"; };
 		B5E047F5137280FA00314B60 /* ParticipantListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantListViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -609,6 +615,7 @@
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B5DABB25138E2C14004AE472 /* Models */,
 				B57CD18E133C79D500CCB81A /* Controllers */,
 				B5B0EB201383AFC3000A9330 /* Reachability */,
 				B5031AD5138007B9005BB407 /* Utils */,
@@ -674,31 +681,18 @@
 			children = (
 				02618A221331A581008D3037 /* AppDelegate.h */,
 				02618A231331A581008D3037 /* AppDelegate.m */,
-				020E06C7134D9D6C0076B4BA /* Config.h */,
+				B5DABB1B138E2BF6004AE472 /* Constants.h */,
+				B5DABB20138E2BF6004AE472 /* SyncViewController.h */,
+				B5DABB21138E2BF6004AE472 /* SyncViewController.m */,
 				02618A2B1331A582008D3037 /* RootViewController.h */,
 				02618A2C1331A582008D3037 /* RootViewController.m */,
-				0246A6791336ECBE007BD281 /* SettingsViewController.h */,
-				0246A67A1336ECBE007BD281 /* SettingsViewController.m */,
-				0246A6831336FA10007BD281 /* SettingsSiteViewController.h */,
-				0246A6841336FA10007BD281 /* SettingsSiteViewController.m */,
-				B5D4EFFD13726FF000FD121F /* UploadViewController.h */,
-				B5D4EFFE13726FF000FD121F /* UploadViewController.m */,
-				B52DE3D21380FA9F004F3692 /* PreviewViewController.h */,
-				B52DE3D31380FA9F004F3692 /* PreviewViewController.m */,
-				B577155C138102DD007582EF /* RecorderViewController.h */,
-				B577155D138102DD007582EF /* RecorderViewController.m */,
-				023AF82A137A2CF400BCDEEF /* ParticipantViewController.h */,
-				023AF82B137A2CF500BCDEEF /* ParticipantViewController.m */,
-				02A0F5E41352B3B300FAD4D4 /* ParticipantsViewController.h */,
-				02A0F5E51352B3B300FAD4D4 /* ParticipantsViewController.m */,
-				B5E047F4137280FA00314B60 /* ParticipantListViewController.h */,
-				B5E047F5137280FA00314B60 /* ParticipantListViewController.m */,
-				B5C3C75513896F300004783D /* NotificationViewController.h */,
-				B5C3C75613896F300004783D /* NotificationViewController.m */,
 				B56983CA13896647003FECD2 /* WebViewController.h */,
 				B56983CB13896648003FECD2 /* WebViewController.m */,
 				B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */,
 				B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */,
+				B5DABB2D138E2C52004AE472 /* Participant */,
+				B5DABB2C138E2C3C004AE472 /* Upload */,
+				B5DABB2E138E2C6E004AE472 /* Site */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -718,6 +712,54 @@
 				B5C3C785138975310004783D /* sync.gif */,
 			);
 			name = "pix-actions";
+			sourceTree = "<group>";
+		};
+		B5DABB25138E2C14004AE472 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B5DABB26138E2C2A004AE472 /* MoodleSite.h */,
+				B5DABB27138E2C2A004AE472 /* MoodleSite.m */,
+				B5DABB29138E2C30004AE472 /* Participant.h */,
+				B5DABB2A138E2C30004AE472 /* Participant.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		B5DABB2C138E2C3C004AE472 /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+				B5D4EFFD13726FF000FD121F /* UploadViewController.h */,
+				B5D4EFFE13726FF000FD121F /* UploadViewController.m */,
+				B52DE3D21380FA9F004F3692 /* PreviewViewController.h */,
+				B52DE3D31380FA9F004F3692 /* PreviewViewController.m */,
+				B577155C138102DD007582EF /* RecorderViewController.h */,
+				B577155D138102DD007582EF /* RecorderViewController.m */,
+			);
+			name = Upload;
+			sourceTree = "<group>";
+		};
+		B5DABB2D138E2C52004AE472 /* Participant */ = {
+			isa = PBXGroup;
+			children = (
+				B5DABB1C138E2BF6004AE472 /* CoursesViewController.h */,
+				B5DABB1D138E2BF6004AE472 /* CoursesViewController.m */,
+				023AF82A137A2CF400BCDEEF /* ParticipantViewController.h */,
+				023AF82B137A2CF500BCDEEF /* ParticipantViewController.m */,
+				B5E047F4137280FA00314B60 /* ParticipantListViewController.h */,
+				B5E047F5137280FA00314B60 /* ParticipantListViewController.m */,
+			);
+			name = Participant;
+			sourceTree = "<group>";
+		};
+		B5DABB2E138E2C6E004AE472 /* Site */ = {
+			isa = PBXGroup;
+			children = (
+				B5DABB1E138E2BF6004AE472 /* SitesViewController.h */,
+				B5DABB1F138E2BF6004AE472 /* SitesViewController.m */,
+				0246A6831336FA10007BD281 /* SettingsSiteViewController.h */,
+				0246A6841336FA10007BD281 /* SettingsSiteViewController.m */,
+			);
+			name = Site;
 			sourceTree = "<group>";
 		};
 		B5F193591354466000F45441 /* pix-components */ = {
@@ -1010,10 +1052,8 @@
 				02618A241331A581008D3037 /* AppDelegate.m in Sources */,
 				02618A271331A582008D3037 /* Moodle.xcdatamodeld in Sources */,
 				02618A2D1331A582008D3037 /* RootViewController.m in Sources */,
-				0246A67B1336ECBE007BD281 /* SettingsViewController.m in Sources */,
 				0246A6851336FA11007BD281 /* SettingsSiteViewController.m in Sources */,
 				B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */,
-				02A0F5E61352B3B300FAD4D4 /* ParticipantsViewController.m in Sources */,
 				B5D4EFFF13726FF000FD121F /* UploadViewController.m in Sources */,
 				B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */,
 				023AF82D137A2CF600BCDEEF /* ParticipantViewController.m in Sources */,
@@ -1038,8 +1078,12 @@
 				B5B0EB1F1383AEB6000A9330 /* XMLValueDecoder.m in Sources */,
 				B5B0EB231383AFDC000A9330 /* Reachability.m in Sources */,
 				B56983CC13896648003FECD2 /* WebViewController.m in Sources */,
-				B5C3C75713896F300004783D /* NotificationViewController.m in Sources */,
 				B5A6C65C1389792A007B46F0 /* MoodleStyleSheet.m in Sources */,
+				B5DABB22138E2BF6004AE472 /* CoursesViewController.m in Sources */,
+				B5DABB23138E2BF6004AE472 /* SitesViewController.m in Sources */,
+				B5DABB24138E2BF6004AE472 /* SyncViewController.m in Sources */,
+				B5DABB28138E2C2A004AE472 /* MoodleSite.m in Sources */,
+				B5DABB2B138E2C30004AE472 /* Participant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

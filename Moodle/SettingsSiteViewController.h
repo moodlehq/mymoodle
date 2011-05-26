@@ -2,11 +2,13 @@
 //  SettingsSite.h
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 21/03/11.
+//  Created by Jerome Mouneyrac on 21/03/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import "MoodleSite.h"
+#import "AppDelegate.h"
 
 #define kNumberOfEditableRows 3
 #define kUrlIndex 0
@@ -20,13 +22,12 @@
     NSArray *fieldLabels;
     NSMutableDictionary *tempValues;
     UITextField *textFieldBeingEdited;
-    NSManagedObject *site;
+    AppDelegate *appDelegate;
+    BOOL newEntry;
 }
 @property (nonatomic, retain) NSArray *fieldLabels;
 @property (nonatomic, retain) NSMutableDictionary *tempValues;
 @property (nonatomic, retain) UITextField *textFieldBeingEdited;
-@property (nonatomic, retain) NSManagedObject *site;
-@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 - (IBAction)cancel:(id)sender;
 - (IBAction)saveButtonPressed:(id)sender;

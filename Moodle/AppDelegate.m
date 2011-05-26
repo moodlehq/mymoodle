@@ -1,5 +1,5 @@
 //
-//  MoodleAppDelegate.h
+//  AppDelegate.h
 //  Moodle
 //
 //  Created by Dongsheng Cai on 20/05/11.
@@ -7,39 +7,87 @@
 //
 
 #import "AppDelegate.h"
+#import "Constants.h"
 
+// view controllers
 #import "RootViewController.h"
+#import "SitesViewController.h"
+#import "SettingsSiteViewController.h"
 #import "UploadViewController.h"
 #import "ParticipantViewController.h"
 #import "WebViewController.h"
-#import "NotificationViewController.h"
+#import "SyncViewController.h"
 #import "RecorderViewController.h"
+#import "CoursesViewController.h"
+#import "MoodleStyleSheet.h"
+
 
 @implementation AppDelegate
 
+@synthesize site;
+
+static AppDelegate *moodleApp = NULL;
+
 @synthesize managedObjectContext=__managedObjectContext;
-
 @synthesize managedObjectModel=__managedObjectModel;
-
 @synthesize persistentStoreCoordinator=__persistentStoreCoordinator;
+
+- (id)init {
+    MLog(@"Moodle app init");
+    if (!moodleApp) {
+        moodleApp = [super init];
+		
+		NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+		[[NSUserDefaults standardUserDefaults] setObject:appVersion forKey:@"moodle_app_version"];
+        NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"moodle-ios/%@", appVersion], @"UserAgent", nil];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+        [dictionary release];
+    }
+
+    return moodleApp;
+}
+
+
++ (AppDelegate *)sharedMoodleApp {
+    if (!moodleApp) {
+        moodleApp = [[AppDelegate alloc] init];
+    }
+    
+    return moodleApp;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
-    // Add the navigation controller's view to the window and display.
+    MLog(@"Moodle app didFinishLaunchingWithOptions");
+
     
+    NSManagedObjectContext *context = [self managedObjectContext];
+    if (!context) {
+        MLog(@"Cannot create NSManagedObjectContext");
+    }
+    NSInteger count = [MoodleSite countWithContext:context];
+    
+    MLog(@"We got %d sites configured", count);
+    
+    
+    [TTStyleSheet setGlobalStyleSheet:[[[MoodleStyleSheet alloc] init] autorelease]];
     TTNavigator *navigator = [TTNavigator navigator];
     navigator.persistenceMode = TTNavigatorPersistenceModeNone;
     // register component
-    [navigator.URLMap from: @"*" toViewController: [WebViewController class]];
-    [navigator.URLMap from: @"tt://dashboard/" toViewController:[RootViewController class]];
-    [navigator.URLMap from: @"tt://upload/" toViewController:[UploadViewController class]];
-    [navigator.URLMap from: @"tt://participants/" toViewController:[ParticipantsViewController class]];
-    [navigator.URLMap from: @"tt://notification/" toModalViewController: [NotificationViewController class]];
-    [navigator.URLMap from: @"tt://recorder/" toViewController:[RecorderViewController class]];
-    if (![navigator restoreViewControllers]) {
-        [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
-    }
+    [navigator.URLMap from: @"*"                   toViewController: [WebViewController class]];
+    [navigator.URLMap from: @"tt://dashboard/"     toViewController: [RootViewController class]];
+    [navigator.URLMap from: @"tt://upload/"        toViewController: [UploadViewController class]];
+    [navigator.URLMap from: @"tt://participants/"  toViewController: [CoursesViewController class]];
+    [navigator.URLMap from: @"tt://recorder/"      toViewController: [RecorderViewController class]];
+    [navigator.URLMap from: @"tt://sites/"         toViewController: [SitesViewController class]];
+    [navigator.URLMap from: @"tt://settings/"      toViewController: [SettingsSiteViewController class]];
+    [navigator.URLMap from: @"tt://settings/(initWithNew:)" toViewController: [SettingsSiteViewController class]];
+    
+    [navigator.URLMap from: @"tt://sync/"  toModalViewController: [SyncViewController class]];
+
+    //if (![navigator restoreViewControllers]) {
+    [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
+    //}
     return YES;
 }
 
@@ -208,4 +256,5 @@
 	TTOpenURL([URL absoluteString]);
 	return YES;
 }
+
 @end

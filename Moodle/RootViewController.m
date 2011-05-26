@@ -7,27 +7,20 @@
 //
 
 #import "RootViewController.h"
-#import "Config.h"
+#import "Constants.h"
 #import "AppDelegate.h"
 #import "MoodleStyleSheet.h"
 
 
+@interface RootViewController (Private) 
+- (void)connChanged:(NSNotification*)notification;
+@end
+
 
 @implementation RootViewController
 
-@synthesize managedObjectContext=__managedObjectContext;
-
 -(void)displaySettingsView {
-    if (settingsViewController == nil) {
-        settingsViewController = [[SettingsViewController alloc] initWithStyle:UITableViewStylePlain];
-    }
-    self.managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-    settingsViewController.managedObjectContext = self.managedObjectContext;
-    //set the dashboard back button just before to push the settings view
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"dashboard", "dashboard") style: UIBarButtonItemStyleBordered target: nil action: nil];
-    [[self navigationItem] setBackBarButtonItem: newBackButton];
-    [newBackButton release];
-    [self.navigationController pushViewController:settingsViewController animated:YES];
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sites/"] applyAnimated:YES]];
 }
 
 /**
@@ -37,6 +30,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
     UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc]
                                     initWithTitle:@"Sites"
                                     style:UIBarButtonItemStylePlain
@@ -48,24 +42,22 @@
 }
 
 - (void)loadView {
-    [TTStyleSheet setGlobalStyleSheet:[[[MoodleStyleSheet alloc] init] autorelease]];
     [super loadView];
     CGRect rect = [[UIScreen mainScreen] applicationFrame];
-//    UIImageView *contentView = [[UIImageView alloc] initWithFrame: rect];
-//    [contentView setImage:[UIImage imageNamed:@"view_bg.jpg"]];
-//    [contentView setUserInteractionEnabled:YES];
-//    self.view = contentView;
-//    [contentView release];
 
     launcherView = [[TTLauncherView alloc]
                                     initWithFrame:self.view.bounds];
     launcherView.backgroundColor = UIColorFromRGB(ColorBackground);
     launcherView.columnCount = 2;
+    webLauncherItem = [[TTLauncherItem alloc] initWithTitle:NSLocalizedString(@"Web", "Web") 
+                                                        image:@"bundle://ToolGuide.png"
+                                                        URL:@"" canDelete: NO];
+    webLauncherItem.style = @"MoodleLauncherButton:";
     launcherView.pages = [NSArray arrayWithObjects:
                             [NSArray arrayWithObjects:
                                 [self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image: @"bundle://Upload.png" URL:@"tt://upload/"],
                                 [self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image: @"bundle://Participants.png" URL:@"tt://participants/"],
-                                [self launcherItemWithTitle:NSLocalizedString(@"Web", "Web") image: @"bundle://ToolGuide.png" URL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]],
+                                webLauncherItem,
                                 [self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image: @"bundle://MoodleHelp.png" URL:@"http://docs.moodle.org/"],
                                 nil]
                           , nil];
@@ -82,6 +74,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connChanged:) name:@"testnotify" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName: @"testnotify" 
+														object: @"go"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connChanged:) name:@"NetworkReachabilityChangedNotification" object:nil];
+    reachability = [Reachability reachabilityWithHostName:@"http://moodle.org"];
+    [reachability startNotifier];
+
+    [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
     [super viewWillAppear:animated];
@@ -90,7 +91,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
     //if there is no site selected go to the site selection
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
     if (defaultSiteUrl == nil) {
@@ -110,48 +110,40 @@
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
 }
 
 - (void)viewDidUnload
 {
     settingsViewController = nil;
-    [super viewDidUnload];
-    [launcherView release];
     launcherView = nil;
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
+    webLauncherItem = nil;
+    [super viewDidUnload];
 }
 
 - (void)dealloc
 {
     // release view controllers
     [settingsViewController release];
-    [__managedObjectContext release];
+    [launcherView release];
+    [webLauncherItem release];
     [super dealloc];
+}
+- (void)launchNotification: (id)sender {
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://notification/"] applyAnimated:YES]];        
 }
 
 #pragma mark -
 #pragma mark Private methods
-
-
-
 - (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url {
 	TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle 
 																   image:image
-																	 URL:url canDelete:YES];
-    launcherItem.canDelete = NO;
+																	 URL:url canDelete:NO];
     launcherItem.style = @"MoodleLauncherButton:";
 	return [launcherItem autorelease];
 }
-
-
 #pragma mark -
 #pragma mark TTLauncherViewDelegate methods
-
 - (void)launcherViewDidBeginEditing:(TTLauncherView*)launcher {
 	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
 	self.navigationItem.leftBarButtonItem = doneButton;
@@ -159,15 +151,15 @@
 }
 
 - (void)launcherViewDidEndEditing:(TTLauncherView*)launcher {
-	//UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:launcherView action:@selector(endEditing)];
 	self.navigationItem.leftBarButtonItem = nil;
-	//[editButton release];
 }
 
 - (void)launcherView:(TTLauncherView *)launcher didSelectItem:(TTLauncherItem *)item {
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:item.URL] applyAnimated:YES]];        
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:item.URL] applyAnimated:YES]];
 }
-- (void)launchNotification: (id)sender {
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://notification/"] applyAnimated:YES]];        
+
+-(void)connChanged:(NSNotification*)notification
+{
+	NSLog(@"Changed!!!%@", [notification valueForKey:@"object"]);
 }
 @end
