@@ -94,8 +94,9 @@
 
 //    NSString *sitetoken = [[NSString alloc] initWithString:@"65b113e44048963fecaefb2fcad2e15d"]; //jerome site, admin 1 ( http://jerome.moodle.local/~jerome/Moodle_iPhone )
 //    NSString *sitetoken = [[NSString alloc] initWithString:@"fe0e9ee8b17af9fd255f76078c70b073"];// jerome site, admin 2 
-//    NSString *sitetoken = [[NSString alloc] initWithString:@"a80cb4f7b6e8af791ac01d201e1df4b0"]; //jerome.moodle.net ( http://jerome.moodle.net)
-    NSString *sitetoken = [[NSString alloc] initWithFormat:@"9afbd2e0145c072f7ae51716ea973228"];
+    NSString *sitetoken = [[NSString alloc] initWithString:@"a80cb4f7b6e8af791ac01d201e1df4b0"]; //jerome.moodle.net ( http://jerome.moodle.net)
+    //NSString *sitetoken = [[NSString alloc] initWithFormat:@"9afbd2e0145c072f7ae51716ea973228"]; //a dongsheng site
+
 
     //retrieve the site name
     WSClient *client = [[[WSClient alloc] initWithToken: sitetoken withHost: siteurl] autorelease];
@@ -343,8 +344,8 @@
             //DEBUG MODE - comment out
             if (newEntry) {
                 //textField.text = @"http://jerome.moodle.local/~jerome/Moodle_iPhone"; //Jerome's site
-                //textField.text = @"http://jerome.moodle.net"; // Internet
-                textField.text = @"http://macosx.local/moodlews"; // Dongsheng's site
+                textField.text = @"http://jerome.moodle.net"; // Internet
+                //textField.text = @"http://macosx.local/moodlews"; // Dongsheng's site
                 [tempValues setObject:textField.text forKey:[[NSNumber alloc] initWithInt:textField.tag]];
             }
             break;
