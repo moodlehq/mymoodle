@@ -56,6 +56,7 @@
 	}
 	XMLRPCResponse *data = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
     [http release];
+    NSLog(@"%@", [data object]);
     return [data object];
 }
 

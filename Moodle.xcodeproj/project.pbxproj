@@ -49,6 +49,13 @@
 		B52DE3D51380FA9F004F3692 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B52DE3D31380FA9F004F3692 /* PreviewViewController.m */; };
 		B52DE3D61380FA9F004F3692 /* PreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B52DE3D41380FA9F004F3692 /* PreviewViewController.xib */; };
 		B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B54EFAA0133C7CB500CE8F87 /* WSClient.m */; };
+		B54F75BE1393672300C95039 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75B01393672300C95039 /* CDataScanner.m */; };
+		B54F75BF1393672300C95039 /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75B31393672300C95039 /* CDataScanner_Extensions.m */; };
+		B54F75C01393672300C95039 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75B51393672300C95039 /* NSDictionary_JSONExtensions.m */; };
+		B54F75C11393672300C95039 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75B81393672300C95039 /* CJSONDeserializer.m */; };
+		B54F75C21393672300C95039 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BA1393672300C95039 /* CJSONScanner.m */; };
+		B54F75C31393672300C95039 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BC1393672300C95039 /* CJSONSerializer.m */; };
+		B54F75C913937B8000C95039 /* MoodleMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75C813937B8000C95039 /* MoodleMedia.m */; };
 		B5609F3A137F8DC000C59271 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5609F39137F8DC000C59271 /* AudioToolbox.framework */; };
 		B56983CC13896648003FECD2 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B56983CB13896648003FECD2 /* WebViewController.m */; };
 		B577155F138102DD007582EF /* RecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B577155D138102DD007582EF /* RecorderViewController.m */; };
@@ -90,6 +97,7 @@
 		B5DABB24138E2BF6004AE472 /* SyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB21138E2BF6004AE472 /* SyncViewController.m */; };
 		B5DABB28138E2C2A004AE472 /* MoodleSite.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB27138E2C2A004AE472 /* MoodleSite.m */; };
 		B5DABB2B138E2C30004AE472 /* Participant.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB2A138E2C30004AE472 /* Participant.m */; };
+		B5DABB39138E57CF004AE472 /* MoodleImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */; };
 		B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E047F5137280FA00314B60 /* ParticipantListViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -314,6 +322,21 @@
 		B52DE3D41380FA9F004F3692 /* PreviewViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PreviewViewController.xib; path = Moodle.xcodeproj/PreviewViewController.xib; sourceTree = SOURCE_ROOT; };
 		B54EFA9F133C7CB500CE8F87 /* WSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSClient.h; sourceTree = "<group>"; };
 		B54EFAA0133C7CB500CE8F87 /* WSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSClient.m; sourceTree = "<group>"; };
+		B54F75AF1393672300C95039 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataScanner.h; path = TouchJSON/Source/CDataScanner.h; sourceTree = SOURCE_ROOT; };
+		B54F75B01393672300C95039 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDataScanner.m; path = TouchJSON/Source/CDataScanner.m; sourceTree = SOURCE_ROOT; };
+		B54F75B21393672300C95039 /* CDataScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner_Extensions.h; sourceTree = "<group>"; };
+		B54F75B31393672300C95039 /* CDataScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_Extensions.m; sourceTree = "<group>"; };
+		B54F75B41393672300C95039 /* NSDictionary_JSONExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionary_JSONExtensions.h; sourceTree = "<group>"; };
+		B54F75B51393672300C95039 /* NSDictionary_JSONExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDictionary_JSONExtensions.m; sourceTree = "<group>"; };
+		B54F75B71393672300C95039 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
+		B54F75B81393672300C95039 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
+		B54F75B91393672300C95039 /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner.h; sourceTree = "<group>"; };
+		B54F75BA1393672300C95039 /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner.m; sourceTree = "<group>"; };
+		B54F75BB1393672300C95039 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
+		B54F75BC1393672300C95039 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
+		B54F75BD1393672300C95039 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
+		B54F75C713937B8000C95039 /* MoodleMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleMedia.h; sourceTree = "<group>"; };
+		B54F75C813937B8000C95039 /* MoodleMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleMedia.m; sourceTree = "<group>"; };
 		B5609F39137F8DC000C59271 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B56983CA13896647003FECD2 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		B56983CB13896648003FECD2 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
@@ -375,6 +398,8 @@
 		B5DABB27138E2C2A004AE472 /* MoodleSite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleSite.m; sourceTree = "<group>"; };
 		B5DABB29138E2C30004AE472 /* Participant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Participant.h; sourceTree = "<group>"; };
 		B5DABB2A138E2C30004AE472 /* Participant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Participant.m; sourceTree = "<group>"; };
+		B5DABB37138E57CE004AE472 /* MoodleImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleImagePickerController.h; sourceTree = "<group>"; };
+		B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleImagePickerController.m; sourceTree = "<group>"; };
 		B5E047F4137280FA00314B60 /* ParticipantListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantListViewController.h; sourceTree = "<group>"; };
 		B5E047F5137280FA00314B60 /* ParticipantListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantListViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -419,13 +444,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		023AF82F137A815E00BCDEEF /* HashValue */ = {
+		023AF82F137A815E00BCDEEF /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				023AF830137A817A00BCDEEF /* HashValue.h */,
 				023AF831137A817A00BCDEEF /* HashValue.m */,
+				B54F75C713937B8000C95039 /* MoodleMedia.h */,
+				B54F75C813937B8000C95039 /* MoodleMedia.m */,
 			);
-			name = HashValue;
+			name = Utils;
 			sourceTree = "<group>";
 		};
 		02618A021331A581008D3037 = {
@@ -580,13 +607,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B5031AD5138007B9005BB407 /* Utils */ = {
+		B5031AD5138007B9005BB407 /* MBProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
 				B5031AD1138007AB005BB407 /* MBProgressHUD.h */,
 				B5031AD2138007AB005BB407 /* MBProgressHUD.m */,
 			);
-			name = Utils;
+			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
 		B5031AEE1380134F005BB407 /* HTTP */ = {
@@ -612,16 +639,55 @@
 			name = HTTP;
 			sourceTree = "<group>";
 		};
+		B54F75A1139365E700C95039 /* TouchJSON */ = {
+			isa = PBXGroup;
+			children = (
+				B54F75AF1393672300C95039 /* CDataScanner.h */,
+				B54F75B01393672300C95039 /* CDataScanner.m */,
+				B54F75B11393672300C95039 /* Extensions */,
+				B54F75B61393672300C95039 /* JSON */,
+			);
+			name = TouchJSON;
+			sourceTree = "<group>";
+		};
+		B54F75B11393672300C95039 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B54F75B21393672300C95039 /* CDataScanner_Extensions.h */,
+				B54F75B31393672300C95039 /* CDataScanner_Extensions.m */,
+				B54F75B41393672300C95039 /* NSDictionary_JSONExtensions.h */,
+				B54F75B51393672300C95039 /* NSDictionary_JSONExtensions.m */,
+			);
+			name = Extensions;
+			path = TouchJSON/Source/Extensions;
+			sourceTree = SOURCE_ROOT;
+		};
+		B54F75B61393672300C95039 /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				B54F75B71393672300C95039 /* CJSONDeserializer.h */,
+				B54F75B81393672300C95039 /* CJSONDeserializer.m */,
+				B54F75B91393672300C95039 /* CJSONScanner.h */,
+				B54F75BA1393672300C95039 /* CJSONScanner.m */,
+				B54F75BB1393672300C95039 /* CJSONSerializer.h */,
+				B54F75BC1393672300C95039 /* CJSONSerializer.m */,
+				B54F75BD1393672300C95039 /* JSONRepresentation.h */,
+			);
+			name = JSON;
+			path = TouchJSON/Source/JSON;
+			sourceTree = SOURCE_ROOT;
+		};
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
 				B5DABB25138E2C14004AE472 /* Models */,
 				B57CD18E133C79D500CCB81A /* Controllers */,
 				B5B0EB201383AFC3000A9330 /* Reachability */,
-				B5031AD5138007B9005BB407 /* Utils */,
-				023AF82F137A815E00BCDEEF /* HashValue */,
+				B5031AD5138007B9005BB407 /* MBProgressHUD */,
+				023AF82F137A815E00BCDEEF /* Utils */,
 				B5031AEE1380134F005BB407 /* HTTP */,
 				B57CD15D133C791500CCB81A /* XMLRPC */,
+				B54F75A1139365E700C95039 /* TouchJSON */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -690,6 +756,8 @@
 				B56983CB13896648003FECD2 /* WebViewController.m */,
 				B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */,
 				B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */,
+				B5DABB37138E57CE004AE472 /* MoodleImagePickerController.h */,
+				B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */,
 				B5DABB2D138E2C52004AE472 /* Participant */,
 				B5DABB2C138E2C3C004AE472 /* Upload */,
 				B5DABB2E138E2C6E004AE472 /* Site */,
@@ -1084,6 +1152,14 @@
 				B5DABB24138E2BF6004AE472 /* SyncViewController.m in Sources */,
 				B5DABB28138E2C2A004AE472 /* MoodleSite.m in Sources */,
 				B5DABB2B138E2C30004AE472 /* Participant.m in Sources */,
+				B5DABB39138E57CF004AE472 /* MoodleImagePickerController.m in Sources */,
+				B54F75BE1393672300C95039 /* CDataScanner.m in Sources */,
+				B54F75BF1393672300C95039 /* CDataScanner_Extensions.m in Sources */,
+				B54F75C01393672300C95039 /* NSDictionary_JSONExtensions.m in Sources */,
+				B54F75C11393672300C95039 /* CJSONDeserializer.m in Sources */,
+				B54F75C21393672300C95039 /* CJSONScanner.m in Sources */,
+				B54F75C31393672300C95039 /* CJSONSerializer.m in Sources */,
+				B54F75C913937B8000C95039 /* MoodleMedia.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1219,7 +1295,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Moodle/Moodle-Prefix.pch";
 				INFOPLIST_FILE = "Moodle/Moodle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
@@ -1233,7 +1309,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Moodle/Moodle-Prefix.pch";
 				INFOPLIST_FILE = "Moodle/Moodle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;

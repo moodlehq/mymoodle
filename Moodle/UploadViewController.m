@@ -10,14 +10,14 @@
 #import "Constants.h"
 #import "PreviewViewController.h"
 #import "RecorderViewController.h"
+#import "MoodleImagePickerController.h"
+#import "MoodleMedia.h"
 
 
 @implementation UploadViewController
 
 - (void)dealloc
 {
-    [fileData release];
-    [fileName release];
     [super dealloc];
 }
 
@@ -78,8 +78,6 @@
 
 - (void)viewDidUnload
 {
-    fileName = nil;
-    fileData = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -104,15 +102,16 @@
     //NSURL *mediaUrl;
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     NSLog(@"%@", info);
-    if ([mediaType isEqualToString:@"public.image"]) {
+    if ([mediaType isEqualToString: @"public.image"]) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        NSString *filename = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
-        NSString *filepath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, filename];
-        [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filepath atomically:YES];
+        fileName = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
+        filePath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, fileName];
+        [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
-            NSLog(@"picked from camera");
+            // upload now!
+            [self uploadAction];
         } else {
-            [self loadPreview: filepath withFilename: filename];
+            [self loadPreview: filePath withFilename: fileName];
         }
     } else if ([mediaType isEqualToString:@"public.movie"]) {
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
@@ -120,7 +119,8 @@
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
         NSString *filepath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, filename];
         [data writeToFile:filepath atomically:YES];
-        [self loadPreview: filepath withFilename: filename];
+        // upload now!
+        [self uploadAction];
     }
     [picker dismissModalViewControllerAnimated:YES];
 }
@@ -130,7 +130,7 @@
 }
 
 - (void)loadGallery:(id)sender {
-    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
     [[[UIApplication sharedApplication] keyWindow] setRootViewController: imagePicker];
     imagePicker.delegate = self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -140,8 +140,8 @@
 }
 
 - (void)loadCamera:(id)sender {
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    if ([MoodleImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
         [[[UIApplication sharedApplication] keyWindow] setRootViewController: imagePicker];
         imagePicker.delegate = self;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -157,5 +157,26 @@
 
 - (void)loadRecorder:(id)sender {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]]; 
+}
+
+- (void)uploadAction {
+    NSLog(@"ready to upload");
+    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    [self.navigationController.view addSubview:HUD];
+	
+    // Regiser for HUD callbacks so we can remove it from the window at the right time
+    HUD.delegate = self;
+    // Show the HUD while the provided method executes in a new thread
+    [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject:nil animated:YES];
+}
+
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+- (void)hudWasHidden {
+    // Remove HUD from screen when the HUD was hidded
+    [HUD removeFromSuperview];
+    [HUD release];
+	HUD = nil;
 }
 @end

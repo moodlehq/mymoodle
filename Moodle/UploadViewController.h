@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
+#import "MBProgressHUD.h"
 
-@interface UploadViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
-    NSData *fileData;
+@interface UploadViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, MBProgressHUDDelegate> {
     NSString *fileName;
+    NSString *filePath;
+    MBProgressHUD *HUD;
 }
+- (void)uploadAction;
 @end

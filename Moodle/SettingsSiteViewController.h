@@ -20,13 +20,13 @@
 
 @interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate>{
     NSArray *fieldLabels;
-    NSMutableDictionary *tempValues;
+    NSMutableDictionary *fieldValues;
     UITextField *textFieldBeingEdited;
     AppDelegate *appDelegate;
     BOOL newEntry;
 }
 @property (nonatomic, retain) NSArray *fieldLabels;
-@property (nonatomic, retain) NSMutableDictionary *tempValues;
+@property (nonatomic, retain) NSMutableDictionary *fieldValues;
 @property (nonatomic, retain) UITextField *textFieldBeingEdited;
 
 - (IBAction)cancel:(id)sender;

@@ -7,3 +7,6 @@
 [submodule "three20"]
 	path = three20
 	url = git://github.com/facebook/three20.git
+[submodule "TouchJSON"]
+	path = TouchJSON
+	url = git://github.com/TouchCode/TouchJSON.git

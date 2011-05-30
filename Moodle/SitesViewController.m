@@ -23,7 +23,7 @@
 
 #pragma mark - View lifecycle
 - (void)dealloc {
-    [self.lastIndexPath release];
+    //[self.lastIndexPath release];
     [super dealloc];
 }
 
@@ -173,9 +173,8 @@
         [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
         [defaults synchronize];
     }
-    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Fetched results controller
