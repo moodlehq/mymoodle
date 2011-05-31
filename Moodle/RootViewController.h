@@ -20,7 +20,6 @@
     /** view controllers*/
     SitesViewController *settingsViewController;
     /** modules */
-    NSArray *modules;
     TTLauncherView *launcherView;
     TTLauncherItem *webLauncherItem;
     NSManagedObjectContext *managedObjectContext;

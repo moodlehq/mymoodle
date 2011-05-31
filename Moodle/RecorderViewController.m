@@ -24,7 +24,7 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
+
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -34,16 +34,16 @@
     _ttLabel.frame = CGRectMake(10, 50, 50, 50);
     _ttLabel.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_ttLabel];
-    
+
     self.view.backgroundColor = UIColorFromRGB(ColorBackground);
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
-    
+
     buttonRecord = [[UIBarButtonItem alloc] initWithTitle:@"Record"
                                                     style:UIBarButtonItemStyleBordered target:self action:@selector(startRecording)];
     buttonRecord.tag = 1;
     buttonRecord.enabled = YES;
-    
-    
+
+
     buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                     UIBarButtonSystemItemPlay target:self action:@selector(replayAudio)];
     buttonReplay.tag = 2;
@@ -55,11 +55,11 @@
     buttonUpload.tag = 3;
     buttonUpload.title = @"Upload";
     buttonUpload.enabled = NO;
-    
+
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                          UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
-    
-    
+
+
     _toolbar = [[UIToolbar alloc] initWithFrame:
                 CGRectMake(0, self.view.bounds.size.height - TTToolbarHeight(),
                            self.view.bounds.size.width, TTToolbarHeight())];
@@ -110,14 +110,14 @@
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
     NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
     NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/files/upload.php", host];
-    
+
     NSURL *url = [NSURL URLWithString:uploadurl];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request addPostValue:token forKey:@"token"];
     [request setFile:recorderFilePath forKey:@"thefile"];
     [request startSynchronous];
     NSLog(@"end uploading");
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://upload/"] applyAnimated:YES]];    
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://upload/"] applyAnimated:YES]];
 
     NSFileManager *fm = [NSFileManager defaultManager];
     NSError *err;
@@ -129,7 +129,7 @@
     int seconds_in_minute = count % 60;
     int minutes_in_hour = (count / 60) % 60;
     int hour_in_day = (count / 3600) %24;
-    
+
     timerLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d", hour_in_day, minutes_in_hour, seconds_in_minute];
 }
 
@@ -151,9 +151,9 @@
         }
 
         NSMutableDictionary *settings = [[NSMutableDictionary alloc] init];
-        
+
         [settings setValue: [NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
-        [settings setValue: [NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey]; 
+        [settings setValue: [NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey];
         [settings setValue: [NSNumber numberWithInt: 2] forKey:AVNumberOfChannelsKey];
         [settings setValue: [NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
         [settings setValue: [NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
@@ -163,7 +163,7 @@
         NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
         NSString *caldate = [now description];
         recorderFilePath = [[NSString stringWithFormat:@"%@/%@.mp4", DOCUMENTS_FOLDER, caldate] retain];
-        
+
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         err = nil;
         recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:settings error:&err];
@@ -180,12 +180,12 @@
             return;
         }
         [settings release];
-        
+
         //prepare to record
         [recorder setDelegate:self];
         [recorder prepareToRecord];
         recorder.meteringEnabled = YES;
-        
+
         BOOL audioHWAvailable = audioSession.inputIsAvailable;
         if (! audioHWAvailable) {
             UIAlertView *cantRecordAlert =
@@ -195,10 +195,10 @@
                              cancelButtonTitle:@"OK"
                              otherButtonTitles:nil];
             [cantRecordAlert show];
-            [cantRecordAlert release]; 
+            [cantRecordAlert release];
             return;
         }
-        
+
         // start recording
         [recorder record];
         recording = YES;
@@ -215,7 +215,7 @@
         NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
         if(!audioData) {
             NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
-        } 
+        }
     }
 }
 
@@ -231,7 +231,7 @@
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
     HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
     [self.navigationController.view addSubview:HUD];
-	
+
     // Regiser for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;
     // Show the HUD while the provided method executes in a new thread

@@ -38,7 +38,7 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
+
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -67,9 +67,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
+
     self.title = NSLocalizedString(@"info", @"info");
-    
+
     //Set the image
     //retrieve Documents folder path
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -77,7 +77,7 @@
     //create file path (Documents/md5(profileimgurl))
     NSString *md5ProfileUrl = [HashValue getMD5FromString:[participant valueForKey:@"profileimgurl"]];
     NSString *filePath = [[NSString alloc] initWithFormat:@"%@/%@", documentsDirectoryPath, md5ProfileUrl];
-    
+
     BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
     NSData *imageData;
     BOOL displayDefaultImg = NO;
@@ -90,7 +90,7 @@
     } else {
         displayDefaultImg = YES;
     }
-    
+
     if (displayDefaultImg) {
         //no cached profile picture and no connection, display a dummy picture
         profilePictureView.image = [UIImage imageNamed:@"Participants.png"];
@@ -103,8 +103,8 @@
 
     //Set the labels
     fullname.text = [NSString stringWithFormat:@"%@ %@",[participant valueForKey:@"firstname"], [participant valueForKey:@"lastname"]];
-    
-    
+
+
 }
 
 @end

@@ -11,22 +11,21 @@
 #import "AppDelegate.h"
 #import "MoodleStyleSheet.h"
 
-
-@interface RootViewController (Private) 
+@interface RootViewController (Private)
 - (void)connChanged:(NSNotification*)notification;
 @end
 
 
 @implementation RootViewController
 
--(void)displaySettingsView {
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sites/"] applyAnimated:YES]];
-}
-
 /**
- * Set up dashboard
+ * "Sites" button action
  *
  */
+-(void)displaySettingsView {
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://sites/"] applyAnimated:YES]];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -38,18 +37,21 @@
                                     action:@selector(displaySettingsView)];
     self.navigationItem.rightBarButtonItem = sitesButton;
     [sitesButton release];
-    
+
 }
 
+/**
+ * Set up dashboard
+ *
+ */
 - (void)loadView {
     [super loadView];
-    CGRect rect = [[UIScreen mainScreen] applicationFrame];
-
-    launcherView = [[TTLauncherView alloc]
-                                    initWithFrame:self.view.bounds];
-    launcherView.backgroundColor = UIColorFromRGB(ColorBackground);
+    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
+    CGRect rect = [UIScreen mainScreen].applicationFrame;
+    NSLog(@"%@", NSStringFromCGRect(rect));
+    launcherView = [[TTLauncherView alloc] initWithFrame: self.view.bounds];
     launcherView.columnCount = 2;
-    webLauncherItem = [[TTLauncherItem alloc] initWithTitle:NSLocalizedString(@"Web", "Web") 
+    webLauncherItem = [[TTLauncherItem alloc] initWithTitle:NSLocalizedString(@"Web", "Web")
                                                         image:@"bundle://ToolGuide.png"
                                                         URL:@"" canDelete: NO];
     webLauncherItem.style = @"MoodleLauncherButton:";
@@ -62,26 +64,19 @@
                                 nil]
                           , nil];
     launcherView.delegate = self;
-    
+    launcherView.frame = CGRectMake(0, 0, rect.size.width, rect.size.height-80);
+
     [self.view addSubview: launcherView];
-    TTButton *button = [TTButton buttonWithStyle:@"notificationButton:" title: NSLocalizedString(@"Sync", "Sync") ];
-    [button addTarget:self
-               action:@selector(launchNotification:) forControlEvents:UIControlEventTouchDown];
-    button.frame = CGRectMake(-5, rect.size.height-72.0, rect.size.width+10, 36.0);
-    [self.view addSubview:button];
-    
+    TTButton *syncButton = [TTButton buttonWithStyle:@"notificationButton:" title: NSLocalizedString(@"Sync", "Sync") ];
+    [syncButton addTarget:self
+               action:@selector(launchNotification:) forControlEvents: UIControlEventTouchUpInside];
+
+    syncButton.frame = CGRectMake(0, rect.size.height - 80, rect.size.width+10, 36.0);
+    [self.view addSubview: syncButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connChanged:) name:@"testnotify" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName: @"testnotify" 
-														object: @"go"];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connChanged:) name:@"NetworkReachabilityChangedNotification" object:nil];
-    reachability = [Reachability reachabilityWithHostName:@"http://moodle.org"];
-    [reachability startNotifier];
-
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
@@ -91,6 +86,11 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    //Set a method to be called when a notification is sent.
+    reachability = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];
+    [reachability startNotifier];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [[NSNotificationCenter defaultCenter] addObserver: appDelegate selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
     //if there is no site selected go to the site selection
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
     if (defaultSiteUrl == nil) {
@@ -130,13 +130,13 @@
     [super dealloc];
 }
 - (void)launchNotification: (id)sender {
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://notification/"] applyAnimated:YES]];        
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sync/"] applyAnimated:YES]];
 }
 
 #pragma mark -
 #pragma mark Private methods
 - (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url {
-	TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle 
+	TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle
 																   image:image
 																	 URL:url canDelete:NO];
     launcherItem.style = @"MoodleLauncherButton:";
@@ -158,8 +158,4 @@
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:item.URL] applyAnimated:YES]];
 }
 
--(void)connChanged:(NSNotification*)notification
-{
-	NSLog(@"Changed!!!%@", [notification valueForKey:@"object"]);
-}
 @end

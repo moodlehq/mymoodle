@@ -57,11 +57,11 @@
     NSManagedObjectContext *context = appDelegate.managedObjectContext;
     if (textFieldBeingEdited != nil)
     {
-        NSNumber *tagAsNum= [[NSNumber alloc] 
+        NSNumber *tagAsNum= [[NSNumber alloc]
                              initWithInt:textFieldBeingEdited.tag];
         [fieldValues setObject:textFieldBeingEdited.text forKey: tagAsNum];
         [tagAsNum release];
-        
+
     }
 
     NSString *siteurl;
@@ -95,7 +95,7 @@
     NSLog(@"Username: %@", username);
     NSLog(@"Password: %@", password);
     NSLog(@"Start ws call %@", siteurl);
-    
+
     NSString *tokenURL = [NSString stringWithFormat:@"%@/login/token.php", siteurl];
     NSURL *url = [NSURL URLWithString: tokenURL];
     NSLog(@"%@", tokenURL);
@@ -109,13 +109,13 @@
         NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary: [request responseData] error: nil];
 
         NSString *sitetoken = [token valueForKey: @"token"];
-        
+
         //retrieve the site name
         WSClient *client = [[[WSClient alloc] initWithToken: sitetoken withHost: siteurl] autorelease];
         NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
         NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
         [wsparams release];
-        
+
         if ([siteinfo isKindOfClass: [NSDictionary class]]) {
             //check if the site url + userid is already in data core otherwise create a new site
             NSError *error;
@@ -126,7 +126,7 @@
             [siteRequest setPredicate:sitePredicate];
             NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
             NSLog(@"Sites info %@", sites);
-            
+
             if ([sites count] > 0) {
                 MLog(@"Site existed");
                 appDelegate.site = [sites lastObject];
@@ -138,7 +138,7 @@
             NSString  *picture = [siteinfo objectForKey: @"profilepicture"];
             // base64 decode
             NSData       *data = [NSData base64DataFromString:picture];
-            NSString *sitename = [siteinfo objectForKey: @"sitename"];   
+            NSString *sitename = [siteinfo objectForKey: @"sitename"];
             //create/update the site
             [appDelegate.site setValue: sitename  forKey: @"name"];
             [appDelegate.site setValue: data      forKey: @"logo"];
@@ -154,15 +154,15 @@
             } else {
                 user = [appDelegate.site valueForKey:@"mainuser"];
             }
-            
+
             [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
             [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
             [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
             [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
             [user setValue: appDelegate.site forKey:@"site"];
-            
+
             [appDelegate.site setValue: user forKey: @"mainuser"];
-            
+
             //save the modification
             if (![context save: &error]) {
                 NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
@@ -178,7 +178,7 @@
             }
             [self.navigationController popToRootViewControllerAnimated:YES];
             //[[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sites/"] applyAnimated:YES]];
-            
+
         } else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Web service call failed" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
             [alert show];
@@ -245,11 +245,11 @@
         NSLog(@"Update existing entry");
     }
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
+
     NSArray *array = [[NSArray alloc] initWithObjects:@"URL:", @"Username:", @"Password:", nil];
     self.fieldLabels = array;
     [array release];
-    
+
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]
                                      initWithTitle:NSLocalizedString(@"cancel", "cancel button label")
                                      style:UIBarButtonItemStylePlain
@@ -257,15 +257,15 @@
                                      action:@selector(cancel:)];
     self.navigationItem.leftBarButtonItem = cancelButton;
     [cancelButton release];
-    
+
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
-                                   initWithTitle: NSLocalizedString(@"save", "Save") 
+                                   initWithTitle: NSLocalizedString(@"save", "Save")
                                    style:UIBarButtonItemStyleDone
                                    target:self
                                    action:@selector(saveButtonPressed:)];
     self.navigationItem.rightBarButtonItem = saveButton;
     [saveButton release];
-    
+
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     self.fieldValues = dict;
     [dict release];
@@ -289,7 +289,7 @@
         //add the button to the footer
         [footerView addSubview:btnDelete];
         //add the footer to the tableView
-        self.tableView.tableFooterView = footerView; 
+        self.tableView.tableFooterView = footerView;
         [footerView release];
     } else {
         //case of Adding a new site
@@ -299,21 +299,21 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView 
+- (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
     return kNumberOfEditableRows;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView 
+- (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *SiteSettingCellIdentifier = @"SiteSettingCellIdentifier";
-    
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
                              SiteSettingCellIdentifier];
     if (cell == nil) {
-        
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                        reuseIdentifier:SiteSettingCellIdentifier] autorelease];
         UILabel *label = [[UILabel alloc] initWithFrame:
                           CGRectMake(10, 10, 75, 25)];
@@ -322,19 +322,19 @@
         label.font = [UIFont boldSystemFontOfSize:14];
         [cell.contentView addSubview:label];
         [label release];
-        
-        
+
+
         UITextField *textField = [[UITextField alloc] initWithFrame:
                                   CGRectMake(90, 12, 200, 25)];
         textField.clearsOnBeginEditing = NO;
         [textField setDelegate:self];
-        [textField addTarget:self 
-                      action:@selector(textFieldDone:) 
+        [textField addTarget:self
+                      action:@selector(textFieldDone:)
             forControlEvents:UIControlEventEditingDidEndOnExit];
         [cell.contentView addSubview:textField];
     }
     NSUInteger row = [indexPath row];
-    
+
     UILabel *label = (UILabel *)[cell viewWithTag:kLabelTag];
     UITextField *textField = nil;
     for (UIView *oneView in cell.contentView.subviews)
@@ -377,29 +377,25 @@
             break;
         case kPasswordIndex:
             textField.secureTextEntry = YES;
-            if ([[fieldValues allKeys] containsObject:rowAsNum])
+            if ([[fieldValues allKeys] containsObject:rowAsNum]) {
                 textField.text = [fieldValues objectForKey:rowAsNum];
-            else {
-                if (!newEntry) {
-                    textField.text = [appDelegate.site valueForKeyPath:@"mainuser.password"];
-                }
             }
             break;
-       
+
         default:
             break;
     }
     if (textFieldBeingEdited == textField) {
         textFieldBeingEdited = nil;
     }
-    
+
     textField.tag = row;
     [rowAsNum release];
     return cell;
 }
 #pragma mark -
 #pragma mark Table Delegate Methods
-- (NSIndexPath *)tableView:(UITableView *)tableView 
+- (NSIndexPath *)tableView:(UITableView *)tableView
   willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
 }

@@ -9,6 +9,7 @@
 #import "MoodleMedia.h"
 #import "Constants.h"
 #import "ASIFormDataRequest.h"
+#import "AppDelegate.h"
 
 
 @implementation MoodleMedia

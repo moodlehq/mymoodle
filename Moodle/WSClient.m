@@ -36,7 +36,7 @@
     }
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
     [req setMethod:method withObjects: params];
-    
+
 	ASIHTTPRequest *http =[[ASIHTTPRequest alloc] initWithURL: [req host]];
 	[http setRequestMethod:@"POST"];
 	[http setShouldPresentCredentialsBeforeChallenge: YES];
@@ -46,9 +46,9 @@
 	[http setNumberOfTimesToRetryOnTimeout:2];
 	[http appendPostData: [[req source] dataUsingEncoding: NSUTF8StringEncoding]];
 	[http startSynchronous];
-	
+
 	NSError *err = [http error];
-	
+
 	if (err) {
         NSLog(@"%@", err);
         [http release];

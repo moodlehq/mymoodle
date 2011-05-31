@@ -39,7 +39,7 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addSite)];
     self.navigationItem.rightBarButtonItem = addButton;
     [addButton release];
-    
+
     NSError *error = nil;
     if (![self.fetchedResultsController performFetch:&error])
     {
@@ -62,7 +62,7 @@
     if ([MoodleSite countWithContext: managedObjectContext] == 0) {
         MLog(@"None site found");
         [self addSite];
-    } 
+    }
 }
 
 -(void)viewDidUnload {
@@ -92,13 +92,13 @@
 
     NSUInteger row = [indexPath row];
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
-        
+
     NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
     NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
     NSLog(@"CellForRow - the default site url is: %@", defaultSiteUrl);
     UIImage *image = [UIImage imageWithData: [appDelegate.site valueForKey:@"logo"]];
     cell.imageView.image = image;
-    
+
     CGRect siteNameRect = CGRectMake(100, 5, 200, 18);
     UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
     siteName.tag = kSiteNameTag;
@@ -115,9 +115,9 @@
     [cell.contentView addSubview:userName];
     [userName release];
 
-    if ((row == oldRow && lastIndexPath != nil) 
+    if ((row == oldRow && lastIndexPath != nil)
         || ([[appDelegate.site valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[appDelegate.site valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
-        
+
         UIImage *checkMarkImage = [UIImage imageNamed:@"checkmark.png"];
         CGRect checkMarkRect = CGRectMake(57, 0, 43, 45);
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:checkMarkRect];
@@ -127,7 +127,7 @@
         lastIndexPath = indexPath;
         [imageView release];
     }
-    
+
     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 
     return cell;
@@ -147,7 +147,7 @@
 
     int newRow = [indexPath row];
     int oldRow = (lastIndexPath != nil) ? [lastIndexPath row] : -1;
-    
+
     if (newRow != oldRow) {
         if (lastCheckMark != nil) {
             [lastCheckMark removeFromSuperview];
@@ -161,9 +161,9 @@
         [newCell.contentView addSubview:imageView];
         lastCheckMark = imageView;
         [imageView release];
-        
+
         [self.tableView cellForRowAtIndexPath:lastIndexPath];
-        
+
         lastIndexPath = indexPath;
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         //save the current site into user preference
@@ -204,7 +204,7 @@
         NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:@"Site"];
         aFetchedResultsController.delegate = self;
         self.fetchedResultsController = aFetchedResultsController;
-        
+
         [aFetchedResultsController release];
         [fetchRequest release];
         [sortDescriptor release];
@@ -215,7 +215,7 @@
         NSLog(@"%@", exception);
     }
     return __fetchedResultsController;
-}   
+}
 
 #pragma mark - Fetched results controller delegate
 
@@ -232,7 +232,7 @@
         case NSFetchedResultsChangeInsert:
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
-            
+
         case NSFetchedResultsChangeDelete:
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
@@ -248,11 +248,11 @@
     switch(type)
     {
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];       
-            MoodleSite *site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];  
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            MoodleSite *site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];
             //save the current site into user preference
             NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [site valueForKey:@"url"], kSelectedSiteUrlKey, 
+                                         [site valueForKey:@"url"], kSelectedSiteUrlKey,
                                          [site valueForKey:@"name"], kSelectedSiteNameKey,
                                          [site valueForKey:@"token"], kSelectedSiteTokenKey,
                                          [site valueForKeyPath:@"mainuser.userid"], kSelectedUserIdKey,
@@ -268,14 +268,14 @@
             if (lastCheckMark != nil) {
                 [lastCheckMark removeFromSuperview];
             }
-            
+
             break;
-            
+
         case NSFetchedResultsChangeDelete:
             //TODO: unset the default selected if ever the selected site is deleted
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
-            
+
         case NSFetchedResultsChangeUpdate:
 //            [defaults setObject:[settingsSiteViewController.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
 //            [defaults setObject:[settingsSiteViewController.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
@@ -283,7 +283,7 @@
 //            [defaults setObject:[settingsSiteViewController.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
 //            [defaults synchronize];
             break;
-            
+
         case NSFetchedResultsChangeMove:
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
@@ -297,8 +297,8 @@
 }
 
 /*
- // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
+ // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
+
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
  {
  // In the simplest, most efficient, case, reload the table view.

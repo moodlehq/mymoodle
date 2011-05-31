@@ -21,7 +21,7 @@
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&error];
     [fetchRequest release];
     fetchRequest = nil;
-    
+
     return (results.count > 0);
 }
 + (NSInteger)countWithContext:(NSManagedObjectContext *)context {

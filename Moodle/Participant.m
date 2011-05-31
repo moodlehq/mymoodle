@@ -19,7 +19,7 @@
 @dynamic courses;
 
 
-- (void)addCoursesObject:(NSManagedObject *)value {    
+- (void)addCoursesObject:(NSManagedObject *)value {
     NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
     [self willChangeValueForKey:@"courses" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
     [[self primitiveValueForKey:@"courses"] addObject:value];
@@ -35,7 +35,7 @@
     [changedObjects release];
 }
 
-- (void)addCourses:(NSSet *)value {    
+- (void)addCourses:(NSSet *)value {
     [self willChangeValueForKey:@"courses" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
     [[self primitiveValueForKey:@"courses"] unionSet:value];
     [self didChangeValueForKey:@"courses" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];

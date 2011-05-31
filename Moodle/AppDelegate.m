@@ -24,7 +24,7 @@
 
 @implementation AppDelegate
 
-@synthesize site;
+@synthesize site, netStatus;
 
 static AppDelegate *moodleApp = NULL;
 
@@ -36,7 +36,7 @@ static AppDelegate *moodleApp = NULL;
     MLog(@"Moodle app init");
     if (!moodleApp) {
         moodleApp = [super init];
-		
+
 		NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 		[[NSUserDefaults standardUserDefaults] setObject:appVersion forKey:@"moodle_app_version"];
         NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"moodle-ios/%@", appVersion], @"UserAgent", nil];
@@ -52,7 +52,7 @@ static AppDelegate *moodleApp = NULL;
     if (!moodleApp) {
         moodleApp = [[AppDelegate alloc] init];
     }
-    
+
     return moodleApp;
 }
 
@@ -60,16 +60,16 @@ static AppDelegate *moodleApp = NULL;
 {
     MLog(@"Moodle app didFinishLaunchingWithOptions");
 
-    
+
     NSManagedObjectContext *context = [self managedObjectContext];
     if (!context) {
         MLog(@"Cannot create NSManagedObjectContext");
     }
     NSInteger count = [MoodleSite countWithContext:context];
-    
+
     MLog(@"We got %d sites configured", count);
-    
-    
+
+
     [TTStyleSheet setGlobalStyleSheet:[[[MoodleStyleSheet alloc] init] autorelease]];
     TTNavigator *navigator = [TTNavigator navigator];
     navigator.persistenceMode = TTNavigatorPersistenceModeNone;
@@ -82,7 +82,7 @@ static AppDelegate *moodleApp = NULL;
     [navigator.URLMap from: @"tt://sites/"         toViewController: [SitesViewController class]];
     [navigator.URLMap from: @"tt://settings/"      toViewController: [SettingsSiteViewController class]];
     [navigator.URLMap from: @"tt://settings/(initWithNew:)" toViewController: [SettingsSiteViewController class]];
-    
+
     [navigator.URLMap from: @"tt://sync/"  toModalViewController: [SyncViewController class]];
 
     //if (![navigator restoreViewControllers]) {
@@ -102,7 +102,7 @@ static AppDelegate *moodleApp = NULL;
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
 }
@@ -145,12 +145,12 @@ static AppDelegate *moodleApp = NULL;
         {
             /*
              Replace this implementation with code to handle the error appropriately.
-             
+
              abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
              */
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
-        } 
+        }
     }
 }
 
@@ -166,7 +166,7 @@ static AppDelegate *moodleApp = NULL;
     {
         return __managedObjectContext;
     }
-    
+
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil)
     {
@@ -187,7 +187,7 @@ static AppDelegate *moodleApp = NULL;
         return __managedObjectModel;
     }
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Moodle" withExtension:@"momd"];
-    __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
+    __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return __managedObjectModel;
 }
 
@@ -201,40 +201,40 @@ static AppDelegate *moodleApp = NULL;
     {
         return __persistentStoreCoordinator;
     }
-    
+
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Moodle.sqlite"];
-    
+
     NSError *error = nil;
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
     {
         /*
          Replace this implementation with code to handle the error appropriately.
-         
+
          abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-         
+
          Typical reasons for an error here include:
          * The persistent store is not accessible;
          * The schema for the persistent store is incompatible with current managed object model.
          Check the error message to determine what the actual problem was.
-         
-         
+
+
          If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
-         
+
          If you encounter schema incompatibility errors during development, you can reduce their frequency by:
          * Simply deleting the existing store:
          [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
-         
-         * Performing automatic lightweight migration by passing the following dictionary as the options parameter: 
+
+         * Performing automatic lightweight migration by passing the following dictionary as the options parameter:
          [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-         
+
          Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
-         
+
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
-    }    
-    
+    }
+
     return __persistentStoreCoordinator;
 }
 
@@ -257,4 +257,35 @@ static AppDelegate *moodleApp = NULL;
 	return YES;
 }
 
+//Called by Reachability whenever status changes.
+- (void) reachabilityChanged: (NSNotification* )note
+{
+	Reachability* curReach = [note object];
+	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+    netStatus = [curReach currentReachabilityStatus];
+    BOOL connectionRequired= [curReach connectionRequired];
+    NSLog(@"Connection status changed: %d", netStatus);
+    NSLog(@"NotReachable: %d  ReachableViaWWAN: %d  ReachableViaWiFi: %d", NotReachable, ReachableViaWWAN, ReachableViaWiFi);
+    NSString* statusString= @"";
+    switch (netStatus)
+    {
+        case NotReachable:
+        {
+            statusString = @"Access Not Available";
+            //Minor interface detail- connectionRequired may return yes, even when the host is unreachable.  We cover that up here...
+            connectionRequired= NO;
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            statusString = @"Reachable WWAN";
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            statusString= @"Reachable WiFi";
+            break;
+        }
+    }
+}
 @end

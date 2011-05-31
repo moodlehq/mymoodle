@@ -25,7 +25,7 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
+
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -42,25 +42,25 @@
     int width = 240;
     int height = 60;
     TTButton *button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Browse photo albums", "Browse photo albums")];
-    [button addTarget:self 
+    [button addTarget:self
                action:@selector(loadGallery:)
                 forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Browse photo albums" forState:UIControlStateNormal];
     button.frame = CGRectMake(x, y, width, height);
     [self.view addSubview:button];
-    
+
 
     button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Take a picture or video", "Take a picture or video")];
-    [button addTarget:self 
+    [button addTarget:self
                action:@selector(loadCamera:)
      forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Take a picture or video" forState:UIControlStateNormal];
     button.frame = CGRectMake(x, (2*y) + height, width, height);
     [self.view addSubview:button];
-    
-    
+
+
     button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Record audio", "Record audio")];
-    [button addTarget:self 
+    [button addTarget:self
                action:@selector(loadRecorder:)
      forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Record audio" forState:UIControlStateNormal];
@@ -104,11 +104,13 @@
     NSLog(@"%@", info);
     if ([mediaType isEqualToString: @"public.image"]) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
         fileName = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
         filePath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, fileName];
         [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
-            // upload now!
+            // Picked from camera, saving to photo album
+            // then upload
             [self uploadAction];
         } else {
             [self loadPreview: filePath withFilename: fileName];
@@ -129,14 +131,33 @@
     [picker dismissModalViewControllerAnimated:YES];
 }
 
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+    UIAlertView *alert;
+
+    // Unable to save the image
+    if (error)
+        alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                           message:@"Unable to save image to Photo Album."
+                                          delegate:self cancelButtonTitle:@"Ok"
+                                 otherButtonTitles:nil];
+    else // All is well
+        alert = [[UIAlertView alloc] initWithTitle:@"Success"
+                                           message:@"Image saved to Photo Album."
+                                          delegate:self cancelButtonTitle:@"Ok"
+                                 otherButtonTitles:nil];
+    [alert show];
+    [alert release];
+}
+
 - (void)loadGallery:(id)sender {
     MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
     [[[UIApplication sharedApplication] keyWindow] setRootViewController: imagePicker];
     imagePicker.delegate = self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    [self presentModalViewController:imagePicker animated:YES]; 
+    [self presentModalViewController:imagePicker animated:YES];
     [imagePicker release];
-    
+
 }
 
 - (void)loadCamera:(id)sender {
@@ -156,7 +177,7 @@
 }
 
 - (void)loadRecorder:(id)sender {
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]]; 
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]];
 }
 
 - (void)uploadAction {
@@ -164,7 +185,7 @@
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
     HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
     [self.navigationController.view addSubview:HUD];
-	
+
     // Regiser for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;
     // Show the HUD while the provided method executes in a new thread
