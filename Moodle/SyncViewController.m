@@ -75,6 +75,26 @@
     if (![[self fetchedResultsController] performFetch: &error]) {
         NSLog(@"unresolved error %@, %@", error, [error userInfo]);
     }
+    //
+    // Create a header view. Wrap it in a container to allow us to position
+    // it better.
+    //
+    UIView *containerView =
+    [[[UIView alloc]
+      initWithFrame:CGRectMake(0, 0, 300, 60)]
+     autorelease];
+    UILabel *headerLabel =
+    [[[UILabel alloc]
+      initWithFrame:CGRectMake(10, 20, 300, 40)]
+     autorelease];
+    headerLabel.text = NSLocalizedString(@"Sync", @"");
+    headerLabel.textColor = [UIColor whiteColor];
+    headerLabel.shadowColor = [UIColor blackColor];
+    headerLabel.shadowOffset = CGSizeMake(0, 1);
+    headerLabel.font = [UIFont boldSystemFontOfSize:22];
+    headerLabel.backgroundColor = [UIColor clearColor];
+    [containerView addSubview:headerLabel];
+    self.tableView.tableHeaderView = containerView;
 //    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
                                               initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered
@@ -106,6 +126,7 @@
 
 - (void)fillCell: (UITableViewCell *)cell atIndexPath: (NSIndexPath *)indexPath {
     NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
+    cell.backgroundColor = [UIColor redColor];
     cell.textLabel.text = [job valueForKey:@"desc"];
     cell.detailTextLabel.text = [NSString stringWithFormat: @"%@:%@", [job valueForKey:@"target"], [job valueForKey: @"action"]];
 }
@@ -117,7 +138,7 @@
         cell = [[[UITableViewCell alloc]
                  initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: CellID] autorelease];
     }
-    [self fillCell: cell atIndexPath:indexPath];
+    [self fillCell: cell atIndexPath: indexPath];
     return cell;
 }
 

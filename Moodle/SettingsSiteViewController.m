@@ -379,6 +379,9 @@
             if ([[fieldValues allKeys] containsObject:rowAsNum]) {
                 textField.text = [fieldValues objectForKey:rowAsNum];
             }
+            if (!newEntry) {
+                textField.text = @"********";
+            }
             break;
 
         default:
@@ -397,6 +400,9 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView
   willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return @"Account details";
 }
 #pragma mark Text Field Delegate Methods
 - (void)textFieldDidBeginEditing:(UITextField *)textField

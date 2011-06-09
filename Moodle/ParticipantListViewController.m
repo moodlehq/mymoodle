@@ -121,11 +121,11 @@
                 }
                 
                 //set the course values
-                [dbparticipant setValue:[participant objectForKey: @"userid"]   forKey:@"userid"];
-                [dbparticipant setValue:[participant objectForKey: nil]         forKey:@"firstname"];
-                [dbparticipant setValue:[participant objectForKey: nil]         forKey:@"lastname"];
-                [dbparticipant setValue:[participant objectForKey: @"fullname"] forKey:@"fullname"];
-                [dbparticipant setValue:[participant objectForKey: @"username"] forKey:@"username"];
+                [dbparticipant setValue:[participant objectForKey: @"userid"]    forKey:@"userid"];
+                [dbparticipant setValue:[participant objectForKey: @"firstname"] forKey:@"firstname"];
+                [dbparticipant setValue:[participant objectForKey: @"lastname"]  forKey:@"lastname"];
+                [dbparticipant setValue:[participant objectForKey: @"fullname"]  forKey:@"fullname"];
+                [dbparticipant setValue:[participant objectForKey: @"username"]  forKey:@"username"];
                 [dbparticipant setValue:[participant objectForKey: @"profileimgurl"] forKey:@"profileimgurl"];
                 [dbparticipant setValue:[participant objectForKey: @"profileimgurlsmall"] forKey:@"profileimgurlsmall"];
                 [dbparticipant setValue:[course valueForKey:@"site"] forKey:@"site"];
@@ -134,6 +134,8 @@
                 if ([existingParticipants count] == 1) {
                     // existing user
                     participantcourses = [[NSMutableSet alloc] initWithObjects: course, nil];
+                } else {
+                    participantcourses = [[NSMutableSet alloc] init];
                 }
                 [participantcourses addObject: course];
                 [dbparticipant setValue: participantcourses forKey: @"courses"];
@@ -141,7 +143,16 @@
                 
                 //save the modification
                 if (![[dbparticipant managedObjectContext] save:&error]) {
-                    NSLog(@"Error saving entity: %@", [error localizedDescription]);
+                    NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+                    NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+                    if(detailedErrors != nil && [detailedErrors count] > 0) {
+                        for(NSError* detailedError in detailedErrors) {
+                            NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+                        }
+                    }
+                    else {
+                        NSLog(@"  %@", [error userInfo]);
+                    }
                 }
                 
                 NSNumber *participantexist = [[NSNumber alloc] initWithBool:YES];
