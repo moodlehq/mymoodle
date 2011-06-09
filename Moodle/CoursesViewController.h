@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "ParticipantListViewController.h"
+#import "AppDelegate.h"
 
 
-@interface CoursesViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+@interface CoursesViewController : UITableViewController <NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
     ParticipantListViewController *participantListViewController;
     NSManagedObjectContext *managedObjectContext;
-    NSManagedObject *site;
+    AppDelegate *appDelegate;
 }
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) ParticipantListViewController *participantListViewController;
-@property (nonatomic, retain) NSManagedObject *site;
 @end

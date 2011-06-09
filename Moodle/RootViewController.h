@@ -23,7 +23,7 @@
     TTLauncherView *launcherView;
     TTLauncherItem *webLauncherItem;
     NSManagedObjectContext *managedObjectContext;
-    Reachability *reachability;
+
 }
 - (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url;
 @end

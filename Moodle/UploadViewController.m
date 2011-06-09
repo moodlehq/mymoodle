@@ -75,7 +75,6 @@
 //   [super viewDidLoad];
 //}
 
-
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -104,11 +103,11 @@
     NSLog(@"%@", info);
     if ([mediaType isEqualToString: @"public.image"]) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
         fileName = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
         filePath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, fileName];
         [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
+            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
             // Picked from camera, saving to photo album
             // then upload
             [self uploadAction];
@@ -181,7 +180,6 @@
 }
 
 - (void)uploadAction {
-    NSLog(@"ready to upload");
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
     HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
     [self.navigationController.view addSubview:HUD];

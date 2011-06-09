@@ -50,14 +50,22 @@
 	NSError *err = [http error];
 
 	if (err) {
-        NSLog(@"%@", err);
+        NSLog(@"Error: %@", err);
         [http release];
 		return err;
 	}
-	XMLRPCResponse *data = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
+    NSLog(@"XMLRPC: %@", [http responseString]);
+	XMLRPCResponse *xmlrpcdata = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
     [http release];
-    NSLog(@"%@", [data object]);
-    return [data object];
+    
+    id object = [xmlrpcdata object];
+    NSLog(@"WSClient: %@", object);
+    if ([object isKindOfClass: [NSDictionary class]]) {
+        if ([object valueForKey:@"faultString"]) {
+            [NSException raise:@"XMLRPC Error" format:@"%@", [object valueForKey:@"faultString"]];
+        }
+    }
+    return object;
 }
 
 

@@ -104,91 +104,90 @@
     [request setPostValue: password forKey: @"password"];
     [request setPostValue: @"moodle_mobile_app" forKey: @"service"];
     [request setCompletionBlock: ^{
-        NSString *responseString = [request responseString];
-        NSLog(@"%@", responseString);
+        NSLog(@"TTT: %@", [request responseString]);
         NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary: [request responseData] error: nil];
-
+        
+        NSLog(@"%@", token);
         NSString *sitetoken = [token valueForKey: @"token"];
-
-        //retrieve the site name
-        WSClient *client = [[[WSClient alloc] initWithToken: sitetoken withHost: siteurl] autorelease];
-        NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
-        NSDictionary *siteinfo = [client invoke: @"moodle_webservice_mobile_get_siteinfo" withParams: wsparams];
-        [wsparams release];
-
-        if ([siteinfo isKindOfClass: [NSDictionary class]]) {
-            //check if the site url + userid is already in data core otherwise create a new site
-            NSError *error;
-            NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
-            NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:context];
-            [siteRequest setEntity: siteEntity];
-            NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
-            [siteRequest setPredicate:sitePredicate];
-            NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
-            NSLog(@"Sites info %@", sites);
-
-            if ([sites count] > 0) {
-                MLog(@"Site existed");
-                appDelegate.site = [sites lastObject];
-            } else {
-                MLog(@"Creating new site");
-                appDelegate.site = [NSEntityDescription insertNewObjectForEntityForName: [siteEntity name] inManagedObjectContext:context];
-            }
-            // profile pictre
-            NSString  *picture = [siteinfo objectForKey: @"profilepicture"];
-            // base64 decode
-            NSData       *data = [NSData base64DataFromString:picture];
-            NSString *sitename = [siteinfo objectForKey: @"sitename"];
-            //create/update the site
-            [appDelegate.site setValue: sitename  forKey: @"name"];
-            [appDelegate.site setValue: data      forKey: @"logo"];
-            [appDelegate.site setValue: sitetoken forKey: @"token"];
-            [appDelegate.site setValue: siteurl   forKey: @"url"];
-
-            NSManagedObject *user;
-            //retrieve participant main user
-            if (newEntry) {
-                NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
-                user = [NSEntityDescription insertNewObjectForEntityForName: [mainUserDesc name]
-                                                     inManagedObjectContext: context];
-            } else {
-                user = [appDelegate.site valueForKey:@"mainuser"];
-            }
-
-            [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
-            [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
-            [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
-            [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
-            [user setValue: appDelegate.site forKey:@"site"];
-
-            [appDelegate.site setValue: user forKey: @"mainuser"];
-
-            //save the modification
-            if (![context save: &error]) {
-                NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
-                NSArray *detailedErrors = [[error userInfo] objectForKey: NSDetailedErrorsKey];
-                if(detailedErrors != nil && [detailedErrors count] > 0) {
-                    for(NSError* detailedError in detailedErrors) {
-                        NSLog(@"Detailed Error: %@", [detailedError userInfo]);
+        @try {
+            //retrieve the site name
+            WSClient *client = [[[WSClient alloc] initWithToken: sitetoken withHost: siteurl] autorelease];
+            NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
+            NSDictionary *siteinfo = [client invoke: @"moodle_webservice_get_siteinfo" withParams: wsparams];
+            [wsparams release];
+            NSLog(@"siteinfo: %@", siteinfo);
+            
+            if ([siteinfo isKindOfClass: [NSDictionary class]]) {
+                //check if the site url + userid is already in data core otherwise create a new site
+                NSError *error;
+                NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
+                NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:context];
+                [siteRequest setEntity: siteEntity];
+                NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
+                [siteRequest setPredicate:sitePredicate];
+                NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
+                NSLog(@"Sites info %@", sites);
+                
+                if ([sites count] > 0) {
+                    MLog(@"Site existed");
+                    appDelegate.site = [sites lastObject];
+                } else {
+                    MLog(@"Creating new site");
+                    appDelegate.site = [NSEntityDescription insertNewObjectForEntityForName: [siteEntity name] inManagedObjectContext:context];
+                }
+                // profile pictre
+                NSString  *userpictureurl = [siteinfo objectForKey: @"userpictureurl"];
+                // base64 decode
+//                NSData       *data = [NSData base64DataFromString:picture];
+                NSString *sitename = [siteinfo objectForKey: @"sitename"];
+                //create/update the site
+                [appDelegate.site setValue: sitename  forKey: @"name"];
+                [appDelegate.site setValue: userpictureurl forKey: @"userpictureurl"];
+                [appDelegate.site setValue: sitetoken forKey: @"token"];
+                [appDelegate.site setValue: siteurl   forKey: @"url"];
+                
+                NSManagedObject *user;
+                //retrieve participant main user
+                if (newEntry) {
+                    NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
+                    user = [NSEntityDescription insertNewObjectForEntityForName: [mainUserDesc name]
+                                                         inManagedObjectContext: context];
+                } else {
+                    user = [appDelegate.site valueForKey:@"mainuser"];
+                }
+                
+                [user setValue: [siteinfo objectForKey:@"userid"] forKey:@"userid"];
+                [user setValue: [siteinfo objectForKey:@"username"] forKey:@"username"];
+                [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
+                [user setValue: [siteinfo objectForKey:@"lastname"] forKey:@"lastname"];
+                [user setValue: appDelegate.site forKey:@"site"];
+                
+                [appDelegate.site setValue: user forKey: @"mainuser"];
+                
+                //save the modification
+                if (![context save: &error]) {
+                    NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+                    NSArray *detailedErrors = [[error userInfo] objectForKey: NSDetailedErrorsKey];
+                    if(detailedErrors != nil && [detailedErrors count] > 0) {
+                        for(NSError* detailedError in detailedErrors) {
+                            NSLog(@"Detailed Error: %@", [detailedError userInfo]);
+                        }
+                    }
+                    else {
+                        NSLog(@"  %@", [error userInfo]);
                     }
                 }
-                else {
-                    NSLog(@"  %@", [error userInfo]);
-                }
+                [self.navigationController popToRootViewControllerAnimated:YES];
             }
-            [self.navigationController popToRootViewControllerAnimated:YES];
-            //[[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sites/"] applyAnimated:YES]];
-
-        } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Web service call failed" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        }
+        @catch (NSException *exception) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
             [alert show];
             [alert release];
         }
+
     }];
-    //[request setDelegate: self];
     [request startAsynchronous];
-
-
 }
 
 -(IBAction)textFieldDone:(id)sender {
@@ -407,7 +406,7 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     NSNumber *tagAsNum = [[NSNumber alloc] initWithInt:textField.tag];
-    [fieldValues setObject:textField.text forKey:tagAsNum];
+    [fieldValues setObject: [textField text] forKey:tagAsNum];
     [tagAsNum release];
 }
 @end

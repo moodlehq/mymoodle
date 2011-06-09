@@ -23,15 +23,19 @@
 
 #pragma mark - View lifecycle
 - (void)dealloc {
-    //[self.lastIndexPath release];
+    [self.fetchedResultsController release];
     [super dealloc];
+}
+
+-(void)viewDidUnload {
+    self.fetchedResultsController = nil;
+    [super viewDidUnload];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"selectsite", "Select a site");
-    MLog(@"SiteViewController did load");
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
 
@@ -60,15 +64,10 @@
 
     //if there is no site available go to the add a site view
     if ([MoodleSite countWithContext: managedObjectContext] == 0) {
-        MLog(@"None site found");
         [self addSite];
     }
 }
 
--(void)viewDidUnload {
-    self.lastIndexPath = nil;
-    [super viewDidUnload];
-}
 
 #pragma mark -
 #pragma mark Table Data Source Methods
@@ -96,7 +95,12 @@
     NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
     NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
     NSLog(@"CellForRow - the default site url is: %@", defaultSiteUrl);
-    UIImage *image = [UIImage imageWithData: [appDelegate.site valueForKey:@"logo"]];
+    NSLog(@"%@", [appDelegate.site valueForKey:@"userpictureurl"]);
+    NSURL *url = [NSURL URLWithString: [appDelegate.site valueForKey:@"userpictureurl"]];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+//    UIImage *image = [[UIImage alloc] initWithData: data cache:YES];
+    UIImage *image = [[UIImage alloc] initWithData: data];
+
     cell.imageView.image = image;
 
     CGRect siteNameRect = CGRectMake(100, 5, 200, 18);
@@ -135,7 +139,6 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     appDelegate.site = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    MLog(@"To settings view");
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://settings/no"] applyAnimated:YES]];
 //    settingsSiteViewController.title = [settingsSiteViewController.site valueForKey:@"name"];
 //    [self.navigationController pushViewController:settingsSiteViewController animated:YES];
@@ -173,7 +176,7 @@
         [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
         [defaults synchronize];
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath: indexPath animated:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -221,6 +224,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    NSLog(@"begain update sitesview table view");
     [self.tableView beginUpdates];
 }
 

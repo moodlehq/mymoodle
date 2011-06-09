@@ -11,11 +11,6 @@
 #import "AppDelegate.h"
 #import "MoodleStyleSheet.h"
 
-@interface RootViewController (Private)
-- (void)connChanged:(NSNotification*)notification;
-@end
-
-
 @implementation RootViewController
 
 /**
@@ -29,7 +24,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc]
                                     initWithTitle:@"Sites"
                                     style:UIBarButtonItemStylePlain
@@ -67,6 +62,17 @@
     launcherView.frame = CGRectMake(0, 0, rect.size.width, rect.size.height-80);
 
     [self.view addSubview: launcherView];
+    
+    //    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    //    NSEntityDescription *entity = [NSEntityDescription entityForName: @"Job" inManagedObjectContext: managedObjectContext];
+    //    [request setEntity: entity];
+    //    NSArray *objects = [managedObjectContext executeFetchRequest: request error: &error];
+    //    
+    //    for (NSManagedObject *info in objects) {
+    //        NSLog(@"%@", [info valueForKey: @"target"]);
+    //    }
+    //    [request release];
+    
     TTButton *syncButton = [TTButton buttonWithStyle:@"notificationButton:" title: NSLocalizedString(@"Sync", "Sync") ];
     [syncButton addTarget:self
                action:@selector(launchNotification:) forControlEvents: UIControlEventTouchUpInside];
@@ -86,16 +92,30 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    //Set a method to be called when a notification is sent.
-    reachability = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];
-    [reachability startNotifier];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [[NSNotificationCenter defaultCenter] addObserver: appDelegate selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
-    //if there is no site selected go to the site selection
-    NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-    if (defaultSiteUrl == nil) {
+    NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey: kSelectedSiteUrlKey];
+    NSLog(@"Default site url: %@", defaultSiteUrl);
+    NSLog(@"Default site obj: %@", appDelegate.site);
+    if (defaultSiteUrl == nil || appDelegate.site == nil) {
         [self displaySettingsView];
     }
+
+    NSManagedObject *job = [NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext];
+    [job setValue: @"MoodleMedia" forKey: @"target"];
+    [job setValue: @"test" forKey: @"action"];
+    [job setValue: @"some description" forKey: @"desc"];
+    [job setValue: @"silly data" forKey: @"data"];
+    [job setValue: @"json" forKey: @"dataformat"];
+    [job setValue: @"undone" forKey: @"status"];
+    [job setValue: appDelegate.site forKey: @"site"];
+    
+    NSError *error;
+    NSLog(@"Saving test data");
+    if (![managedObjectContext save: &error]) {
+        
+    }
+
+    //if there is no site selected go to the site selection
 }
 
 - (void)viewWillDisappear:(BOOL)animated

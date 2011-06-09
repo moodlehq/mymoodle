@@ -14,6 +14,7 @@
 @interface SitesViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
     NSArray *list;
     NSManagedObjectContext *managedObjectContext;
+    NSFetchedResultsController *__fetchedResultsController;
     AppDelegate *appDelegate;
     NSIndexPath *lastIndexPath;
     UIImageView *lastCheckMark;

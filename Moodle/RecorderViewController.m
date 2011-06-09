@@ -30,11 +30,12 @@
 
 - (void)loadView {
     [super loadView];
-    TTLabel *_ttLabel = [[TTLabel alloc] initWithText:@"ttffffffflabel"];
-    _ttLabel.frame = CGRectMake(10, 50, 50, 50);
-    _ttLabel.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_ttLabel];
+    UIImage *image = [ UIImage imageNamed: @"microphone.jpg" ];
+    UIImageView *imageView = [ [ UIImageView alloc ] initWithImage:image ];
+    imageView.frame = CGRectMake(0.0f, 0.0f, 320.0f, 480.0f);
+    [self.view addSubview: imageView];
 
+    
     self.view.backgroundColor = UIColorFromRGB(ColorBackground);
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 

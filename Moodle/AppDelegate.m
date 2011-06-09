@@ -20,6 +20,7 @@
 #import "RecorderViewController.h"
 #import "CoursesViewController.h"
 #import "MoodleStyleSheet.h"
+#import "Reachability.h"
 
 
 @implementation AppDelegate
@@ -60,6 +61,7 @@ static AppDelegate *moodleApp = NULL;
 {
     MLog(@"Moodle app didFinishLaunchingWithOptions");
 
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     NSManagedObjectContext *context = [self managedObjectContext];
     if (!context) {
@@ -68,7 +70,20 @@ static AppDelegate *moodleApp = NULL;
     NSInteger count = [MoodleSite countWithContext:context];
 
     MLog(@"We got %d sites configured", count);
-
+    if (count > 0) {
+        // restore active site info
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext: self.managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entity];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(url = %@ AND token = %@)",
+                                  [defaults stringForKey:kSelectedSiteUrlKey],
+                                  [defaults stringForKey:kSelectedSiteTokenKey]];
+        [request setPredicate: predicate];
+        NSError *error = nil;
+        NSArray *sites = [self.managedObjectContext executeFetchRequest:request error:&error];
+        self.site = [sites lastObject];
+        NSLog(@"Active site: %@", self.site);
+    }
 
     [TTStyleSheet setGlobalStyleSheet:[[[MoodleStyleSheet alloc] init] autorelease]];
     TTNavigator *navigator = [TTNavigator navigator];
@@ -88,6 +103,11 @@ static AppDelegate *moodleApp = NULL;
     //if (![navigator restoreViewControllers]) {
     [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
     //}
+
+    //Set a method to be called when a notification is sent.
+    Reachability *reachability = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];
+    [reachability startNotifier];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
     return YES;
 }
 
@@ -263,29 +283,7 @@ static AppDelegate *moodleApp = NULL;
 	Reachability* curReach = [note object];
 	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
     netStatus = [curReach currentReachabilityStatus];
-    BOOL connectionRequired= [curReach connectionRequired];
     NSLog(@"Connection status changed: %d", netStatus);
     NSLog(@"NotReachable: %d  ReachableViaWWAN: %d  ReachableViaWiFi: %d", NotReachable, ReachableViaWWAN, ReachableViaWiFi);
-    NSString* statusString= @"";
-    switch (netStatus)
-    {
-        case NotReachable:
-        {
-            statusString = @"Access Not Available";
-            //Minor interface detail- connectionRequired may return yes, even when the host is unreachable.  We cover that up here...
-            connectionRequired= NO;
-            break;
-        }
-        case ReachableViaWWAN:
-        {
-            statusString = @"Reachable WWAN";
-            break;
-        }
-        case ReachableViaWiFi:
-        {
-            statusString= @"Reachable WiFi";
-            break;
-        }
-    }
 }
 @end

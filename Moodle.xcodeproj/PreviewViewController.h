@@ -10,11 +10,13 @@
 #import "MBProgressHUD.h"
 #import "ASIFormDataRequest.h"
 #import "Constants.h"
+#import "AppDelegate.h"
 
-@interface PreviewViewController : UIViewController <UINavigationControllerDelegate, MBProgressHUDDelegate> {
+@interface PreviewViewController : UIViewController <UINavigationControllerDelegate, MBProgressHUDDelegate, UIAlertViewDelegate> {
     UIImageView *imageView;
     NSString *fileName;
     NSString *filePath;
+    AppDelegate *_appDelegate;
     // will be released by delegate method
     MBProgressHUD *HUD;
     

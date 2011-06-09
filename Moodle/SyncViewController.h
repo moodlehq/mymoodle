@@ -1,5 +1,5 @@
 //
-//  NotificationViewController.h
+//  SyncViewController.h
 //  Moodle
 //
 //  Created by Dongsheng Cai on 23/05/11.
@@ -9,8 +9,9 @@
 #import <Three20/Three20.h>
 
 
-@interface SyncViewController : TTViewController {
-    
+@interface SyncViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+    NSFetchedResultsController *_fetchedResultsController;
+    NSManagedObjectContext *context;
 }
-
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @end

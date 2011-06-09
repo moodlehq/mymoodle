@@ -10,12 +10,10 @@
 #import "Constants.h"
 #import "WSClient.h"
 #import "ParticipantListViewController.h"
-#import "AppDelegate.h"
 
 @implementation CoursesViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
 @synthesize participantListViewController;
-@synthesize site;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -28,6 +26,7 @@
 
 - (void)dealloc
 {
+    [__fetchedResultsController release];
     [super dealloc];
 }
 
@@ -41,205 +40,114 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
-{
-    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-    [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
 - (void)viewDidUnload
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-
-    //look for the site
-    NSEntityDescription *siteEntityDescription = [NSEntityDescription entityForName:@"Site" inManagedObjectContext: managedObjectContext];
-    NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
-    [siteRequest setEntity:siteEntityDescription];
-    NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND token = %@)", [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedSiteUrlKey], [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedSiteTokenKey]];
-    [siteRequest setPredicate:sitePredicate];
-    NSError *error = nil;
-    NSArray *sites = [managedObjectContext executeFetchRequest:siteRequest error:&error];
-    self.site = [sites lastObject];
-
-
-    //TEST FOR USER DEFAULT
-    //    NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-    //    NSLog(@"BEFORE GET COURSE WS - the default site url is: %@", defaultSiteUrl);
-    //    NSString *defaultSiteToken = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
-    //    NSLog(@"BEFORE GET COURSE WS - the default site token is: %@", defaultSiteToken);
-    //    NSString *defaultSiteUserId = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-    //    NSLog(@"BEFORE GET COURSE WS - the default site user id is: %@", defaultSiteUserId);
-
-
-    self.title = NSLocalizedString(@"mycourses", @"My courses title");
-
+- (void)viewDidAppear:(BOOL)animated {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSLog(@"%@", [defaults valueForKey:kSelectedUserIdKey]);
     //retrieve the course by webservice
-    BOOL offlineMode = [defaults boolForKey:kSelectedOfflineModeKey];
-    if (!offlineMode) {
-        WSClient *client = [[WSClient alloc] init];
-        NSNumber *userid         = [defaults objectForKey:kSelectedUserIdKey];
-        NSArray *userparamvalue  = [[NSArray alloc] initWithObjects:userid, nil];
-        NSArray *userparamkey    = [[NSArray alloc] initWithObjects:@"userid", nil];
-        NSDictionary *userparams = [[NSDictionary alloc] initWithObjects:userparamvalue forKeys:userparamkey];
-        NSArray *subarray        = [[NSArray alloc]initWithObjects:userparams, nil];
-        NSArray *wsparams        = [[NSArray alloc] initWithObjects:subarray, nil];
+    if (YES) {
+        WSClient *client = [[[WSClient alloc] init] autorelease];
+        NSNumber *userid  = [defaults objectForKey:kSelectedUserIdKey];
+        NSLog(@"User ID: %@", userid);
+        NSArray *wsparams = [[NSArray alloc] initWithObjects: userid, nil];
         NSArray *result;
         @try {
-            result = [client invoke: @"moodle_enrol_get_courses_by_enrolled_users" withParams: wsparams];
+            result = [client invoke: @"moodle_enrol_get_users_courses" withParams: wsparams];
         }
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate: nil cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
         }
-
-        [client release];
-
-        //TEST FOR USER DEFAULT
-        //        NSString *defaultSiteUrl2 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-        //        NSLog(@"AFTER GET COURSE WS - the default site url is: %@", defaultSiteUrl2);
-        //        NSString *defaultSiteToken2 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
-        //        NSLog(@"AFTER GET COURSE WS - the default site token is: %@", defaultSiteToken2);
-        //        NSString *defaultSiteUserId2 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-        //        NSLog(@"AFTER GET COURSE WS - the default site user id is: %@", defaultSiteUserId2);
-
+        
         NSError *error;
-
+        
         //retrieve all courses that will need to be deleted from core data if they are not returned by the web service call
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
         [request setEntity:entityDescription];
-        NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", self.site];
+        NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
         [request setPredicate:coursePredicate];
-        NSArray *coursesToDelete = [managedObjectContext executeFetchRequest:request error:&error];
-        NSMutableDictionary *coursesToNotDelete = [[NSMutableDictionary alloc] init];
-        NSLog(@"Courses in core data: %@", coursesToDelete);
-        NSLog(@"Number of course in core data before web service call: %d", [coursesToDelete count]);
+        NSArray *allCourses = [managedObjectContext executeFetchRequest: request error:&error];
 
-        //TEST FOR USER DEFAULT
-        //        NSString *defaultSiteUrl21 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-        //        NSLog(@"AFTER GET COURSE WS - 2 the default site url is: %@", defaultSiteUrl21);
-        //        NSString *defaultSiteToken21 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
-        //        NSLog(@"AFTER GET COURSE WS - 2 the default site token is: %@", defaultSiteToken21);
-        //        NSString *defaultSiteUserId21 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-        //        NSLog(@"AFTER GET COURSE WS - 2 the default site user id is: %@", defaultSiteUserId21);
-
-
+        NSLog(@"Number of course in core data before web service call: %d", [allCourses count]);
+        
+        NSMutableDictionary *retainedCourses = [[NSMutableDictionary alloc] init];
+        
         //update core data courses with course from web service call
-        if (result != nil) {
-            NSLog(@"Result: %@", result);
-            for ( NSDictionary *item in result) {
+        if ([result isKindOfClass: [NSArray class]]) {
+            for (NSDictionary *wscourse in result) {
+                NSManagedObject *course;
 
-                NSArray *mycourses = [item objectForKey:@"courses"];
-                for (NSDictionary *wscourse in mycourses ) {
-
-                    NSManagedObject *course;
-
-                    //check if the course id is already in core data
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                              @"(id = %@ AND site = %@)", [wscourse objectForKey:@"id"], self.site];
-                    [request setPredicate:predicate];
-                    NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
-                    if ([existingCourses count] == 1) {
-                        //retrieve the course to update
-                        course = [existingCourses lastObject];
-
-                    } else if ([existingCourses count] ==0) {
-                        //the course is not in core data, we add it
-                        course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
-
-                    } else {
-                        NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
-                    }
-
-                    //set the course values
-                    [course setValue:[wscourse objectForKey:@"fullname"] forKey:@"fullname"];
-                    [course setValue:[wscourse objectForKey:@"id"] forKey:@"id"];
-                    [course setValue:[wscourse objectForKey:@"shortname"] forKey:@"shortname"];
-                    [course setValue:self.site forKey:@"site"];
-
-                    //save the modification
-
-                    //                    //TEST FOR USER DEFAULT
-                    //                    NSString *defaultSiteUrl214 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-                    //                    NSLog(@"AFTER GET COURSE WS - 4 the default site url is: %@", defaultSiteUrl214);
-                    //                    NSString *defaultSiteToken214 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
-                    //                    NSLog(@"AFTER GET COURSE WS - 4 the default site token is: %@", defaultSiteToken214);
-                    //                    NSString *defaultSiteUserId214 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-                    //                    NSLog(@"AFTER GET COURSE WS - 4 the default site user id is: %@", defaultSiteUserId214);
-                    //                    //TEST FOR USER DEFAULT
-                    //                    NSString *defaultSiteUrl2145 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-                    //                    NSLog(@"AFTER GET COURSE WS - 5 the default site url is: %@", defaultSiteUrl2145);
-                    //                    NSString *defaultSiteToken2145 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
-                    //                    NSLog(@"AFTER GET COURSE WS - 5 the default site token is: %@", defaultSiteToken2145);
-                    //                    NSString *defaultSiteUserId2145 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-                    //                    NSLog(@"AFTER GET COURSE WS - 5 the default site user id is: %@", defaultSiteUserId2145);
-
-                    NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
-                    [coursesToNotDelete setObject:courseexist forKey:[wscourse objectForKey:@"id"]];
-                    [courseexist release];
-
+                //check if the course id is already in core data
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                          @"(id = %@ AND site = %@)", [wscourse objectForKey:@"id"], appDelegate.site];
+                [request setPredicate:predicate];
+                NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
+                NSLog(@"Found %d course", [existingCourses count]);
+                
+                if ([existingCourses count] == 1) {
+                    NSLog(@"Update a existing course %@", [wscourse objectForKey:@"shortname"]);
+                    course = [existingCourses lastObject];
+                    
+                } else if ([existingCourses count] == 0) {
+                    NSLog(@"Add a new course %@", [wscourse objectForKey:@"shortname"]);
+                    course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
+                } else {
+                    NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
                 }
+                
+                //set the course values
+                [course setValue: appDelegate.site forKey:@"site"];
+                [course setValue: [wscourse objectForKey:@"id"] forKey:@"id"];
+                [course setValue: [wscourse objectForKey:@"fullname"]  forKey:@"fullname"];
+                [course setValue: [wscourse objectForKey:@"shortname"] forKey:@"shortname"];
+
+                NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
+                NSLog(@"Course exist BOOL %@", courseexist);
+                [retainedCourses setObject: courseexist forKey: [wscourse objectForKey:@"id"]];
+                [courseexist release];
             }
-
-
         }
-
-
-        //delete the obsolete courses from core data
-        NSLog(@" the course to no detele are %@", coursesToNotDelete);
-        NSLog(@" the course to detele are %@", coursesToDelete);
-        for (NSManagedObject *courseToDelete in coursesToDelete) {
-            NSNumber *thecourseexist = [coursesToNotDelete objectForKey:[courseToDelete valueForKey:@"id"]];
+        for (NSManagedObject *c in allCourses) {
+            NSNumber *thecourseexist = [retainedCourses objectForKey:[c valueForKey:@"id"]];
             if ([thecourseexist intValue] == 0) {
-                NSLog(@"I'm deleting the course %@", courseToDelete);
-
-                [managedObjectContext deleteObject:courseToDelete];
+                NSLog(@"Deleting the course %@", c);
+                [managedObjectContext deleteObject: c];
             }
         }
-
-        //        //TEST FOR USER DEFAULT
-        //        NSString *defaultSiteUrl22 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-        //        NSLog(@"AFTER GET COURSE WS - 3 the default site url is: %@", defaultSiteUrl22);
-        //        NSString *defaultSiteToken22 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteTokenKey];
-        //        NSLog(@"AFTER GET COURSE WS - 3 the default site token is: %@", defaultSiteToken22);
-        //        NSString *defaultSiteUserId22 = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedUserIdKey];
-        //        NSLog(@"AFTER GET COURSE WS - 3 the default site user id is: %@", defaultSiteUserId22);
-
         //save the modifications
-        NSLog(@"Start %@", managedObjectContext);
-        if (managedObjectContext != nil) {
-            if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            //if (![managedObjectContext save:&error]) {
-                NSLog(@"Error saving entity: %@", [error localizedDescription]);
-            }
+        if ([managedObjectContext hasChanges] && ![managedObjectContext save: nil]) {
+            //NSLog(@"Error saving entity: %@", [error localizedDescription]);
         }
-
-        NSLog(@"end");
-        [coursesToNotDelete release];
+        [retainedCourses release];
+        allCourses = [managedObjectContext executeFetchRequest: request error:&error];
+        
+        NSLog(@"Number of course in core data after web service call: %d", [allCourses count]);
     }
+    
+    
+    [super viewDidAppear: animated];
+}
+- (void)viewDidLoad
+{
+    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
 
-
-
-    [super viewWillAppear:animated];
+    [super viewDidLoad];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
+    
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    self.title = NSLocalizedString(@"mycourses", @"My courses title");
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -282,9 +190,10 @@
     }
 
     NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSLog(@"Renderring course: %@", oneCourse);
 
     // Configure the cell...
-     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
 //    UIImage *image = [UIImage imageNamed:@"profilpicture.jpg"];
 //    cell.imageView.image = image;
@@ -349,21 +258,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
-
     NSManagedObject *selectedCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
     participantListViewController.course = selectedCourse;
     NSString *participantListViewTitle = NSLocalizedString(@"participants", @"Participants");
     participantListViewController.title = participantListViewTitle;
-
-    [self.navigationController pushViewController:participantListViewController animated:YES];
+    [self.navigationController pushViewController: participantListViewController animated:YES];
 }
 
 #pragma mark - Fetched results controller
@@ -385,21 +284,21 @@
     [fetchRequest setEntity:entity];
 
     //Set the predicate for only current site
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", self.site];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
     [fetchRequest setPredicate:predicate];
 
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
 
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"fullname" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"fullname" ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
 
     [fetchRequest setSortDescriptors:sortDescriptors];
 
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName: nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
 
