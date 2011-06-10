@@ -107,7 +107,7 @@
                 
                 //check if the user id is already in core data participants
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                          @"(userid = %@ AND (ANY courses = %@))", [participant objectForKey: @"userid"], course];
+                                          @"(userid = %@ AND (ANY site = %@))", [participant objectForKey: @"userid"], [course valueForKey:@"site"]];
                 [request setPredicate:predicate];
                 NSArray *existingParticipants = [managedObjectContext executeFetchRequest:request error:&error];
                 if ([existingParticipants count] == 1) {

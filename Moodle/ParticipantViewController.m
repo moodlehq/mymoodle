@@ -102,7 +102,7 @@
     [filePath release];
 
     //Set the labels
-    fullname.text = [NSString stringWithFormat:@"%@ %@",[participant valueForKey:@"firstname"], [participant valueForKey:@"lastname"]];
+    fullname.text = [NSString stringWithFormat:@"%@",[participant valueForKey:@"fullname"]];
 
 
 }
