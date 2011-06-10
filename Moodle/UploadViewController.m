@@ -12,9 +12,45 @@
 #import "RecorderViewController.h"
 #import "MoodleImagePickerController.h"
 #import "MoodleMedia.h"
-
+#import <TargetConditionals.h>
 
 @implementation UploadViewController
+
+//this is an Apple function to detect if AAC is enabled
+//Source: http://developer.apple.com/library/ios/#qa/qa1663/_index.html
+Boolean IsAACHardwareEncoderAvailable(void)
+{
+    if (TARGET_IPHONE_SIMULATOR) {
+        return true;
+    }
+
+    Boolean isAvailable = false;
+    OSStatus error;
+
+    // get an array of AudioClassDescriptions for all installed encoders for the given format 
+    // the specifier is the format that we are interested in - this is 'aac ' in our case
+    UInt32 encoderSpecifier = kAudioFormatMPEG4AAC;
+    UInt32 size;
+
+    error = AudioFormatGetPropertyInfo(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size);
+    if (error) { 
+        printf("AudioFormatGetPropertyInfo kAudioFormatProperty_Encoders error %lu %4.4s\n", error, (char*)&error); return false; 
+    }
+
+    UInt32 numEncoders = size / sizeof(AudioClassDescription);
+    AudioClassDescription encoderDescriptions[numEncoders];
+
+    error = AudioFormatGetProperty(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size, encoderDescriptions);
+    if (error) { printf("AudioFormatGetProperty kAudioFormatProperty_Encoders error %lu %4.4s\n", error, (char*)&error); return false; }
+
+    for (UInt32 i=0; i < numEncoders; ++i) {
+        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleHardwareAudioCodecManufacturer) {
+            isAvailable = true;
+        }
+    }
+
+    return isAvailable;
+}
 
 - (void)dealloc
 {
@@ -58,14 +94,15 @@
     button.frame = CGRectMake(x, (2*y) + height, width, height);
     [self.view addSubview:button];
 
-
-    button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Record audio", "Record audio")];
-    [button addTarget:self
+    if (IsAACHardwareEncoderAvailable()) { // do not display audio recorder if AAC not supported (we could use PCM but we would have to encode it and it's too slow)
+        button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Record audio", "Record audio")];
+        [button addTarget:self
                action:@selector(loadRecorder:)
-     forControlEvents:UIControlEventTouchUpInside];
-    [button setTitle:@"Record audio" forState:UIControlStateNormal];
-    button.frame = CGRectMake(x, (3*y) + (2*height), width, height);
-    [self.view addSubview:button];
+         forControlEvents:UIControlEventTouchUpInside];
+        [button setTitle:@"Record audio" forState:UIControlStateNormal];
+        button.frame = CGRectMake(x, (3*y) + (2*height), width, height);
+        [self.view addSubview:button];
+    }
 }
 
 
