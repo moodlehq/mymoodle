@@ -9,6 +9,7 @@
 #import "ParticipantViewController.h"
 #import "HashValue.h"
 #import "Reachability.h"
+#import "WSClient.h"
 
 
 @implementation ParticipantViewController
@@ -17,6 +18,7 @@
 @synthesize profilePictureView;
 @synthesize phoneNumber;
 @synthesize fullname;
+@synthesize course;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -43,6 +45,82 @@
 }
 
 #pragma mark - View lifecycle
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    //retrieve the participant information
+        WSClient *client   = [[WSClient alloc] init];
+        NSNumber *participantid = [participant valueForKey:@"userid"];
+        NSArray *userids = [[NSArray alloc] initWithObjects: participantid, nil];
+        NSArray *paramvalues = [[NSArray alloc] initWithObjects: userids, nil];
+        NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"userids", nil];
+        NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
+        NSLog(@"%@", paramkeys);
+        NSArray *result;
+        @try {
+            result = [client invoke: @"moodle_user_get_users_by_id" withParams: (NSArray *)params];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+        
+        [client release];
+    
+        //TODO: make it more generic to support when call from a view where the participant hasn't been previously added in core data
+        //or manage when the user has been deleted on the Moodle site
+        
+        NSError *error = nil;
+        if (result != nil) {
+            for ( NSDictionary *theparticipant in result) { //only one participant is returned
+                
+                //set the participant values
+                [participant setValue:[theparticipant objectForKey: @"username"] forKey:@"username"];
+                [participant setValue:[theparticipant objectForKey: @"firstname"] forKey:@"firstname"];
+                [participant setValue:[theparticipant objectForKey: @"lastname"] forKey:@"lastname"];
+                [participant setValue:[theparticipant objectForKey: @"fullname"] forKey:@"fullname"];
+                [participant setValue:[theparticipant objectForKey: @"email"]  forKey:@"email"];
+                [participant setValue:[theparticipant objectForKey: @"address"] forKey:@"address"];
+                [participant setValue:[theparticipant objectForKey: @"phone1"] forKey:@"phone1"];
+                [participant setValue:[theparticipant objectForKey: @"phone2"] forKey:@"phone2"];
+                [participant setValue:[theparticipant objectForKey: @"icq"] forKey:@"icq"];
+                [participant setValue:[theparticipant objectForKey: @"skype"] forKey:@"skype"];
+                [participant setValue:[theparticipant objectForKey: @"yahoo"] forKey:@"yahoo"];
+                [participant setValue:[theparticipant objectForKey: @"aim"] forKey:@"aim"];
+                [participant setValue:[theparticipant objectForKey: @"msn"] forKey:@"msn"];
+                [participant setValue:[theparticipant objectForKey: @"department"] forKey:@"department"];
+                [participant setValue:[theparticipant objectForKey: @"institution"] forKey:@"institution"];
+                [participant setValue:[theparticipant objectForKey: @"interests"] forKey:@"interests"];
+                [participant setValue:[NSDate dateWithTimeIntervalSince1970:(int)[theparticipant objectForKey: @"firstaccess"]] forKey:@"firstaccess"];
+                [participant setValue:[NSDate dateWithTimeIntervalSince1970:(int)[theparticipant objectForKey: @"lastaccess"]] forKey:@"lastaccess"];
+                [participant setValue:[theparticipant objectForKey: @"idnumber"] forKey:@"idnumber"];
+                [participant setValue:[theparticipant objectForKey: @"lang"] forKey:@"lang"];
+                [participant setValue:[theparticipant objectForKey: @"timezone"] forKey:@"timezone"];
+                [participant setValue:[theparticipant objectForKey: @"description"] forKey:@"desc"];
+                [participant setValue:[theparticipant objectForKey: @"descriptionformat"] forKey:@"descformat"];
+                [participant setValue:[theparticipant objectForKey: @"city"] forKey:@"city"];
+                [participant setValue:[theparticipant objectForKey: @"url"] forKey:@"url"];
+                [participant setValue:[theparticipant objectForKey: @"country"] forKey:@"country"];
+                [participant setValue:[theparticipant objectForKey: @"profileimageurlsmall"] forKey:@"profileimgurlsmall"];
+                [participant setValue:[theparticipant objectForKey: @"profileimageurl"] forKey:@"profileimgurl"];
+
+                //save the modification
+                if (![[participant managedObjectContext] save:&error]) {
+                    NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+                    NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+                    if(detailedErrors != nil && [detailedErrors count] > 0) {
+                        for(NSError* detailedError in detailedErrors) {
+                            NSLog(@"  DetailedError: %@", [detailedError userInfo]);
+                        }
+                    }
+                    else {
+                        NSLog(@"  %@", [error userInfo]);
+                    }
+                }
+            }
+        }
+}
 
 - (void)viewDidLoad
 {

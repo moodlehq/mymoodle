@@ -313,6 +313,7 @@
     participantViewController.participant = selectedParticipant;
     NSString *participantViewTitle = [NSString stringWithFormat:@"%@ %@", [selectedParticipant valueForKey:@"firstname"], [selectedParticipant valueForKey:@"lastname"]];
     participantViewController.title = participantViewTitle;
+    participantViewController.course = course;
 
     [self.navigationController pushViewController:participantViewController animated:YES];
 }
