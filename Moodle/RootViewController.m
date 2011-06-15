@@ -100,23 +100,6 @@
     if (defaultSiteUrl == nil || appDelegate.site == nil) {
         [self displaySettingsView];
     }
-
-    NSManagedObject *job = [NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext];
-    [job setValue: @"MoodleMedia" forKey: @"target"];
-    [job setValue: @"test" forKey: @"action"];
-    [job setValue: @"some description" forKey: @"desc"];
-    [job setValue: @"silly data" forKey: @"data"];
-    [job setValue: @"json" forKey: @"dataformat"];
-    [job setValue: @"undone" forKey: @"status"];
-    [job setValue: appDelegate.site forKey: @"site"];
-    
-    NSError *error;
-    NSLog(@"Saving test data");
-    if (![managedObjectContext save: &error]) {
-        
-    }
-
-    //if there is no site selected go to the site selection
 }
 
 - (void)viewWillDisappear:(BOOL)animated

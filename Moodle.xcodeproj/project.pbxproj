@@ -60,6 +60,15 @@
 		B54F75C21393672300C95039 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BA1393672300C95039 /* CJSONScanner.m */; };
 		B54F75C31393672300C95039 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BC1393672300C95039 /* CJSONSerializer.m */; };
 		B54F75C913937B8000C95039 /* MoodleMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75C813937B8000C95039 /* MoodleMedia.m */; };
+		B55873E413A8AB77006526F3 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B55873DA13A8AB77006526F3 /* EGORefreshTableHeaderView.m */; };
+		B55873E513A8AB77006526F3 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DC13A8AB77006526F3 /* blackArrow.png */; };
+		B55873E613A8AB77006526F3 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DD13A8AB77006526F3 /* blackArrow@2x.png */; };
+		B55873E713A8AB77006526F3 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DE13A8AB77006526F3 /* blueArrow.png */; };
+		B55873E813A8AB77006526F3 /* blueArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DF13A8AB77006526F3 /* blueArrow@2x.png */; };
+		B55873E913A8AB77006526F3 /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873E013A8AB77006526F3 /* grayArrow.png */; };
+		B55873EA13A8AB77006526F3 /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873E113A8AB77006526F3 /* grayArrow@2x.png */; };
+		B55873EB13A8AB77006526F3 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873E213A8AB77006526F3 /* whiteArrow.png */; };
+		B55873EC13A8AB77006526F3 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873E313A8AB77006526F3 /* whiteArrow@2x.png */; };
 		B5609F3A137F8DC000C59271 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5609F39137F8DC000C59271 /* AudioToolbox.framework */; };
 		B56983CC13896648003FECD2 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B56983CB13896648003FECD2 /* WebViewController.m */; };
 		B577155F138102DD007582EF /* RecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B577155D138102DD007582EF /* RecorderViewController.m */; };
@@ -350,6 +359,16 @@
 		B54F75BD1393672300C95039 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
 		B54F75C713937B8000C95039 /* MoodleMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleMedia.h; sourceTree = "<group>"; };
 		B54F75C813937B8000C95039 /* MoodleMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleMedia.m; sourceTree = "<group>"; };
+		B55873D913A8AB77006526F3 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
+		B55873DA13A8AB77006526F3 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
+		B55873DC13A8AB77006526F3 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
+		B55873DD13A8AB77006526F3 /* blackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackArrow@2x.png"; sourceTree = "<group>"; };
+		B55873DE13A8AB77006526F3 /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueArrow.png; sourceTree = "<group>"; };
+		B55873DF13A8AB77006526F3 /* blueArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blueArrow@2x.png"; sourceTree = "<group>"; };
+		B55873E013A8AB77006526F3 /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grayArrow.png; sourceTree = "<group>"; };
+		B55873E113A8AB77006526F3 /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
+		B55873E213A8AB77006526F3 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
+		B55873E313A8AB77006526F3 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
 		B5609F39137F8DC000C59271 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B56983CA13896647003FECD2 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		B56983CB13896648003FECD2 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
@@ -694,6 +713,48 @@
 			path = TouchJSON/Source/JSON;
 			sourceTree = SOURCE_ROOT;
 		};
+		B55873D613A8AB77006526F3 /* EGOTableViewPullRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				B55873D713A8AB77006526F3 /* Classes */,
+				B55873DB13A8AB77006526F3 /* Resources */,
+			);
+			name = EGOTableViewPullRefresh;
+			path = EGOTableViewPullRefresh/EGOTableViewPullRefresh;
+			sourceTree = SOURCE_ROOT;
+		};
+		B55873D713A8AB77006526F3 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				B55873D813A8AB77006526F3 /* View */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		B55873D813A8AB77006526F3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B55873D913A8AB77006526F3 /* EGORefreshTableHeaderView.h */,
+				B55873DA13A8AB77006526F3 /* EGORefreshTableHeaderView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B55873DB13A8AB77006526F3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B55873DC13A8AB77006526F3 /* blackArrow.png */,
+				B55873DD13A8AB77006526F3 /* blackArrow@2x.png */,
+				B55873DE13A8AB77006526F3 /* blueArrow.png */,
+				B55873DF13A8AB77006526F3 /* blueArrow@2x.png */,
+				B55873E013A8AB77006526F3 /* grayArrow.png */,
+				B55873E113A8AB77006526F3 /* grayArrow@2x.png */,
+				B55873E213A8AB77006526F3 /* whiteArrow.png */,
+				B55873E313A8AB77006526F3 /* whiteArrow@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -701,6 +762,7 @@
 				B57CD18E133C79D500CCB81A /* Controllers */,
 				B5B0EB201383AFC3000A9330 /* Reachability */,
 				B5031AD5138007B9005BB407 /* MBProgressHUD */,
+				B55873D613A8AB77006526F3 /* EGOTableViewPullRefresh */,
 				023AF82F137A815E00BCDEEF /* Utils */,
 				B5031AEE1380134F005BB407 /* HTTP */,
 				B57CD15D133C791500CCB81A /* XMLRPC */,
@@ -1104,6 +1166,14 @@
 				B5C4329313A7B27800F8F1A9 /* sync.png in Resources */,
 				B5C4329513A7BDC100F8F1A9 /* item.png in Resources */,
 				B5C4329713A7C99B00F8F1A9 /* course.png in Resources */,
+				B55873E513A8AB77006526F3 /* blackArrow.png in Resources */,
+				B55873E613A8AB77006526F3 /* blackArrow@2x.png in Resources */,
+				B55873E713A8AB77006526F3 /* blueArrow.png in Resources */,
+				B55873E813A8AB77006526F3 /* blueArrow@2x.png in Resources */,
+				B55873E913A8AB77006526F3 /* grayArrow.png in Resources */,
+				B55873EA13A8AB77006526F3 /* grayArrow@2x.png in Resources */,
+				B55873EB13A8AB77006526F3 /* whiteArrow.png in Resources */,
+				B55873EC13A8AB77006526F3 /* whiteArrow@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1186,6 +1256,7 @@
 				B51EC3E11394BBA40048C866 /* ASINetworkQueue.m in Sources */,
 				B51EC3E41394BBD30048C866 /* Reachability.m in Sources */,
 				B53FAB5C1398C06B008206EA /* MoodleJob.m in Sources */,
+				B55873E413A8AB77006526F3 /* EGORefreshTableHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

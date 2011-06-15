@@ -10,3 +10,6 @@
 [submodule "TouchJSON"]
 	path = TouchJSON
 	url = git://github.com/TouchCode/TouchJSON.git
+[submodule "EGOTableViewPullRefresh"]
+	path = EGOTableViewPullRefresh
+	url = git://github.com/enormego/EGOTableViewPullRefresh.git

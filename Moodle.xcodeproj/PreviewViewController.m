@@ -101,8 +101,8 @@
 }
 
 - (IBAction)uploadPressed: (id)sender {
-//    if (_appDelegate.netStatus == NotReachable) {
-    if (YES) {
+    if (_appDelegate.netStatus == NotReachable) {
+//    if (YES) {
         NSLog(@"Network not reachable");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable, do you want to put this file in queen?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
         [alert show];

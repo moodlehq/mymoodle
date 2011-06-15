@@ -46,97 +46,110 @@
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
-- (void)viewDidAppear:(BOOL)animated {
+- (void)updateCourses {
+    
+	_reloading = YES;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //retrieve the course by webservice
-    if (YES) {
-        WSClient *client = [[[WSClient alloc] init] autorelease];
-        NSNumber *userid  = [defaults objectForKey:kSelectedUserIdKey];
-        NSLog(@"User ID: %@", userid);
-        NSArray *wsparams = [[NSArray alloc] initWithObjects: userid, nil];
-        NSArray *result;
-        @try {
-            result = [client invoke: @"moodle_enrol_get_users_courses" withParams: wsparams];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"%@", exception);
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate: nil cancelButtonTitle:@"Continue" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
-        }
-        
-        NSError *error;
-        
-        //retrieve all courses that will need to be deleted from core data if they are not returned by the web service call
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
-        [request setEntity:entityDescription];
-        NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-        [request setPredicate:coursePredicate];
-        NSArray *allCourses = [managedObjectContext executeFetchRequest: request error:&error];
-
-        NSLog(@"Number of course in core data before web service call: %d", [allCourses count]);
-        
-        NSMutableDictionary *retainedCourses = [[NSMutableDictionary alloc] init];
-        
-        //update core data courses with course from web service call
-        if ([result isKindOfClass: [NSArray class]]) {
-            for (NSDictionary *wscourse in result) {
-                NSManagedObject *course;
-
-                //check if the course id is already in core data
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                          @"(id = %@ AND site = %@)", [wscourse objectForKey:@"id"], appDelegate.site];
-                [request setPredicate:predicate];
-                NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
-                NSLog(@"Found %d course", [existingCourses count]);
-                
-                if ([existingCourses count] == 1) {
-                    NSLog(@"Update a existing course %@", [wscourse objectForKey:@"shortname"]);
-                    course = [existingCourses lastObject];
-                    
-                } else if ([existingCourses count] == 0) {
-                    NSLog(@"Add a new course %@", [wscourse objectForKey:@"shortname"]);
-                    course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
-                } else {
-                    NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
-                }
-                
-                //set the course values
-                [course setValue: appDelegate.site forKey:@"site"];
-                [course setValue: [wscourse objectForKey:@"id"] forKey:@"id"];
-                [course setValue: [wscourse objectForKey:@"fullname"]  forKey:@"fullname"];
-                [course setValue: [wscourse objectForKey:@"shortname"] forKey:@"shortname"];
-
-                NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
-                NSLog(@"Course exist BOOL %@", courseexist);
-                [retainedCourses setObject: courseexist forKey: [wscourse objectForKey:@"id"]];
-                [courseexist release];
-            }
-        }
-        for (NSManagedObject *c in allCourses) {
-            NSNumber *thecourseexist = [retainedCourses objectForKey:[c valueForKey:@"id"]];
-            if ([thecourseexist intValue] == 0) {
-                NSLog(@"Deleting the course %@", c);
-                [managedObjectContext deleteObject: c];
-            }
-        }
-        //save the modifications
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save: nil]) {
-            //NSLog(@"Error saving entity: %@", [error localizedDescription]);
-        }
-        [retainedCourses release];
-        allCourses = [managedObjectContext executeFetchRequest: request error:&error];
-        
-        NSLog(@"Number of course in core data after web service call: %d", [allCourses count]);
+    WSClient *client = [[[WSClient alloc] init] autorelease];
+    NSNumber *userid  = [defaults objectForKey:kSelectedUserIdKey];
+    NSLog(@"User ID: %@", userid);
+    NSArray *wsparams = [[NSArray alloc] initWithObjects: userid, nil];
+    NSArray *result;
+    @try {
+        result = [client invoke: @"moodle_enrol_get_users_courses" withParams: wsparams];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate: nil cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
     }
     
+    NSError *error;
     
+    //retrieve all courses that will need to be deleted from core data if they are not returned by the web service call
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
+    [request setEntity:entityDescription];
+    NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+    [request setPredicate:coursePredicate];
+    NSArray *allCourses = [managedObjectContext executeFetchRequest: request error:&error];
+    
+    NSLog(@"Number of course in core data before web service call: %d", [allCourses count]);
+    
+    NSMutableDictionary *retainedCourses = [[NSMutableDictionary alloc] init];
+    
+    //update core data courses with course from web service call
+    if ([result isKindOfClass: [NSArray class]]) {
+        for (NSDictionary *wscourse in result) {
+            NSManagedObject *course;
+            
+            //check if the course id is already in core data
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(id = %@ AND site = %@)", [wscourse objectForKey:@"id"], appDelegate.site];
+            [request setPredicate:predicate];
+            NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
+            NSLog(@"Found %d course", [existingCourses count]);
+            
+            if ([existingCourses count] == 1) {
+                NSLog(@"Update a existing course %@", [wscourse objectForKey:@"shortname"]);
+                course = [existingCourses lastObject];
+                
+            } else if ([existingCourses count] == 0) {
+                NSLog(@"Add a new course %@", [wscourse objectForKey:@"shortname"]);
+                course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
+            } else {
+                NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
+            }
+            
+            //set the course values
+            [course setValue: appDelegate.site forKey:@"site"];
+            [course setValue: [wscourse objectForKey:@"id"] forKey:@"id"];
+            [course setValue: [wscourse objectForKey:@"fullname"]  forKey:@"fullname"];
+            [course setValue: [wscourse objectForKey:@"shortname"] forKey:@"shortname"];
+            
+            NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
+            NSLog(@"Course exist BOOL %@", courseexist);
+            [retainedCourses setObject: courseexist forKey: [wscourse objectForKey:@"id"]];
+            [courseexist release];
+        }
+    }
+    for (NSManagedObject *c in allCourses) {
+        NSNumber *thecourseexist = [retainedCourses objectForKey:[c valueForKey:@"id"]];
+        if ([thecourseexist intValue] == 0) {
+            NSLog(@"Deleting the course %@", c);
+            [managedObjectContext deleteObject: c];
+        }
+    }
+    //save the modifications
+    if ([managedObjectContext hasChanges] && ![managedObjectContext save: nil]) {
+        //NSLog(@"Error saving entity: %@", [error localizedDescription]);
+    }
+    [retainedCourses release];
+    allCourses = [managedObjectContext executeFetchRequest: request error:&error];
+    
+    NSLog(@"Number of course in core data after web service call: %d", [allCourses count]);
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
     [super viewDidAppear: animated];
 }
 - (void)viewDidLoad
 {
     managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    if (_refreshHeaderView == nil) {
+		
+		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
+		view.delegate = self;
+		[self.tableView addSubview:view];
+		_refreshHeaderView = view;
+		[view release];
+		
+	}
+	
+	//  update the last update date
+	[_refreshHeaderView refreshLastUpdatedDate];
     [super viewDidLoad];
 }
 
@@ -211,44 +224,6 @@
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
@@ -262,7 +237,6 @@
 }
 
 #pragma mark - Fetched results controller
-
 - (NSFetchedResultsController *)fetchedResultsController
 {
     if (__fetchedResultsController != nil)
@@ -372,4 +346,54 @@
     [self.tableView endUpdates];
 }
 
+
+#pragma mark -
+#pragma mark Data Source Loading / Reloading Methods
+
+
+- (void)doneLoadingTableViewData{
+	
+	//  model should call this when its done loading
+	_reloading = NO;
+	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+	
+}
+
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
+
+    NSLog(@"loading ");
+	[self updateCourses];
+	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:3.0];
+	
+}
+
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
+	
+	return _reloading; // should return if data source model is reloading
+	
+}
+
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
+	
+	return [NSDate date]; // should return date data source was last changed
+	
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{	
+	
+	[_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+	
+	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+	
+}
 @end

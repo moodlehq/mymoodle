@@ -212,6 +212,7 @@
         recording = NO;
         [buttonRecord setTitle:@"Record"];
         buttonReplay.enabled = YES;
+        buttonUpload.enabled = YES;
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         NSError *err = nil;
         NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];

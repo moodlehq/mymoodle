@@ -10,10 +10,11 @@
 #import "ParticipantViewController.h"
 #import "MBProgressHUD.h"
 
-@interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+@interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, MBProgressHUDDelegate> {
     NSManagedObject *course;
     ParticipantViewController *participantViewController;
     NSManagedObjectContext *managedObjectContext;
+    MBProgressHUD *HUD;
 }
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObject *course;

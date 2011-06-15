@@ -11,6 +11,7 @@
 #import "XMLRPCRequest.h"
 #import "XMLRPCResponse.h"
 #import "Constants.h"
+#import "AppDelegate.h"
 
 @implementation WSClient
 
@@ -27,7 +28,8 @@
 -(id)invoke:(NSString *)method withParams: (NSArray *)params {
     if (self.url == nil) {
         NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
-        NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
+        AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        NSString *token = [app.site valueForKey: @"token"];
         NSString *wsurl = [[NSString alloc] initWithFormat:@"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
         self.url = [NSURL URLWithString: wsurl];
         [wsurl release];

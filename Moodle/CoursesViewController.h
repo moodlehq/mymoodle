@@ -9,12 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "ParticipantListViewController.h"
 #import "AppDelegate.h"
+#import "EGORefreshTableHeaderView.h"
 
 
-@interface CoursesViewController : UITableViewController <NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
+@interface CoursesViewController : UITableViewController <UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, EGORefreshTableHeaderDelegate> {
     ParticipantListViewController *participantListViewController;
     NSManagedObjectContext *managedObjectContext;
     AppDelegate *appDelegate;
+    EGORefreshTableHeaderView *_refreshHeaderView;
+	
+	//  Reloading var should really be your tableviews datasource
+	//  Putting it here for demo purposes 
+	BOOL _reloading;
 }
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) ParticipantListViewController *participantListViewController;
