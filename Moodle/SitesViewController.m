@@ -113,7 +113,7 @@
 
     CGRect userNameRect = CGRectMake(100, 26, 200, 12);
     UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
-    NSString *fullname = [NSString stringWithFormat:@"%@ %@", [appDelegate.site valueForKeyPath:@"mainuser.firstname"], [appDelegate.site valueForKeyPath:@"mainuser.lastname"]];
+    NSString *fullname = [appDelegate.site valueForKeyPath:@"mainuser.fullname"];
     userName.text = fullname;
     userName.font = [UIFont italicSystemFontOfSize:12];
     [cell.contentView addSubview:userName];

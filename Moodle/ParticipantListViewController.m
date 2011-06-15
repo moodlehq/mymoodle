@@ -247,63 +247,10 @@
     [imageData writeToFile:filePath atomically:YES];
     cell.imageView.image = [UIImage imageWithData: imageData];
     [imageData release];
-
-
-    CGRect participantNameRect = CGRectMake(50, 5, 200, 18);
-    UILabel *participantName = [[UILabel alloc] initWithFrame:participantNameRect];
-    participantName.text = [NSString stringWithFormat:@"%@",[oneParticipant valueForKey:@"fullname"]];
-    participantName.font = [UIFont boldSystemFontOfSize:15];
-    [cell.contentView addSubview:participantName];
-    [participantName release];
-
-    CGRect userNameRect = CGRectMake(50, 26, 200, 12);
-    UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
-    userName.text = [oneParticipant valueForKey:@"username"];
-    userName.font = [UIFont italicSystemFontOfSize:12];
-    [cell.contentView addSubview:userName];
-    [userName release];
+    cell.textLabel.text = [oneParticipant valueForKey:@"fullname"];
 
     return cell;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 

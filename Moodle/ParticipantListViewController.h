@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ParticipantViewController.h"
-
+#import "MBProgressHUD.h"
 
 @interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
     NSManagedObject *course;

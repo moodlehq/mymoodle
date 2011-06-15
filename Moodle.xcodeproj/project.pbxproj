@@ -96,6 +96,9 @@
 		B5B0EB1E1383AEB6000A9330 /* XMLRPCResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB141383AEB6000A9330 /* XMLRPCResponse.m */; };
 		B5B0EB1F1383AEB6000A9330 /* XMLValueDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */; };
 		B5C3C786138975310004783D /* sync.gif in Resources */ = {isa = PBXBuildFile; fileRef = B5C3C785138975310004783D /* sync.gif */; };
+		B5C4329313A7B27800F8F1A9 /* sync.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329213A7B27800F8F1A9 /* sync.png */; };
+		B5C4329513A7BDC100F8F1A9 /* item.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329413A7BDC100F8F1A9 /* item.png */; };
+		B5C4329713A7C99B00F8F1A9 /* course.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329613A7C99B00F8F1A9 /* course.png */; };
 		B5D4EFFF13726FF000FD121F /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5D4EFFE13726FF000FD121F /* UploadViewController.m */; };
 		B5DABB22138E2BF6004AE472 /* CoursesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB1D138E2BF6004AE472 /* CoursesViewController.m */; };
 		B5DABB23138E2BF6004AE472 /* SitesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB1F138E2BF6004AE472 /* SitesViewController.m */; };
@@ -398,6 +401,9 @@
 		B5B0EB151383AEB6000A9330 /* XMLValueDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLValueDecoder.h; path = XMLRPC/XMLValueDecoder.h; sourceTree = SOURCE_ROOT; };
 		B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLValueDecoder.m; path = XMLRPC/XMLValueDecoder.m; sourceTree = SOURCE_ROOT; };
 		B5C3C785138975310004783D /* sync.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = sync.gif; path = Icons/sync.gif; sourceTree = SOURCE_ROOT; };
+		B5C4329213A7B27800F8F1A9 /* sync.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sync.png; path = Images/sync.png; sourceTree = SOURCE_ROOT; };
+		B5C4329413A7BDC100F8F1A9 /* item.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = item.png; path = Images/item.png; sourceTree = SOURCE_ROOT; };
+		B5C4329613A7C99B00F8F1A9 /* course.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = course.png; path = Images/course.png; sourceTree = SOURCE_ROOT; };
 		B5D4EFFD13726FF000FD121F /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
 		B5D4EFFE13726FF000FD121F /* UploadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadViewController.m; sourceTree = "<group>"; };
 		B5DABB1B138E2BF6004AE472 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -753,7 +759,10 @@
 			isa = PBXGroup;
 			children = (
 				B5B0EAF91383AD7D000A9330 /* button_red.png */,
+				B5C4329213A7B27800F8F1A9 /* sync.png */,
 				B5B0EAFA1383AD7D000A9330 /* checkmark.png */,
+				B5C4329613A7C99B00F8F1A9 /* course.png */,
+				B5C4329413A7BDC100F8F1A9 /* item.png */,
 				B53FAB411398B921008206EA /* microphone.jpg */,
 				B53FAB3F1398B566008206EA /* Complete.png */,
 				B5B0EAFB1383AD7E000A9330 /* redbutton.png */,
@@ -1104,6 +1113,9 @@
 				B5C3C786138975310004783D /* sync.gif in Resources */,
 				B53FAB401398B566008206EA /* Complete.png in Resources */,
 				B53FAB421398B921008206EA /* microphone.jpg in Resources */,
+				B5C4329313A7B27800F8F1A9 /* sync.png in Resources */,
+				B5C4329513A7BDC100F8F1A9 /* item.png in Resources */,
+				B5C4329713A7C99B00F8F1A9 /* course.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

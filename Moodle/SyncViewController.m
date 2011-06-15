@@ -6,6 +6,20 @@
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
+
+#define SPINNER_SIZE 25
+
+#define kTableRowHeight             40.0
+#define kProgressBarLeftMargin      20.0
+#define kProgressBarTopMargin       5.0
+#define kProgressBarWidth           253.0
+#define kProgressBarHeight          9.0   // Standard Height
+#define kProgressLabelLeftMargin    20.0
+#define kProgressLabelTopMargin     19.0
+#define kProgressViewTag            1011
+#define kProgressLabelTag           1012
+
+
 #import "SyncViewController.h"
 #import "Constants.h"
 #import "AppDelegate.h"
@@ -13,8 +27,8 @@
 
 @implementation SyncViewController
 @synthesize fetchedResultsController=_fetchedResultsController;
-
 #pragma mark - NSFetchedResultsController
+
 
 - (NSFetchedResultsController *)fetchedResultsController {
     if (_fetchedResultsController != nil) {
@@ -71,37 +85,36 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    self.navigationController.navigationBar.tintColor = UIColorFromRGB(ColorNavigationBar);
+    
     NSError *error;
     if (![[self fetchedResultsController] performFetch: &error]) {
         NSLog(@"unresolved error %@, %@", error, [error userInfo]);
     }
-    //
-    // Create a header view. Wrap it in a container to allow us to position
-    // it better.
-    //
-    UIView *containerView =
-    [[[UIView alloc]
-      initWithFrame:CGRectMake(0, 0, 300, 60)]
-     autorelease];
-    UILabel *headerLabel =
-    [[[UILabel alloc]
-      initWithFrame:CGRectMake(10, 20, 300, 40)]
-     autorelease];
-    headerLabel.text = NSLocalizedString(@"Sync", @"");
-    headerLabel.textColor = [UIColor whiteColor];
-    headerLabel.shadowColor = [UIColor blackColor];
-    headerLabel.shadowOffset = CGSizeMake(0, 1);
-    headerLabel.font = [UIFont boldSystemFontOfSize:22];
-    headerLabel.backgroundColor = [UIColor clearColor];
-    [containerView addSubview:headerLabel];
-    self.tableView.tableHeaderView = containerView;
+//    UIView *containerView =
+//    [[[UIView alloc]
+//      initWithFrame:CGRectMake(0, 0, 300, 60)]
+//     autorelease];
+//    UILabel *headerLabel =
+//    [[[UILabel alloc]
+//      initWithFrame:CGRectMake(10, 20, 300, 40)]
+//     autorelease];
+//    headerLabel.text = @"";
+//    headerLabel.textColor = [UIColor whiteColor];
+//    headerLabel.shadowColor = [UIColor blackColor];
+//    headerLabel.shadowOffset = CGSizeMake(0, 1);
+//    headerLabel.font = [UIFont boldSystemFontOfSize:22];
+//    headerLabel.backgroundColor = [UIColor clearColor];
+//    [containerView addSubview:headerLabel];
+//    self.tableView.tableHeaderView = containerView;
 //    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
                                               initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered
                                               target:self action:@selector(dismiss)] autorelease];
     self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
                                               initWithTitle:@"Send all" style:UIBarButtonItemStyleBordered
-                                              target:self action:@selector(sync)] autorelease];
+                                              target:self action:@selector(syncPressed)] autorelease];
 }
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -126,24 +139,68 @@
 
 - (void)fillCell: (UITableViewCell *)cell atIndexPath: (NSIndexPath *)indexPath {
     NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
-    cell.backgroundColor = [UIColor redColor];
     cell.textLabel.text = [job valueForKey:@"desc"];
     cell.detailTextLabel.text = [NSString stringWithFormat: @"%@:%@", [job valueForKey:@"target"], [job valueForKey: @"action"]];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellID = @"Cell";
+    static NSString *CellID = @"OperationQueueCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: CellID];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc]
                  initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: CellID] autorelease];
+
+//        UIProgressView *progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(kProgressBarLeftMargin, kProgressBarTopMargin, kProgressBarWidth, kProgressBarHeight)];
+//        progressView.tag = kProgressViewTag;
+//        [cell.contentView addSubview:progressView];
+//        [progressView release];
+//        
+//        UILabel *progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(kProgressLabelLeftMargin, kProgressLabelTopMargin, kProgressBarWidth, 15.0)];
+//        progressLabel.adjustsFontSizeToFitWidth = YES;
+//        progressLabel.tag = kProgressLabelTag;
+//        progressLabel.textAlignment = UITextAlignmentCenter;
+//        progressLabel.font = [UIFont systemFontOfSize:12.0];
+//        [cell.contentView addSubview:progressLabel];
+//        [progressLabel release];
+        
+//        UIButton *removeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        UIImage *removeImage = [UIImage imageNamed:@"remove.png"];
+//        [removeButton setBackgroundImage:removeImage forState:UIControlStateNormal];
+//        [removeButton setFrame:CGRectMake(0.0, 0.0, removeImage.size.width, removeImage.size.height)];
+//        [removeButton addTarget:self action:@selector(cancelOperation:) forControlEvents:UIControlEventTouchUpInside];
+//        cell.accessoryView  = removeButton;
     }
+//    UIProgressView *progressView = (UIProgressView *)[cell.contentView viewWithTag:kProgressViewTag];
+//    progressView.progress = 0.7;
+//    
+//    UILabel *progressLabel = (UILabel *)[cell.contentView viewWithTag: kProgressLabelTag];
+//    progressLabel.text = @"Processing";
+    cell.imageView.image = [UIImage imageNamed:@"item.png"];
+
+    cell.accessoryView.tag = [indexPath row];
     [self fillCell: cell atIndexPath: indexPath];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    // Get center of cell (vertically) 
+    int center = [cell frame].size.height / 2;
+    
+    // Size (width) of the text in the cell
+    CGSize size = [[[cell textLabel] text] sizeWithFont:[[cell textLabel] font]];
+    
+    // Locate spinner in the center of the cell at end of text
+    [spinner setFrame:CGRectMake(size.width + SPINNER_SIZE, center - SPINNER_SIZE / 2, SPINNER_SIZE, SPINNER_SIZE)];
+    [[cell contentView] addSubview:spinner];    
+    
+    [spinner startAnimating];
+    [spinner release];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+
     NSLog(@"selected: %@", [job valueForKey:@"site"]);
 }
 
@@ -151,6 +208,7 @@
 {
     return YES;
 }
+
 -(void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete data
@@ -224,26 +282,47 @@
     [self dismissModalViewControllerAnimated:YES];
 }
 
+- (void)syncPressed {
+    [NSThread detachNewThreadSelector: @selector(sync) toTarget: self withObject: nil];
+}
+
 - (void)sync {
-    NSInteger numOfSections = [self.tableView numberOfSections];
-    for (int j=0; j<numOfSections; j++) {
-        NSInteger numOfRows = [self.tableView numberOfRowsInSection: j];
-        for (int i=0; i<numOfRows; i++) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow: i inSection:j];
-            NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
-            id target = NSClassFromString([job valueForKey:@"target"]);
-            SEL method = NSSelectorFromString([NSString stringWithFormat:@"%@:format:", [job valueForKey:@"action"]]);
-            @try {
-                [target performSelector: method withObject: [job valueForKey:@"data"] withObject:[job valueForKey:@"dataformat"]];
-            }
-            @catch (NSException *exception) {
-                NSLog(@"%@", exception);
-            }
-            NSLog(@"Deleting job");
-            [context deleteObject:job];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName: @"Job" inManagedObjectContext:context];
+    [request setEntity:entity];
+    [request setFetchBatchSize: 10];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+    [request setPredicate: predicate];
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc] 
+                              initWithKey:@"created" ascending:NO];
+    [request setSortDescriptors:[NSArray arrayWithObject:sort]];
+    NSError *error = nil;
+    NSArray *jobs = [context executeFetchRequest:request error:&error];
+    NSLog(@"%@", jobs);
+    for (NSManagedObject *job in jobs) {
+        id target = NSClassFromString([job valueForKey:@"target"]);
+        SEL method = NSSelectorFromString([NSString stringWithFormat:@"%@:format:", [job valueForKey:@"action"]]);
+        @try {
+            [target performSelector: method withObject: [job valueForKey:@"data"] withObject:[job valueForKey:@"dataformat"]];
         }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+        [self performSelectorOnMainThread:@selector(updateTableView:)
+                               withObject: job
+                            waitUntilDone:YES];
     }
-    [context save:nil];
+
+    [pool drain];
+}
+- (void)updateTableView: (NSManagedObject *)job {
+    if (job) {
+        [context deleteObject:job];
+        [context save:nil];
+    }
 }
 
 @end

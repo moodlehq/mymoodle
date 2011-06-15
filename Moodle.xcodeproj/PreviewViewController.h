@@ -11,8 +11,10 @@
 #import "ASIFormDataRequest.h"
 #import "Constants.h"
 #import "AppDelegate.h"
+#import "MoodleMedia.h"
 
-@interface PreviewViewController : UIViewController <UINavigationControllerDelegate, MBProgressHUDDelegate, UIAlertViewDelegate> {
+
+@interface PreviewViewController : UIViewController <UINavigationControllerDelegate, MBProgressHUDDelegate, UIAlertViewDelegate, MoodleUploadDelegate> {
     UIImageView *imageView;
     NSString *fileName;
     NSString *filePath;
@@ -26,4 +28,5 @@
 @property (nonatomic, retain) NSString *filePath;
 - (IBAction)uploadPressed: (id)sender;
 - (IBAction)cancelPressed: (id)sender;
+- (void)uploadCallback: (id)data;
 @end

@@ -137,7 +137,6 @@
 - (void)viewDidLoad
 {
     managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-
     [super viewDidLoad];
 }
 
@@ -186,24 +185,21 @@
 
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
     }
 
     NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog(@"Renderring course: %@", oneCourse);
-
-    // Configure the cell...
+    cell.imageView.image = [UIImage imageNamed: @"course.png"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
+    cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
 
-//    UIImage *image = [UIImage imageNamed:@"profilpicture.jpg"];
-//    cell.imageView.image = image;
-
-    CGRect siteNameRect = CGRectMake(15, 5, 290, 30);
-    UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
-    siteName.text = [oneCourse valueForKey:@"fullname"];
-    siteName.font = [UIFont boldSystemFontOfSize:15];
-    [cell.contentView addSubview:siteName];
-    [siteName release];
+//    CGRect siteNameRect = CGRectMake(15, 5, 290, 30);
+//    UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
+//    siteName.text = [oneCourse valueForKey:@"fullname"];
+//    siteName.font = [UIFont boldSystemFontOfSize:15];
+//    [cell.contentView addSubview:siteName];
+//    [siteName release];
 
 //    CGRect userNameRect = CGRectMake(15, 26, 200, 12);
 //    UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];

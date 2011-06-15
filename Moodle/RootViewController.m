@@ -73,7 +73,8 @@
     //    }
     //    [request release];
     
-    TTButton *syncButton = [TTButton buttonWithStyle:@"notificationButton:" title: NSLocalizedString(@"Sync", "Sync") ];
+    TTButton *syncButton = [TTButton buttonWithStyle:@"notificationButton:" title: @""];
+    [syncButton setImage:@"bundle://sync.png" forState:UIControlStateNormal];
     [syncButton addTarget:self
                action:@selector(launchNotification:) forControlEvents: UIControlEventTouchUpInside];
 

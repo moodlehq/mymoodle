@@ -73,10 +73,12 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [super loadView];
     self.title = NSLocalizedString(@"Upload", "Upload");
     self.view.backgroundColor = UIColorFromRGB(ColorBackground);
+    CGRect rect = self.view.frame;
+    NSLog(@"y: %f-%f", rect.size.height, self.navigationController.view.frame.size.height);
     int x = 40;
-    int y = 60;
-    int width = 240;
-    int height = 60;
+    int y = (rect.size.height-self.navigationController.navigationBar.frame.size.height)/7;
+    int width = rect.size.width-x*2;
+    int height = y;
     TTButton *button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Browse photo albums", "Browse photo albums")];
     [button addTarget:self
                action:@selector(loadGallery:)

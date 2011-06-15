@@ -30,8 +30,6 @@
         NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
         NSString *wsurl = [[NSString alloc] initWithFormat:@"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
         self.url = [NSURL URLWithString: wsurl];
-        //[host release]; //Note for dongsheng => no needed, autorelease.  Anything in Cocoa that is not alloc, copy or new are autoreleased before they are returned to the caller
-        //[token release];
         [wsurl release];
     }
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
@@ -54,6 +52,7 @@
         [http release];
 		return err;
 	}
+    NSLog(@"API URL: %@", self.url);
     NSLog(@"XMLRPC: %@", [http responseString]);
 	XMLRPCResponse *xmlrpcdata = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
     [http release];
