@@ -190,12 +190,19 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
 - (void)loadGallery:(id)sender {
     MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
-    [[[UIApplication sharedApplication] keyWindow] setRootViewController: imagePicker];
     imagePicker.delegate = self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    [self presentModalViewController:imagePicker animated:YES];
+    NSString *device = [[UIDevice currentDevice] model];
+    if ([device rangeOfString:@"iPad"].location == NSNotFound) {
+        [self presentModalViewController:imagePicker animated:YES];
+    } else {
+        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:imagePicker] ;
+        [popover presentPopoverFromRect:CGRectMake(0, 0, 0.0, 0.0) 
+                                 inView:self.view
+               permittedArrowDirections:UIPopoverArrowDirectionAny
+                               animated:YES];
+    }
     [imagePicker release];
-
 }
 
 - (void)loadCamera:(id)sender {

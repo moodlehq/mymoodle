@@ -23,10 +23,9 @@
     MBProgressHUD *HUD;
     
 }
-@property (nonatomic, retain) IBOutlet UIImageView *imageView;
+@property (nonatomic, retain) UIImageView *imageView;
 @property (nonatomic, retain) NSString *fileName;
 @property (nonatomic, retain) NSString *filePath;
-- (IBAction)uploadPressed: (id)sender;
-- (IBAction)cancelPressed: (id)sender;
-- (void)uploadCallback: (id)data;
+- (void)uploadPressed: (id)sender;
+- (void)cancelPressed: (id)sender;
 @end

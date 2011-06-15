@@ -18,7 +18,44 @@
 -(NSString *)getFilepath {
     return filePath;
 }
+// Implement loadView to create a view hierarchy programmatically, without using a nib.
+- (void)loadView
+{
+    [super loadView];
+    self.title = NSLocalizedString(@"Preview", "Preview");
+    imageView = [[UIImageView alloc] init];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - TTToolbarHeight() - self.navigationController.navigationBar.frame.size.height);
+    [self.view addSubview: imageView];
+    
+    
+    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
+    self.navigationController.navigationBar.tintColor = UIColorFromRGB(ColorNavigationBar);
+    
+    
+    
+    UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle:@"Send to Moodle" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
+    
+    UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
+                         UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
 
+    UIToolbar *_toolbar = [[UIToolbar alloc] initWithFrame:
+                CGRectMake(0, self.view.bounds.size.height - TTToolbarHeight(),
+                           self.view.bounds.size.width, TTToolbarHeight())];
+    _toolbar.autoresizingMask =
+    UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+    _toolbar.tintColor = TTSTYLEVAR(toolbarTintColor);
+    _toolbar.items = [NSArray arrayWithObjects:
+                      space,
+                      buttonUpload,
+                      space,
+                      nil];
+    [self.view addSubview:_toolbar];
+    [buttonUpload release];
+    [space release];
+    [_toolbar release];
+
+}
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -50,7 +87,6 @@
     [super viewDidLoad];
     _appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     // Do any additional setup after loading the view from its nib.
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.image = [UIImage imageWithContentsOfFile:filePath];
 }
 
