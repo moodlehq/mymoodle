@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "ParticipantViewController.h"
-#import "MBProgressHUD.h"
+#import "EGORefreshTableHeaderView.h"
 
-@interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, MBProgressHUDDelegate> {
+
+@interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, MBProgressHUDDelegate, EGORefreshTableHeaderDelegate> {
     NSManagedObject *course;
     ParticipantViewController *participantViewController;
     NSManagedObjectContext *managedObjectContext;
-    MBProgressHUD *HUD;
+    EGORefreshTableHeaderView *_refreshHeaderView;
+	BOOL _reloading;
 }
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObject *course;

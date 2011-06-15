@@ -158,7 +158,7 @@
     [super viewWillAppear:animated];
     
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
     self.title = NSLocalizedString(@"mycourses", @"My courses title");
 }
 
