@@ -11,7 +11,7 @@
 #import "EGORefreshTableHeaderView.h"
 
 
-@interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, MBProgressHUDDelegate, EGORefreshTableHeaderDelegate> {
+@interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, EGORefreshTableHeaderDelegate> {
     NSManagedObject *course;
     ParticipantViewController *participantViewController;
     NSManagedObjectContext *managedObjectContext;
