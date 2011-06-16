@@ -57,7 +57,7 @@
         NSArray *paramvalues = [[NSArray alloc] initWithObjects: userids, nil];
         NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"userids", nil];
         NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-        NSLog(@"%@", paramkeys);
+        NSLog(@"%@", params);
         NSArray *result;
         @try {
             result = [client invoke: @"moodle_user_get_users_by_id" withParams: (NSArray *)params];
@@ -72,8 +72,8 @@
         //or manage when the user has been deleted on the Moodle site
         
         NSError *error = nil;
-        if (result != nil) {
-            for ( NSDictionary *theparticipant in result) { //only one participant is returned
+        if (result && [result isKindOfClass:[NSDictionary class]]) {
+            for (NSDictionary *theparticipant in result) { //only one participant is returned
                 
                 //set the participant values
                 [participant setValue:[theparticipant objectForKey: @"username"] forKey:@"username"];

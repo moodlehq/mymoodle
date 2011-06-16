@@ -364,9 +364,8 @@
 
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
 
-    NSLog(@"loading ");
 	[self updateCourses];
-	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:3.0];
+	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.5];
 	
 }
 

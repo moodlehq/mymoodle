@@ -396,10 +396,8 @@
 #pragma mark EGORefreshTableHeaderDelegate Methods
 
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
-    
-    NSLog(@"loading ");
 	[self updateParticipants];
-	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:3.0];
+	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.5];
 	
 }
 

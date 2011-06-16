@@ -357,9 +357,9 @@
             }
             //DEBUG MODE - comment out
             if (newEntry) {
-                //textField.text = @"http://jerome.moodle.local/~jerome/Moodle_HEAD"; //Jerome's site
+                textField.text = @"http://qa.moodle.net";
                 //textField.text = @"http://jerome.moodle.net"; // Internet
-                textField.text = @"http://dsmacbook.moodle.local/moodlews"; // Dongsheng's site
+                //textField.text = @"http://dsmacbook.moodle.local/moodlews"; // Dongsheng's site
                 [fieldValues setObject:textField.text forKey:[[NSNumber alloc] initWithInt:textField.tag]];
             }
             break;

@@ -34,6 +34,8 @@
         self.url = [NSURL URLWithString: wsurl];
         [wsurl release];
     }
+    
+    NSLog(@"API URL: %@", self.url);
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
     [req setMethod:method withObjects: params];
 
@@ -45,6 +47,7 @@
 	[http setValidatesSecureCertificate: NO];
 	[http setNumberOfTimesToRetryOnTimeout:2];
 	[http appendPostData: [[req source] dataUsingEncoding: NSUTF8StringEncoding]];
+    NSLog(@"post body: %@", [req source]);
 	[http startSynchronous];
 
 	NSError *err = [http error];
@@ -54,8 +57,8 @@
         [http release];
 		return err;
 	}
-    NSLog(@"API URL: %@", self.url);
-    NSLog(@"XMLRPC: %@", [http responseString]);
+    NSLog(@"XML: %@", [http responseString]);
+    NSLog(@"XML: %@", [http responseData]);
 	XMLRPCResponse *xmlrpcdata = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
     [http release];
     
