@@ -7,19 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ParticipantViewController.h"
+#import "DetailViewController.h"
 #import "EGORefreshTableHeaderView.h"
 
 
 @interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, EGORefreshTableHeaderDelegate> {
     NSManagedObject *course;
-    ParticipantViewController *participantViewController;
+    DetailViewController *participantViewController;
     NSManagedObjectContext *managedObjectContext;
     EGORefreshTableHeaderView *_refreshHeaderView;
 	BOOL _reloading;
 }
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObject *course;
-@property (nonatomic, retain) ParticipantViewController *participantViewController;
+@property (nonatomic, retain) DetailViewController *detailViewController;
 
 @end

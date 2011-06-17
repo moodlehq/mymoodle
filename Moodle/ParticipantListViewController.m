@@ -16,7 +16,7 @@
 @implementation ParticipantListViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
 @synthesize course;
-@synthesize participantViewController;
+@synthesize detailViewController;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -71,28 +71,13 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    participantViewController = [[ParticipantViewController alloc] init];
-    participantViewController.managedObjectContext = managedObjectContext;
+    detailViewController = [[DetailViewController alloc] initWithStyle:UITableViewStyleGrouped];
     [super viewWillAppear:animated];    
 }
 
 - (void)updateParticipants {
 	_reloading = YES;
 
-    WSClient *client   = [[WSClient alloc] init];
-    NSNumber *courseid = [course valueForKey:@"id"];
-    NSArray *paramvalues = [[NSArray alloc] initWithObjects: courseid, nil];
-    NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"courseid", nil];
-    NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-    NSArray *result;
-    @try {
-        result = [client invoke: @"moodle_enrol_get_enrolled_users" withParams: (NSArray *)params];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
-    
-    [client release];
     
     //retrieve all course participants that will need to be deleted from core data
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
@@ -108,6 +93,22 @@
     
     NSLog(@"Number of participants in core data before web service call: %d", [allParticipants count]);
     
+    
+    WSClient *client   = [[WSClient alloc] init];
+    NSNumber *courseid = [course valueForKey:@"id"];
+    NSArray *paramvalues = [[NSArray alloc] initWithObjects: courseid, nil];
+    NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"courseid", nil];
+    NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
+    NSArray *result;
+    @try {
+        result = [client invoke: @"moodle_enrol_get_enrolled_users" withParams: (NSArray *)params];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+    
+    [client release];
+    
     if (result) {
         for ( NSDictionary *participant in result) {
             
@@ -120,6 +121,7 @@
             NSArray *existingParticipants = [managedObjectContext executeFetchRequest:request error:&error];
             if ([existingParticipants count] == 1) {
                 //retrieve the participant to update
+                NSLog(@"found one ");
                 dbparticipant = [existingParticipants lastObject];
             } else if ([existingParticipants count] ==0) {
                 //the participant is not in core data, we add it
@@ -261,12 +263,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *selectedParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    participantViewController.participant = selectedParticipant;
+    detailViewController.participant = selectedParticipant;
     NSString *participantViewTitle = [NSString stringWithFormat:@"%@ %@", [selectedParticipant valueForKey:@"firstname"], [selectedParticipant valueForKey:@"lastname"]];
-    participantViewController.title = participantViewTitle;
-    participantViewController.course = course;
+    detailViewController.title = participantViewTitle;
+    detailViewController.course = course;
 
-    [self.navigationController pushViewController:participantViewController animated:YES];
+    [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
 #pragma mark - Fetched results controller

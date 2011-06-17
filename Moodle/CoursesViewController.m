@@ -47,12 +47,9 @@
     // e.g. self.myOutlet = nil;
 }
 - (void)updateCourses {
-    
 	_reloading = YES;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     WSClient *client = [[[WSClient alloc] init] autorelease];
-    NSNumber *userid  = [defaults objectForKey:kSelectedUserIdKey];
-    NSLog(@"User ID: %@", userid);
+    NSNumber *userid  = [appDelegate.site valueForKeyPath:@"mainuser.userid"];
     NSArray *wsparams = [[NSArray alloc] initWithObjects: userid, nil];
     NSArray *result;
     @try {
@@ -74,7 +71,7 @@
     NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
     [request setPredicate:coursePredicate];
     NSArray *allCourses = [managedObjectContext executeFetchRequest: request error:&error];
-    
+
     NSLog(@"Number of course in core data before web service call: %d", [allCourses count]);
     
     NSMutableDictionary *retainedCourses = [[NSMutableDictionary alloc] init];
@@ -89,14 +86,12 @@
                                       @"(id = %@ AND site = %@)", [wscourse objectForKey:@"id"], appDelegate.site];
             [request setPredicate:predicate];
             NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
-            NSLog(@"Found %d course", [existingCourses count]);
             
             if ([existingCourses count] == 1) {
-                NSLog(@"Update a existing course %@", [wscourse objectForKey:@"shortname"]);
+                NSLog(@"Found existing course: %@", [existingCourses valueForKey:@"fullname"]);
                 course = [existingCourses lastObject];
                 
             } else if ([existingCourses count] == 0) {
-                NSLog(@"Add a new course %@", [wscourse objectForKey:@"shortname"]);
                 course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
             } else {
                 NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
@@ -109,7 +104,6 @@
             [course setValue: [wscourse objectForKey:@"shortname"] forKey:@"shortname"];
             
             NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
-            NSLog(@"Course exist BOOL %@", courseexist);
             [retainedCourses setObject: courseexist forKey: [wscourse objectForKey:@"id"]];
             [courseexist release];
         }
@@ -126,9 +120,6 @@
         //NSLog(@"Error saving entity: %@", [error localizedDescription]);
     }
     [retainedCourses release];
-    allCourses = [managedObjectContext executeFetchRequest: request error:&error];
-    
-    NSLog(@"Number of course in core data after web service call: %d", [allCourses count]);
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -332,6 +323,7 @@
             break;
 
         case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
 
         case NSFetchedResultsChangeMove:
@@ -345,7 +337,14 @@
 {
     [self.tableView endUpdates];
 }
-
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.imageView.image = [UIImage imageNamed: @"course.png"];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
+    cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
+}
 
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods

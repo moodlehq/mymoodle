@@ -14,7 +14,6 @@
 #import "SitesViewController.h"
 #import "SettingsSiteViewController.h"
 #import "UploadViewController.h"
-#import "ParticipantViewController.h"
 #import "WebViewController.h"
 #import "SyncViewController.h"
 #import "RecorderViewController.h"

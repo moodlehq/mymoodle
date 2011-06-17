@@ -92,10 +92,6 @@
     NSUInteger row = [indexPath row];
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
 
-    NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
-    NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
-    NSLog(@"CellForRow - the default site url is: %@", defaultSiteUrl);
-    NSLog(@"%@", [appDelegate.site valueForKey:@"userpictureurl"]);
     NSURL *url = [NSURL URLWithString: [appDelegate.site valueForKey:@"userpictureurl"]];
     NSData *data = [NSData dataWithContentsOfURL:url];
 //    UIImage *image = [[UIImage alloc] initWithData: data cache:YES];
@@ -118,7 +114,9 @@
     userName.font = [UIFont italicSystemFontOfSize:12];
     [cell.contentView addSubview:userName];
     [userName release];
-
+    
+    NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
+    NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
     if ((row == oldRow && lastIndexPath != nil)
         || ([[appDelegate.site valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[appDelegate.site valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
 

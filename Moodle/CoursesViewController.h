@@ -22,6 +22,7 @@
 	//  Putting it here for demo purposes 
 	BOOL _reloading;
 }
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) ParticipantListViewController *participantListViewController;
 @end

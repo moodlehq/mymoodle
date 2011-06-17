@@ -52,7 +52,6 @@
                       nil];
     [self.view addSubview:_toolbar];
     [buttonUpload release];
-    [space release];
     [_toolbar release];
 
 }

@@ -47,7 +47,6 @@
 	[http setValidatesSecureCertificate: NO];
 	[http setNumberOfTimesToRetryOnTimeout:2];
 	[http appendPostData: [[req source] dataUsingEncoding: NSUTF8StringEncoding]];
-    NSLog(@"post body: %@", [req source]);
 	[http startSynchronous];
 
 	NSError *err = [http error];
@@ -57,8 +56,7 @@
         [http release];
 		return err;
 	}
-    NSLog(@"XML: %@", [http responseString]);
-    NSLog(@"XML: %@", [http responseData]);
+//    NSLog(@"XML: %@", [http responseString]);
 	XMLRPCResponse *xmlrpcdata = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
     [http release];
     
@@ -74,7 +72,6 @@
 
 
 - (void)dealloc {
-    //[self.url release]; //you didn't create it
     [super dealloc];
 }
 @end
