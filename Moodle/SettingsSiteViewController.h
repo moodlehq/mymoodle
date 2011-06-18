@@ -18,17 +18,20 @@
 #define kLabelTag 4096
 
 
-@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate>{
-    NSArray *fieldLabels;
-    NSMutableDictionary *fieldValues;
-    UITextField *textFieldBeingEdited;
+@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate> {
     AppDelegate *appDelegate;
     BOOL newEntry;
-}
-@property (nonatomic, retain) NSArray *fieldLabels;
-@property (nonatomic, retain) NSMutableDictionary *fieldValues;
-@property (nonatomic, retain) UITextField *textFieldBeingEdited;
+    UITableViewCell *siteurlCell;
+    UITextField     *siteurlField;
+   
+    UITableViewCell *usernameCell;
+    UITextField     *usernameField;
+    
+    UITableViewCell *passwordCell;
+    UITextField     *passwordField;
 
+    UILabel *topLabel;
+}
 - (IBAction)cancel:(id)sender;
 - (IBAction)saveButtonPressed:(id)sender;
 - (IBAction)textFieldDone:(id)sender;

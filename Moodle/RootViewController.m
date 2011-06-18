@@ -62,17 +62,7 @@
     launcherView.frame = CGRectMake(0, 0, rect.size.width, rect.size.height-80);
 
     [self.view addSubview: launcherView];
-    
-    //    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    //    NSEntityDescription *entity = [NSEntityDescription entityForName: @"Job" inManagedObjectContext: managedObjectContext];
-    //    [request setEntity: entity];
-    //    NSArray *objects = [managedObjectContext executeFetchRequest: request error: &error];
-    //    
-    //    for (NSManagedObject *info in objects) {
-    //        NSLog(@"%@", [info valueForKey: @"target"]);
-    //    }
-    //    [request release];
-    
+
     TTButton *syncButton = [TTButton buttonWithStyle:@"notificationButton:" title: @""];
     [syncButton setImage:@"bundle://sync.png" forState:UIControlStateNormal];
     [syncButton addTarget:self
@@ -95,11 +85,10 @@
     [super viewDidAppear:animated];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey: kSelectedSiteUrlKey];
-    NSLog(@"Default site url: %@", defaultSiteUrl);
-    NSLog(@"Default site obj: %@", appDelegate.site);
     if (defaultSiteUrl == nil || appDelegate.site == nil) {
         [self displaySettingsView];
     }
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated

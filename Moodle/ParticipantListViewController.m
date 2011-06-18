@@ -22,7 +22,6 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        // Custom initialization
     }
     return self;
 }
@@ -30,34 +29,29 @@
 - (void)dealloc
 {
     [__fetchedResultsController release];
+    [detailViewController release];
     [super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-
-    // Release any cached data, images, etc that aren't in use.
 }
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
-    
     managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     [super viewDidLoad];
     if (_refreshHeaderView == nil) {
-		
 		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
 		view.delegate = self;
 		[self.tableView addSubview:view];
 		_refreshHeaderView = view;
 		[view release];
-		
 	}
-	
+
 	//  update the last update date
 	[_refreshHeaderView refreshLastUpdatedDate];
 }
@@ -65,8 +59,7 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    detailViewController = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -78,7 +71,6 @@
 - (void)updateParticipants {
 	_reloading = YES;
 
-    
     //retrieve all course participants that will need to be deleted from core data
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:managedObjectContext];
@@ -87,8 +79,7 @@
     [request setPredicate:predicate];
     NSError *error = nil;
     NSArray *allParticipants = [managedObjectContext executeFetchRequest:request error:&error];
-    
-    
+
     NSMutableDictionary *retainedParticipants = [[NSMutableDictionary alloc] init];
     
     NSLog(@"Number of participants in core data before web service call: %d", [allParticipants count]);
@@ -239,20 +230,7 @@
     // Configure the cell...
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-    //create file path (Documents/md5(profileimgurl))
-    NSString *md5ProfileUrl = [HashValue getMD5FromString:[oneParticipant valueForKey: @"profileimgurl"]];
-    NSString *filePath = [NSString stringWithFormat: @"%@/Cache/ProfileImage/%@", DOCUMENTS_FOLDER, md5ProfileUrl];
-
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    NSData *imageData;
-    if (fileExists) {
-        imageData = [[NSData alloc] initWithContentsOfFile:filePath];
-    } else {
-        imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:[oneParticipant valueForKey:@"profileimgurl"]]];
-    }
-    [imageData writeToFile:filePath atomically:YES];
-    cell.imageView.image = [UIImage imageWithData: imageData];
-    [imageData release];
+    cell.imageView.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:[NSURL URLWithString:[oneParticipant valueForKey:@"profileimgurl"]]]];
     cell.textLabel.text = [oneParticipant valueForKey:@"fullname"];
 
     return cell;
@@ -298,9 +276,7 @@
 
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastname" ascending:NO];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
-
-    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setSortDescriptors: [NSArray arrayWithObject:sortDescriptor]];
 
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
@@ -311,7 +287,6 @@
     [aFetchedResultsController release];
     [fetchRequest release];
     [sortDescriptor release];
-    [sortDescriptors release];
 
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])

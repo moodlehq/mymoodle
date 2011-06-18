@@ -10,6 +10,7 @@
 
 
 @interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate> {
+
     NSManagedObject *_participant;
     NSManagedObject *_course;
     NSMutableArray  *contactinfo;

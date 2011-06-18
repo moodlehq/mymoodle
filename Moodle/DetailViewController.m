@@ -61,6 +61,8 @@
     NSDictionary *dict = [[[NSDictionary alloc] initWithObjectsAndKeys:value, key, nil] autorelease];
     return dict;
 }
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -181,7 +183,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
@@ -200,19 +202,17 @@
     switch (indexPath.section) {
         case 0:
             info = [contactinfo objectAtIndex:indexPath.row];
-            key = [[info allKeys] lastObject];
-            cellText = [info valueForKey: key];
             break;
         case 1:
             info = [geoinfo objectAtIndex:indexPath.row];
-            key = [[info allKeys] lastObject];
-            cellText = [info valueForKey: key];
             break;
         default:
             break;
     }
-    
-    cell.textLabel.text = cellText;
+    key = [[info allKeys] lastObject];
+    cellText = [info valueForKey: key];
+    cell.detailTextLabel.text = cellText;
+    cell.textLabel.text = NSLocalizedString(key, key);;
     return cell;
 }
 

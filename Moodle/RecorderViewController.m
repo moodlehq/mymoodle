@@ -131,13 +131,23 @@
     int seconds_in_minute = count % 60;
     int minutes_in_hour = (count / 60) % 60;
     int hour_in_day = (count / 3600) %24;
-
+    [recorder updateMeters];
+    
+    for (int k=0; k < 2; k++) {
+        float peak = [recorder peakPowerForChannel:k];
+        float average = [recorder averagePowerForChannel:k];
+        NSLog(@"Peak power for channel %i: %4.2f",k,peak);
+        NSLog(@"Average power for channel %i:%4.2f",k,average);
+        NSLog(@"%@", [NSString stringWithFormat:@"%4.2f", peak]);
+        //peakLabel.text = aString ;
+    }
+    
     timerLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d", hour_in_day, minutes_in_hour, seconds_in_minute];
 }
 
 - (IBAction) startRecording {
     if (recording == NO) {
-        timer = [NSTimer scheduledTimerWithTimeInterval:(1.0) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
+        timer = [NSTimer scheduledTimerWithTimeInterval:(0.2) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         NSError *err = nil;
         [audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:&err];
@@ -169,6 +179,7 @@
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         err = nil;
         recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:settings error:&err];
+        recorder.meteringEnabled = YES;
         if(!recorder){
             NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
             UIAlertView *alert =

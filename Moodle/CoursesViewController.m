@@ -32,10 +32,7 @@
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-
-    // Release any cached data, images, etc that aren't in use.
 }
 
 #pragma mark - View lifecycle
@@ -123,7 +120,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-
     [super viewDidAppear: animated];
 }
 - (void)viewDidLoad
@@ -147,11 +143,9 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
     self.title = NSLocalizedString(@"mycourses", @"My courses title");
-}
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];}
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -197,20 +191,6 @@
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
     cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
-
-//    CGRect siteNameRect = CGRectMake(15, 5, 290, 30);
-//    UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
-//    siteName.text = [oneCourse valueForKey:@"fullname"];
-//    siteName.font = [UIFont boldSystemFontOfSize:15];
-//    [cell.contentView addSubview:siteName];
-//    [siteName release];
-
-//    CGRect userNameRect = CGRectMake(15, 26, 200, 12);
-//    UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
-//    userName.text = @"Some course information ???";
-//    userName.font = [UIFont italicSystemFontOfSize:12];
-//    [cell.contentView addSubview:userName];
-//    [userName release];
 
     return cell;
 }

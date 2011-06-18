@@ -34,7 +34,7 @@
         self.url = [NSURL URLWithString: wsurl];
         [wsurl release];
     }
-    
+
     NSLog(@"API URL: %@", self.url);
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
     [req setMethod:method withObjects: params];
@@ -59,7 +59,7 @@
 //    NSLog(@"XML: %@", [http responseString]);
 	XMLRPCResponse *xmlrpcdata = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
     [http release];
-    
+
     id object = [xmlrpcdata object];
     NSLog(@"WSClient: %@", object);
     if ([object isKindOfClass: [NSDictionary class]]) {

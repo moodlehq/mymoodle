@@ -138,9 +138,6 @@
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     appDelegate.site = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://settings/no"] applyAnimated:YES]];
-//    settingsSiteViewController.title = [settingsSiteViewController.site valueForKey:@"name"];
-//    [self.navigationController pushViewController:settingsSiteViewController animated:YES];
-//    [settingsSiteViewController release];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
