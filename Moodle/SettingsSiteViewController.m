@@ -137,6 +137,7 @@
                 [user setValue: [siteinfo objectForKey:@"userid"]    forKey:@"userid"];
                 [user setValue: [siteinfo objectForKey:@"username"]  forKey:@"username"];
                 [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
+                [user setValue: [siteinfo objectForKey:@"fullname"] forKey:@"fullname"];
                 [user setValue: [siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
                 [user setValue: appDelegate.site                     forKey:@"site"];
                 
@@ -254,6 +255,7 @@
     [usernameField setReturnKeyType:UIReturnKeyNext];
     [usernameCell addSubview:usernameField];
     if (!newEntry) {
+        NSLog(@"%@", [appDelegate.site valueForKey: @"mainuser"]);
         usernameField.text = [appDelegate.site valueForKeyPath:@"mainuser.username"];
     } else {
         usernameField.text = @"teacher";

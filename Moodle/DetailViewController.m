@@ -11,10 +11,90 @@
 #import "Reachability.h"
 #import "WSClient.h"
 
+// temp fix for https://github.com/facebook/three20/issues/194
+#import <Three20UINavigator/UIViewController+TTNavigator.h> 
 
 @implementation DetailViewController
 @synthesize participant=_participant;
 @synthesize course=_course;
+
+- (UIViewController*)post: (NSDictionary *)query {
+    NSLog(@"%@", query);
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"text", self, @"delegate", nil];
+    TTPostController* controller = [[[TTPostController alloc] initWithNavigatorURL: nil query: options] autorelease];
+    UIButton *btn = [query objectForKey:@"__target__"];
+    postControllerType = btn.tag;
+    
+    controller.originView = btn;
+    return controller;
+}
+
+# pragma mark - TTPostControllerDelegate
+/**
+ * The user has posted text and an animation is about to show the text return to its origin.
+ *
+ * @return whether to dismiss the controller or wait for the user to call dismiss.
+ */
+- (BOOL)postController:(TTPostController*)postController willPostText:(NSString*)text {
+    return YES;
+}
+
+/**
+ * The text has been posted.
+ */
+- (void)postController: (TTPostController*)postController
+           didPostText: (NSString*)text
+            withResult: (id)result {
+    
+    //retrieve the participant information
+    WSClient *client   = [[WSClient alloc] init];
+    NSArray *wsinfo;
+
+    if (postControllerType == 1) {
+        NSNumber *userid   = [self.participant valueForKey:@"userid"];
+        NSDictionary *message = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"touserid", text, @"text", nil];
+        NSArray *messages = [[NSArray alloc] initWithObjects: message, nil];
+        NSArray *paramvalues = [[NSArray alloc] initWithObjects: messages, nil];
+        NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
+        NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
+        NSLog(@"%@", params);
+        NSArray *wsinfo;
+        @try {
+            wsinfo = [client invoke: @"moodle_message_send_messages" withParams: (NSArray *)params];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+    } else {
+        NSNumber *userid   = [self.participant valueForKey:@"userid"];
+        NSDictionary *note = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", text, @"text", @"text", @"format", [self.course valueForKey:@"id"], @"courseid", @"personal", @"publishstate", nil];
+        NSArray *notes = [[NSArray alloc] initWithObjects: note, nil];
+        NSArray *paramvalues = [[NSArray alloc] initWithObjects: notes, nil];
+        NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"notes", nil];
+        NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
+        NSLog(@"%@", params);
+        @try {
+            wsinfo = [client invoke: @"moodle_notes_create_notes" withParams: (NSArray *)params];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+    }
+    if ([[wsinfo lastObject] valueForKey:@"errormessage"]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: @"cancel" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
+    }
+    [client release];
+    
+}
+/**
+ * The controller was cancelled before posting.
+ */
+- (void)postControllerDidCancel:(TTPostController*)postController {
+    
+}
+
 - (void)dealloc
 {
     [contactinfo release];
@@ -50,12 +130,32 @@
     UILabel *fullname = [[[UILabel alloc] initWithFrame:CGRectMake(margin+100+20, margin, size.size.width-margin*2-100, 100)] autorelease];
     fullname.text = [self.participant valueForKey:@"fullname"];
     fullname.backgroundColor = [UIColor clearColor];
-    
-    
-    
+
     [containerView addSubview: userpicture];
     [containerView addSubview: fullname];
     self.tableView.tableHeaderView = containerView;
+    
+    float button_width = 130;
+    tableviewFooter = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    tableviewFooter.userInteractionEnabled = YES;
+    
+    UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonSendMsg setTitle:@"Send Message" forState: UIControlStateNormal];
+    [buttonSendMsg setFrame:CGRectMake(margin, 0, button_width, 50)];
+    buttonSendMsg.tag = 1;
+//    [buttonSendMsg addTarget:self action:@selector(sendMessage:) forControlEvents:UIControlEventTouchUpInside];
+    [buttonSendMsg addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *buttonAddNote = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonAddNote setTitle:@"Add Note" forState: UIControlStateNormal];
+    [buttonAddNote setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 0, button_width, 50)];
+    buttonAddNote.tag = 2;
+    [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [tableviewFooter addSubview:buttonSendMsg];
+    [tableviewFooter addSubview:buttonAddNote];
+    [self.tableView setTableFooterView:tableviewFooter];
+    [tableviewFooter release];
 }
 -(NSDictionary *)createInfo: (NSString *) key value: (NSString *)value {
     NSDictionary *dict = [[[NSDictionary alloc] initWithObjectsAndKeys:value, key, nil] autorelease];
@@ -99,6 +199,10 @@
 	recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
 	[self.view addGestureRecognizer:recognizer];
 	[recognizer release];
+    
+
+    [[TTNavigator navigator].URLMap from:@"tt://post" toViewController:self selector:@selector(post:)];
+
 }
 
 - (void)viewDidUnload
@@ -106,6 +210,7 @@
     [super viewDidUnload];
     self.participant = nil;
     self.course = nil;
+    [[TTNavigator navigator].URLMap removeURL:@"tt://post"];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -116,11 +221,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    NSLog(@"viewWillappear");
     
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
+    self.tableView.autoresizesSubviews = YES;
 }
 
 

@@ -36,5 +36,4 @@
 - (IBAction)saveButtonPressed:(id)sender;
 - (IBAction)textFieldDone:(id)sender;
 - (void)deleteSite;
-
 @end

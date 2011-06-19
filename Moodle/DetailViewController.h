@@ -7,20 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Three20/Three20.h>
 
-
-@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate> {
-
+@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate> {
     NSManagedObject *_participant;
     NSManagedObject *_course;
     NSMutableArray  *contactinfo;
     NSMutableArray  *geoinfo;
+    UIView *tableviewFooter;
+    NSInteger postControllerType;
     UISwipeGestureRecognizer *swipeLeftRecognizer;
-
 }
 @property (nonatomic, retain) NSManagedObject *participant;
 @property (nonatomic, retain) NSManagedObject *course;
-
 -(void)updateParticipant;
 -(NSDictionary *)createInfo: (NSString *) key value: (NSString *)value;
 @end
