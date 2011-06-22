@@ -56,16 +56,15 @@
         [http release];
 		return err;
 	}
-//    NSLog(@"XML: %@", [http responseString]);
-	XMLRPCResponse *xmlrpcdata = [[[XMLRPCResponse alloc] initWithData: [http responseData]] autorelease];
+    NSLog(@"XML: %@", [http responseString]);
+	XMLRPCResponse *xmlrpcdata = [[XMLRPCResponse alloc] initWithData: [http responseData]];
+    id object = [xmlrpcdata object];
+    [xmlrpcdata release];
     [http release];
 
-    id object = [xmlrpcdata object];
     NSLog(@"WSClient: %@", object);
-    if ([object isKindOfClass: [NSDictionary class]]) {
-        if ([object valueForKey:@"faultString"]) {
-            [NSException raise:@"XMLRPC Error" format:@"%@", [object valueForKey:@"faultString"]];
-        }
+    if ([object isKindOfClass: [NSDictionary class]] && [object valueForKey:@"faultString"]) {
+        [NSException raise:@"XMLRPC Error" format:@"%@", [object valueForKey:@"faultString"]];
     }
     return object;
 }

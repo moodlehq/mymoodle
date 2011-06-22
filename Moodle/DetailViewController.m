@@ -10,6 +10,7 @@
 #import "HashValue.h"
 #import "Reachability.h"
 #import "WSClient.h"
+#import "Constants.h"
 
 // temp fix for https://github.com/facebook/three20/issues/194
 #import <Three20UINavigator/UIViewController+TTNavigator.h> 
@@ -19,7 +20,6 @@
 @synthesize course=_course;
 
 - (UIViewController*)post: (NSDictionary *)query {
-    NSLog(@"%@", query);
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"text", self, @"delegate", nil];
     TTPostController* controller = [[[TTPostController alloc] initWithNavigatorURL: nil query: options] autorelease];
     UIButton *btn = [query objectForKey:@"__target__"];
@@ -49,16 +49,15 @@
     //retrieve the participant information
     WSClient *client   = [[WSClient alloc] init];
     NSArray *wsinfo;
-
     if (postControllerType == 1) {
+        NSLog(@"Participant: %@", self.participant);
         NSNumber *userid   = [self.participant valueForKey:@"userid"];
         NSDictionary *message = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"touserid", text, @"text", nil];
         NSArray *messages = [[NSArray alloc] initWithObjects: message, nil];
         NSArray *paramvalues = [[NSArray alloc] initWithObjects: messages, nil];
         NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
         NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-        NSLog(@"%@", params);
-        NSArray *wsinfo;
+        NSLog(@"Params: %@", params);
         @try {
             wsinfo = [client invoke: @"moodle_message_send_messages" withParams: (NSArray *)params];
         }
@@ -80,13 +79,13 @@
             NSLog(@"%@", exception);
         }
     }
-    if ([[wsinfo lastObject] valueForKey:@"errormessage"]) {
+    NSDictionary *msg = [wsinfo lastObject];
+    if ([msg valueForKey:@"errormessage"]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: @"cancel" otherButtonTitles: nil];
         [alert show];
         [alert release];
     }
     [client release];
-    
 }
 /**
  * The controller was cancelled before posting.
@@ -114,48 +113,15 @@
 
 #pragma mark - View lifecycle
 
+
+- (id)initWithNew: (NSString *)new {
+    if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
+    }
+    return self;
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    CGRect size = self.tableView.frame;
-    NSInteger margin = 10;
-    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(margin, margin, size.size.width-margin*2, 100)] autorelease];
-    
-    // user picture
-    UIImageView *userpicture = [[[UIImageView alloc] initWithFrame:CGRectMake(margin, margin, 100, 100)] autorelease];
-    NSURL *url = [NSURL URLWithString: [self.participant valueForKey:@"profileimgurl"]];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    userpicture.image = [UIImage imageWithData:data];
-    // user fullname
-    UILabel *fullname = [[[UILabel alloc] initWithFrame:CGRectMake(margin+100+20, margin, size.size.width-margin*2-100, 100)] autorelease];
-    fullname.text = [self.participant valueForKey:@"fullname"];
-    fullname.backgroundColor = [UIColor clearColor];
-
-    [containerView addSubview: userpicture];
-    [containerView addSubview: fullname];
-    self.tableView.tableHeaderView = containerView;
-    
-    float button_width = 130;
-    tableviewFooter = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 50)];
-    tableviewFooter.userInteractionEnabled = YES;
-    
-    UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonSendMsg setTitle:@"Send Message" forState: UIControlStateNormal];
-    [buttonSendMsg setFrame:CGRectMake(margin, 0, button_width, 50)];
-    buttonSendMsg.tag = 1;
-//    [buttonSendMsg addTarget:self action:@selector(sendMessage:) forControlEvents:UIControlEventTouchUpInside];
-    [buttonSendMsg addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIButton *buttonAddNote = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonAddNote setTitle:@"Add Note" forState: UIControlStateNormal];
-    [buttonAddNote setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 0, button_width, 50)];
-    buttonAddNote.tag = 2;
-    [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [tableviewFooter addSubview:buttonSendMsg];
-    [tableviewFooter addSubview:buttonAddNote];
-    [self.tableView setTableFooterView:tableviewFooter];
-    [tableviewFooter release];
 }
 -(NSDictionary *)createInfo: (NSString *) key value: (NSString *)value {
     NSDictionary *dict = [[[NSDictionary alloc] initWithObjectsAndKeys:value, key, nil] autorelease];
@@ -166,8 +132,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self updateParticipant];
     contactinfo = [[NSMutableArray alloc] init];
     if ([self.participant valueForKey: @"email"]) {
         [contactinfo addObject:[self createInfo:@"email" value:[self.participant valueForKey: @"email"]]];
@@ -226,6 +190,53 @@
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
     self.tableView.autoresizesSubviews = YES;
+    
+    CGRect size = self.tableView.frame;
+    NSInteger margin = 20;
+    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(margin, margin, size.size.width-margin*2, 120)] autorelease];
+    
+    // user picture
+    UIImageView *userpicture = [[[UIImageView alloc] initWithFrame:CGRectMake(margin, margin, 100, 100)] autorelease];
+    
+    userpicture.layer.cornerRadius = 9.0;
+    userpicture.layer.masksToBounds = YES;
+    userpicture.layer.borderColor = UIColorFromRGB(ColorBackground).CGColor;
+    userpicture.layer.borderWidth = 3.0;
+
+    NSURL *url = [NSURL URLWithString: [self.participant valueForKey:@"profileimgurl"]];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    userpicture.image = [UIImage imageWithData:data];
+    // user fullname
+    UILabel *fullname = [[[UILabel alloc] initWithFrame:CGRectMake(margin+100+20, margin, size.size.width-margin*2-100, 100)] autorelease];
+    fullname.text = [self.participant valueForKey:@"fullname"];
+    fullname.backgroundColor = [UIColor clearColor];
+    fullname.font = [UIFont fontWithName:@"Arial-BoldMT" size:24.0];
+    
+    [containerView addSubview: userpicture];
+    [containerView addSubview: fullname];
+    self.tableView.tableHeaderView = containerView;
+    
+    float button_width = 130;
+    tableviewFooter = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    tableviewFooter.userInteractionEnabled = YES;
+    
+    UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonSendMsg setTitle:@"Send Message" forState: UIControlStateNormal];
+    [buttonSendMsg setFrame:CGRectMake(margin, 0, button_width, 50)];
+    buttonSendMsg.tag = 1;
+    //    [buttonSendMsg addTarget:self action:@selector(sendMessage:) forControlEvents:UIControlEventTouchUpInside];
+    [buttonSendMsg addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *buttonAddNote = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonAddNote setTitle:@"Add Note" forState: UIControlStateNormal];
+    [buttonAddNote setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 0, button_width, 50)];
+    buttonAddNote.tag = 2;
+    [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [tableviewFooter addSubview:buttonSendMsg];
+    [tableviewFooter addSubview:buttonAddNote];
+    [self.tableView setTableFooterView:tableviewFooter];
+    [tableviewFooter release];
 }
 
 
@@ -365,14 +376,12 @@
     }
     
     [client release];
-    
-    //TODO: make it more generic to support when call from a view where the participant hasn't been previously added in core data
-    //or manage when the user has been deleted on the Moodle site
-    
+    NSLog(@"User info %@", result);
     NSError *error = nil;
     if (result && [result isKindOfClass:[NSArray class]]) {
         for (NSDictionary *theparticipant in result) {
             //set the participant values
+            [self.participant setValue:[theparticipant objectForKey: @"id"] forKey:@"userid"];
             [self.participant setValue:[theparticipant objectForKey: @"username"] forKey:@"username"];
             [self.participant setValue:[theparticipant objectForKey: @"firstname"] forKey:@"firstname"];
             [self.participant setValue:[theparticipant objectForKey: @"lastname"] forKey:@"lastname"];
@@ -415,6 +424,7 @@
                     NSLog(@"  %@", [error userInfo]);
                 }
             }
+            NSLog(@"self.participant: %@", self.participant);
         }
     }
 }

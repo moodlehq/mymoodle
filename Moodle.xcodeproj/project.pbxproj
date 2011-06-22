@@ -111,6 +111,7 @@
 		B5DABB28138E2C2A004AE472 /* MoodleSite.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB27138E2C2A004AE472 /* MoodleSite.m */; };
 		B5DABB39138E57CF004AE472 /* MoodleImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */; };
 		B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E047F5137280FA00314B60 /* ParticipantListViewController.m */; };
+		B5EEB3F313AEED5C00A53635 /* Participant.m in Sources */ = {isa = PBXBuildFile; fileRef = B5EEB3F213AEED5C00A53635 /* Participant.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -429,6 +430,8 @@
 		B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleImagePickerController.m; sourceTree = "<group>"; };
 		B5E047F4137280FA00314B60 /* ParticipantListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantListViewController.h; sourceTree = "<group>"; };
 		B5E047F5137280FA00314B60 /* ParticipantListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantListViewController.m; sourceTree = "<group>"; };
+		B5EEB3F113AEED5C00A53635 /* Participant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Participant.h; sourceTree = "<group>"; };
+		B5EEB3F213AEED5C00A53635 /* Participant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Participant.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -864,6 +867,8 @@
 				B5DABB27138E2C2A004AE472 /* MoodleSite.m */,
 				B53FAB5A1398C06B008206EA /* MoodleJob.h */,
 				B53FAB5B1398C06B008206EA /* MoodleJob.m */,
+				B5EEB3F113AEED5C00A53635 /* Participant.h */,
+				B5EEB3F213AEED5C00A53635 /* Participant.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1247,6 +1252,7 @@
 				B51EC3E41394BBD30048C866 /* Reachability.m in Sources */,
 				B53FAB5C1398C06B008206EA /* MoodleJob.m in Sources */,
 				B55873E413A8AB77006526F3 /* EGORefreshTableHeaderView.m in Sources */,
+				B5EEB3F313AEED5C00A53635 /* Participant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "DetailViewController.h"
 #import "EGORefreshTableHeaderView.h"
+#import "AppDelegate.h"
 
 
 @interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, EGORefreshTableHeaderDelegate> {
     NSManagedObject *course;
+    AppDelegate *appDelegte;
     DetailViewController *participantViewController;
     NSManagedObjectContext *managedObjectContext;
     EGORefreshTableHeaderView *_refreshHeaderView;
