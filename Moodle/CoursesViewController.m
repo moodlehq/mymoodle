@@ -10,10 +10,19 @@
 #import "Constants.h"
 #import "WSClient.h"
 #import "ParticipantListViewController.h"
+#import "Course.h"
 
 @implementation CoursesViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
 @synthesize participantListViewController;
+
+- (void)loadView {
+    [super loadView];
+    
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    managedObjectContext = appDelegate.managedObjectContext;
+
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -121,10 +130,24 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear: animated];
+    if([Course countWithContext:managedObjectContext site:appDelegate.site] == 0) {
+        if (appDelegate.netStatus == NotReachable) {
+            NSLog(@"Network not reachable");
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable, do you want to put this file in queen?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            [alert show];
+            [alert release];
+        } else {
+            // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+            HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+            [self.view.window addSubview:HUD];
+            HUD.delegate = self;
+            HUD.labelText = @"Loading";
+            [HUD showWhileExecuting:@selector(updateCourses) onTarget:self withObject:nil animated:YES];
+        }
+    }
 }
 - (void)viewDidLoad
 {
-    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     if (_refreshHeaderView == nil) {
 		
 		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
@@ -137,15 +160,19 @@
 	
 	//  update the last update date
 	[_refreshHeaderView refreshLastUpdatedDate];
+
+
     [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+
     self.title = NSLocalizedString(@"mycourses", @"My courses title");
-    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];}
+
+    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
+}
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -155,12 +182,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
@@ -175,6 +196,15 @@
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
+}
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.imageView.image = [UIImage imageNamed: @"course.png"];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
+    cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -317,21 +347,12 @@
 {
     [self.tableView endUpdates];
 }
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.imageView.image = [UIImage imageNamed: @"course.png"];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
-    cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
-}
 
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
 
 
 - (void)doneLoadingTableViewData{
-	
 	//  model should call this when its done loading
 	_reloading = NO;
 	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
@@ -341,21 +362,19 @@
 #pragma mark -
 #pragma mark EGORefreshTableHeaderDelegate Methods
 
-- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
-
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view {
 	[self updateCourses];
 	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.5];
 	
 }
 
-- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view {
 	
 	return _reloading; // should return if data source model is reloading
 	
 }
 
-- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
-	
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view {
 	return [NSDate date]; // should return date data source was last changed
 	
 }
@@ -373,5 +392,12 @@
 	
 	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
 	
+}
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+- (void)hudWasHidden {
+    [HUD removeFromSuperview];
+    [HUD release];
+	HUD = nil;
 }
 @end

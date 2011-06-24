@@ -10,6 +10,7 @@
 #import "Constants.h"
 #import "AppDelegate.h"
 #import "MoodleStyleSheet.h"
+#import "Course.h"
 
 @implementation RootViewController
 

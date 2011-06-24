@@ -16,6 +16,8 @@
 #import <Three20UINavigator/UIViewController+TTNavigator.h> 
 
 @implementation DetailViewController
+
+
 @synthesize participant=_participant;
 @synthesize course=_course;
 
@@ -50,14 +52,12 @@
     WSClient *client   = [[WSClient alloc] init];
     NSArray *wsinfo;
     if (postControllerType == 1) {
-        NSLog(@"Participant: %@", self.participant);
         NSNumber *userid   = [self.participant valueForKey:@"userid"];
         NSDictionary *message = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"touserid", text, @"text", nil];
         NSArray *messages = [[NSArray alloc] initWithObjects: message, nil];
         NSArray *paramvalues = [[NSArray alloc] initWithObjects: messages, nil];
         NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
         NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-        NSLog(@"Params: %@", params);
         @try {
             wsinfo = [client invoke: @"moodle_message_send_messages" withParams: (NSArray *)params];
         }
@@ -71,7 +71,6 @@
         NSArray *paramvalues = [[NSArray alloc] initWithObjects: notes, nil];
         NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"notes", nil];
         NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-        NSLog(@"%@", params);
         @try {
             wsinfo = [client invoke: @"moodle_notes_create_notes" withParams: (NSArray *)params];
         }
@@ -185,7 +184,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    [self updateParticipant];
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
@@ -196,16 +195,28 @@
     UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(margin, margin, size.size.width-margin*2, 120)] autorelease];
     
     // user picture
-    UIImageView *userpicture = [[[UIImageView alloc] initWithFrame:CGRectMake(margin, margin, 100, 100)] autorelease];
+    userpicture = [[[UIImageView alloc] initWithFrame:CGRectMake(margin, margin, 100, 100)] autorelease];
     
     userpicture.layer.cornerRadius = 9.0;
     userpicture.layer.masksToBounds = YES;
     userpicture.layer.borderColor = UIColorFromRGB(ColorBackground).CGColor;
     userpicture.layer.borderWidth = 3.0;
 
-    NSURL *url = [NSURL URLWithString: [self.participant valueForKey:@"profileimgurl"]];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    userpicture.image = [UIImage imageWithData:data];
+    NSURL *url = [NSURL URLWithString: [self.participant valueForKey:@"profileimageurl"]];
+    
+    SDWebImageManager *manager = [SDWebImageManager sharedManager];
+    
+    UIImage *cachedImage = [manager imageWithURL:url];
+    
+    if (cachedImage)
+    {
+        userpicture.image = cachedImage;
+    }
+    else
+    {
+        [manager downloadWithURL:url delegate:self];
+    }
+    
     // user fullname
     UILabel *fullname = [[[UILabel alloc] initWithFrame:CGRectMake(margin+100+20, margin, size.size.width-margin*2-100, 100)] autorelease];
     fullname.text = [self.participant valueForKey:@"fullname"];
@@ -217,7 +228,7 @@
     self.tableView.tableHeaderView = containerView;
     
     float button_width = 130;
-    tableviewFooter = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    tableviewFooter = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 120)];
     tableviewFooter.userInteractionEnabled = YES;
     
     UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -233,8 +244,22 @@
     buttonAddNote.tag = 2;
     [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
     
+    
+    UIButton *buttonRefresh = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonRefresh setTitle:@"Refresh" forState: UIControlStateNormal];
+    [buttonRefresh setFrame:CGRectMake(margin, 60, button_width, 50)];
+    buttonRefresh.tag = 3;
+    
+    UIButton *buttonAddContact = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonAddContact setTitle:@"Add contact" forState: UIControlStateNormal];
+    [buttonAddContact setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 60, button_width, 50)];
+    buttonAddContact.tag = 4;
+    
     [tableviewFooter addSubview:buttonSendMsg];
     [tableviewFooter addSubview:buttonAddNote];
+    [tableviewFooter addSubview:buttonRefresh];
+    [tableviewFooter addSubview:buttonAddContact];
+
     [self.tableView setTableFooterView:tableviewFooter];
     [tableviewFooter release];
 }
@@ -270,7 +295,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // There are three sections, for date, genre, and characters, in that order.
-    return 2;
+    return 3;
 }
 
 
@@ -282,9 +307,12 @@
     NSInteger rows = 0;
     switch (section) {
         case 0:
-            rows = [contactinfo count];
+            rows = 1;
             break;
         case 1:
+            rows = [contactinfo count];
+            break;
+        case 2:
             rows = [geoinfo count];
             break;
         default:
@@ -296,10 +324,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *CellIdentifier = @"CellIdentifier";
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
@@ -317,18 +344,25 @@
     NSString *key;
     switch (indexPath.section) {
         case 0:
-            info = [contactinfo objectAtIndex:indexPath.row];
             break;
         case 1:
+            info = [contactinfo objectAtIndex:indexPath.row];
+            break;
+        case 2:
             info = [geoinfo objectAtIndex:indexPath.row];
             break;
         default:
             break;
     }
-    key = [[info allKeys] lastObject];
-    cellText = [info valueForKey: key];
-    cell.detailTextLabel.text = cellText;
-    cell.textLabel.text = NSLocalizedString(key, key);;
+    if (indexPath.section == 1 || indexPath.section == 2) {
+        key = [[info allKeys] lastObject];
+        cellText = [info valueForKey: key];
+        cell.detailTextLabel.text = cellText;
+        cell.textLabel.text = NSLocalizedString(key, key);
+    } else if (indexPath.section == 0) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell.textLabel.text = [self.participant valueForKey:@"desc"];
+    }
     return cell;
 }
 
@@ -341,9 +375,12 @@
     NSString *title = nil;
     switch (section) {
         case 0:
-            title = NSLocalizedString(@"Contact", @"Contact info");
+            title = NSLocalizedString(@"description", @"Description");
             break;
         case 1:
+            title = NSLocalizedString(@"Contact", @"Contact info");
+            break;
+        case 2:
             title = NSLocalizedString(@"Location", @"Location");
             break;
         default:
@@ -355,18 +392,20 @@
 
 // load user
 -(void)updateParticipant {
-    
-    //retrieve the participant information
     WSClient *client   = [[WSClient alloc] init];
+    
+    // build individual user
     NSNumber *userid   = [self.participant valueForKey:@"userid"];
     NSNumber *courseid = [self.course      valueForKey:@"id"];
     NSDictionary *user = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", courseid, @"courseid", nil];
-    NSArray *userlist = [[NSArray alloc] initWithObjects: user, nil];
     
-    NSArray *paramvalues = [[NSArray alloc] initWithObjects: userlist, nil];
-    NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"userlist", nil];
-    NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-    NSLog(@"%@", params);
+    // build user list, we have only one user
+    NSArray *userlist = [[NSArray alloc] initWithObjects: user, nil];
+
+    NSArray *vals = [[NSArray alloc] initWithObjects: userlist,    nil];
+    NSArray *keys = [[NSArray alloc] initWithObjects: @"userlist", nil];
+
+    NSDictionary *params = [[NSDictionary alloc] initWithObjects:vals forKeys:keys];
     NSArray *result;
     @try {
         result = [client invoke: @"moodle_user_get_course_participants_by_id" withParams: (NSArray *)params];
@@ -374,59 +413,22 @@
     @catch (NSException *exception) {
         NSLog(@"%@", exception);
     }
-    
+
+    [user release];
+    [userlist release];
+    [vals release];
+    [keys release];
     [client release];
-    NSLog(@"User info %@", result);
-    NSError *error = nil;
+
     if (result && [result isKindOfClass:[NSArray class]]) {
         for (NSDictionary *theparticipant in result) {
-            //set the participant values
-            [self.participant setValue:[theparticipant objectForKey: @"id"] forKey:@"userid"];
-            [self.participant setValue:[theparticipant objectForKey: @"username"] forKey:@"username"];
-            [self.participant setValue:[theparticipant objectForKey: @"firstname"] forKey:@"firstname"];
-            [self.participant setValue:[theparticipant objectForKey: @"lastname"] forKey:@"lastname"];
-            [self.participant setValue:[theparticipant objectForKey: @"fullname"] forKey:@"fullname"];
-            [self.participant setValue:[theparticipant objectForKey: @"email"]  forKey:@"email"];
-            [self.participant setValue:[theparticipant objectForKey: @"address"] forKey:@"address"];
-            [self.participant setValue:[theparticipant objectForKey: @"phone1"] forKey:@"phone1"];
-            [self.participant setValue:[theparticipant objectForKey: @"phone2"] forKey:@"phone2"];
-            [self.participant setValue:[theparticipant objectForKey: @"icq"] forKey:@"icq"];
-            [self.participant setValue:[theparticipant objectForKey: @"skype"] forKey:@"skype"];
-            [self.participant setValue:[theparticipant objectForKey: @"yahoo"] forKey:@"yahoo"];
-            [self.participant setValue:[theparticipant objectForKey: @"aim"] forKey:@"aim"];
-            [self.participant setValue:[theparticipant objectForKey: @"msn"] forKey:@"msn"];
-            [self.participant setValue:[theparticipant objectForKey: @"department"] forKey:@"department"];
-            [self.participant setValue:[theparticipant objectForKey: @"institution"] forKey:@"institution"];
-            [self.participant setValue:[theparticipant objectForKey: @"interests"] forKey:@"interests"];
-            [self.participant setValue:[NSDate dateWithTimeIntervalSince1970:(int)[theparticipant objectForKey: @"firstaccess"]] forKey:@"firstaccess"];
-            [self.participant setValue:[NSDate dateWithTimeIntervalSince1970:(int)[theparticipant objectForKey: @"lastaccess"]] forKey:@"lastaccess"];
-            [self.participant setValue:[theparticipant objectForKey: @"idnumber"] forKey:@"idnumber"];
-            [self.participant setValue:[theparticipant objectForKey: @"lang"] forKey:@"lang"];
-            [self.participant setValue:[theparticipant objectForKey: @"timezone"] forKey:@"timezone"];
-            [self.participant setValue:[theparticipant objectForKey: @"description"] forKey:@"desc"];
-            [self.participant setValue:[theparticipant objectForKey: @"descriptionformat"] forKey:@"descformat"];
-            [self.participant setValue:[theparticipant objectForKey: @"city"] forKey:@"city"];
-            [self.participant setValue:[theparticipant objectForKey: @"url"] forKey:@"url"];
-            [self.participant setValue:[theparticipant objectForKey: @"country"] forKey:@"country"];
-            [self.participant setValue:[theparticipant objectForKey: @"profileimageurlsmall"] forKey:@"profileimgurlsmall"];
-            [self.participant setValue:[theparticipant objectForKey: @"profileimageurl"] forKey:@"profileimgurl"];
-            
-            //save the modification
-            if (![[self.participant managedObjectContext] save:&error]) {
-                NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
-                NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
-                if(detailedErrors != nil && [detailedErrors count] > 0) {
-                    for(NSError* detailedError in detailedErrors) {
-                        NSLog(@"  DetailedError: %@", [detailedError userInfo]);
-                    }
-                }
-                else {
-                    NSLog(@"  %@", [error userInfo]);
-                }
-            }
-            NSLog(@"self.participant: %@", self.participant);
+            [Participant update:self.participant dict:theparticipant course:nil];
         }
     }
 }
 
+- (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
+{
+    userpicture.image = image;
+}
 @end

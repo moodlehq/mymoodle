@@ -227,8 +227,8 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
 - (void)uploadAction {
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-    HUD = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
-    [self.navigationController.view addSubview:HUD];
+    HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+    [self.view.window addSubview:HUD];
 
     // Regiser for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;

@@ -13,3 +13,6 @@
 [submodule "EGOTableViewPullRefresh"]
 	path = EGOTableViewPullRefresh
 	url = git://github.com/enormego/EGOTableViewPullRefresh.git
+[submodule "SDWebImage"]
+	path = SDWebImage
+	url = git://github.com/rs/SDWebImage.git

@@ -38,6 +38,7 @@
 		320F2C48872C2E2C4DF86205 /* libThree20UI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320F2C48872C2E2C4DF86204 /* libThree20UI.a */; };
 		B5031AD3138007AB005BB407 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = B5031AD2138007AB005BB407 /* MBProgressHUD.m */; };
 		B5069EEB138116E800EABC26 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5069EEA138116E800EABC26 /* AVFoundation.framework */; };
+		B51C0F9D13B4556300276760 /* Course.m in Sources */ = {isa = PBXBuildFile; fileRef = B51C0F9C13B4556300276760 /* Course.m */; };
 		B51EC3DA1394BBA40048C866 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3C71394BBA40048C866 /* ASIAuthenticationDialog.m */; };
 		B51EC3DB1394BBA40048C866 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3CA1394BBA40048C866 /* ASIDataCompressor.m */; };
 		B51EC3DC1394BBA40048C866 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3CC1394BBA40048C866 /* ASIDataDecompressor.m */; };
@@ -75,6 +76,11 @@
 		B57CD156133C787F00CCB81A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD155133C787F00CCB81A /* CFNetwork.framework */; };
 		B57CD158133C788900CCB81A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD157133C788900CCB81A /* MobileCoreServices.framework */; };
 		B57CD15A133C78BE00CCB81A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD159133C78BE00CCB81A /* SystemConfiguration.framework */; };
+		B5902FB913B237F60053E1D6 /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = B5902FB813B237F60053E1D6 /* user.png */; };
+		B5902FC613B238300053E1D6 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B5902FBB13B238300053E1D6 /* SDImageCache.m */; };
+		B5902FC713B238300053E1D6 /* SDWebImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = B5902FBF13B238300053E1D6 /* SDWebImageDownloader.m */; };
+		B5902FC813B238300053E1D6 /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B5902FC213B238300053E1D6 /* SDWebImageManager.m */; };
+		B5902FC913B238300053E1D6 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B5902FC513B238300053E1D6 /* UIImageView+WebCache.m */; };
 		B5A6C65C1389792A007B46F0 /* MoodleStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */; };
 		B5B0EAEF1383ACFE000A9330 /* Attendance.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAE51383ACFE000A9330 /* Attendance.png */; };
 		B5B0EAF01383ACFE000A9330 /* Calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAE61383ACFE000A9330 /* Calendar.png */; };
@@ -312,6 +318,8 @@
 		B5031AD1138007AB005BB407 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = SOURCE_ROOT; };
 		B5031AD2138007AB005BB407 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = SOURCE_ROOT; };
 		B5069EEA138116E800EABC26 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B51C0F9B13B4556300276760 /* Course.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Course.h; sourceTree = "<group>"; };
+		B51C0F9C13B4556300276760 /* Course.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Course.m; sourceTree = "<group>"; };
 		B51EC3C61394BBA40048C866 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASIAuthenticationDialog.h; path = "asi-http-request/Classes/ASIAuthenticationDialog.h"; sourceTree = SOURCE_ROOT; };
 		B51EC3C71394BBA40048C866 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASIAuthenticationDialog.m; path = "asi-http-request/Classes/ASIAuthenticationDialog.m"; sourceTree = SOURCE_ROOT; };
 		B51EC3C81394BBA40048C866 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASICacheDelegate.h; path = "asi-http-request/Classes/ASICacheDelegate.h"; sourceTree = SOURCE_ROOT; };
@@ -376,6 +384,19 @@
 		B57CD155133C787F00CCB81A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		B57CD157133C788900CCB81A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		B57CD159133C78BE00CCB81A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		B5902FB813B237F60053E1D6 /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user.png; path = Images/user.png; sourceTree = SOURCE_ROOT; };
+		B5902FBA13B238300053E1D6 /* SDImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDImageCache.h; path = SDWebImage/SDImageCache.h; sourceTree = SOURCE_ROOT; };
+		B5902FBB13B238300053E1D6 /* SDImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDImageCache.m; path = SDWebImage/SDImageCache.m; sourceTree = SOURCE_ROOT; };
+		B5902FBC13B238300053E1D6 /* SDImageCacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDImageCacheDelegate.h; path = SDWebImage/SDImageCacheDelegate.h; sourceTree = SOURCE_ROOT; };
+		B5902FBD13B238300053E1D6 /* SDWebImageCompat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDWebImageCompat.h; path = SDWebImage/SDWebImageCompat.h; sourceTree = SOURCE_ROOT; };
+		B5902FBE13B238300053E1D6 /* SDWebImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDWebImageDownloader.h; path = SDWebImage/SDWebImageDownloader.h; sourceTree = SOURCE_ROOT; };
+		B5902FBF13B238300053E1D6 /* SDWebImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDWebImageDownloader.m; path = SDWebImage/SDWebImageDownloader.m; sourceTree = SOURCE_ROOT; };
+		B5902FC013B238300053E1D6 /* SDWebImageDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDWebImageDownloaderDelegate.h; path = SDWebImage/SDWebImageDownloaderDelegate.h; sourceTree = SOURCE_ROOT; };
+		B5902FC113B238300053E1D6 /* SDWebImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDWebImageManager.h; path = SDWebImage/SDWebImageManager.h; sourceTree = SOURCE_ROOT; };
+		B5902FC213B238300053E1D6 /* SDWebImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDWebImageManager.m; path = SDWebImage/SDWebImageManager.m; sourceTree = SOURCE_ROOT; };
+		B5902FC313B238300053E1D6 /* SDWebImageManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDWebImageManagerDelegate.h; path = SDWebImage/SDWebImageManagerDelegate.h; sourceTree = SOURCE_ROOT; };
+		B5902FC413B238300053E1D6 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+WebCache.h"; path = "SDWebImage/UIImageView+WebCache.h"; sourceTree = SOURCE_ROOT; };
+		B5902FC513B238300053E1D6 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+WebCache.m"; path = "SDWebImage/UIImageView+WebCache.m"; sourceTree = SOURCE_ROOT; };
 		B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleStyleSheet.h; sourceTree = "<group>"; };
 		B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleStyleSheet.m; sourceTree = "<group>"; };
 		B5B0EAE51383ACFE000A9330 /* Attendance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Attendance.png; path = Icons/Attendance.png; sourceTree = SOURCE_ROOT; };
@@ -756,6 +777,7 @@
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B5902FA713B236F50053E1D6 /* SDWebImage */,
 				B5DABB25138E2C14004AE472 /* Models */,
 				B57CD18E133C79D500CCB81A /* Controllers */,
 				B5B0EB201383AFC3000A9330 /* Reachability */,
@@ -815,6 +837,7 @@
 				B5C4329413A7BDC100F8F1A9 /* item.png */,
 				B53FAB411398B921008206EA /* microphone.jpg */,
 				B53FAB3F1398B566008206EA /* Complete.png */,
+				B5902FB813B237F60053E1D6 /* user.png */,
 				B5B0EAFB1383AD7E000A9330 /* redbutton.png */,
 			);
 			name = Images;
@@ -843,6 +866,25 @@
 			name = Controllers;
 			sourceTree = "<group>";
 		};
+		B5902FA713B236F50053E1D6 /* SDWebImage */ = {
+			isa = PBXGroup;
+			children = (
+				B5902FBA13B238300053E1D6 /* SDImageCache.h */,
+				B5902FBB13B238300053E1D6 /* SDImageCache.m */,
+				B5902FBC13B238300053E1D6 /* SDImageCacheDelegate.h */,
+				B5902FBD13B238300053E1D6 /* SDWebImageCompat.h */,
+				B5902FBE13B238300053E1D6 /* SDWebImageDownloader.h */,
+				B5902FBF13B238300053E1D6 /* SDWebImageDownloader.m */,
+				B5902FC013B238300053E1D6 /* SDWebImageDownloaderDelegate.h */,
+				B5902FC113B238300053E1D6 /* SDWebImageManager.h */,
+				B5902FC213B238300053E1D6 /* SDWebImageManager.m */,
+				B5902FC313B238300053E1D6 /* SDWebImageManagerDelegate.h */,
+				B5902FC413B238300053E1D6 /* UIImageView+WebCache.h */,
+				B5902FC513B238300053E1D6 /* UIImageView+WebCache.m */,
+			);
+			name = SDWebImage;
+			sourceTree = "<group>";
+		};
 		B5B0EB201383AFC3000A9330 /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
@@ -869,6 +911,8 @@
 				B53FAB5B1398C06B008206EA /* MoodleJob.m */,
 				B5EEB3F113AEED5C00A53635 /* Participant.h */,
 				B5EEB3F213AEED5C00A53635 /* Participant.m */,
+				B51C0F9B13B4556300276760 /* Course.h */,
+				B51C0F9C13B4556300276760 /* Course.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1170,6 +1214,7 @@
 				B55873EA13A8AB77006526F3 /* grayArrow@2x.png in Resources */,
 				B55873EB13A8AB77006526F3 /* whiteArrow.png in Resources */,
 				B55873EC13A8AB77006526F3 /* whiteArrow@2x.png in Resources */,
+				B5902FB913B237F60053E1D6 /* user.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1253,6 +1298,11 @@
 				B53FAB5C1398C06B008206EA /* MoodleJob.m in Sources */,
 				B55873E413A8AB77006526F3 /* EGORefreshTableHeaderView.m in Sources */,
 				B5EEB3F313AEED5C00A53635 /* Participant.m in Sources */,
+				B5902FC613B238300053E1D6 /* SDImageCache.m in Sources */,
+				B5902FC713B238300053E1D6 /* SDWebImageDownloader.m in Sources */,
+				B5902FC813B238300053E1D6 /* SDWebImageManager.m in Sources */,
+				B5902FC913B238300053E1D6 /* UIImageView+WebCache.m in Sources */,
+				B51C0F9D13B4556300276760 /* Course.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1342,7 +1392,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -1357,6 +1408,8 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1365,7 +1418,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -1378,6 +1432,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
@@ -1391,9 +1447,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Moodle/Moodle-Prefix.pch";
 				INFOPLIST_FILE = "Moodle/Moodle-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1406,9 +1462,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Moodle/Moodle-Prefix.pch";
 				INFOPLIST_FILE = "Moodle/Moodle-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

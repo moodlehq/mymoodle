@@ -9,6 +9,7 @@
 #import "SitesViewController.h"
 #import "Constants.h"
 #import "MoodleSite.h"
+#import "UIImageView+WebCache.h"
 
 #define kSiteNameTag 1;
 
@@ -92,12 +93,7 @@
     NSUInteger row = [indexPath row];
     NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
 
-    NSURL *url = [NSURL URLWithString: [appDelegate.site valueForKey:@"userpictureurl"]];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-//    UIImage *image = [[UIImage alloc] initWithData: data cache:YES];
-    UIImage *image = [[UIImage alloc] initWithData: data];
-
-    cell.imageView.image = image;
+    [cell.imageView setImageWithURL:[NSURL URLWithString: [appDelegate.site valueForKey:@"userpictureurl"]] placeholderImage: [UIImage imageNamed:@"course.png"]];
 
     CGRect siteNameRect = CGRectMake(100, 5, 200, 18);
     UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
@@ -219,7 +215,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    NSLog(@"begain update sitesview table view");
+    NSLog(@"Begin update SiteViewController");
     [self.tableView beginUpdates];
 }
 

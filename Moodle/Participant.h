@@ -46,4 +46,6 @@
 @property (nonatomic, retain) NSSet* courses;
 - (void)addCoursesObject:(NSManagedObject *)value;
 - (void)removeCoursesObject:(NSManagedObject *)value;
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context course:(NSManagedObject *)course;
++ (void)update: (Participant *)db dict: (NSDictionary *)dict course: (NSManagedObject *)course;
 @end

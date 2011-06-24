@@ -13,6 +13,7 @@
 #import "Reachability.h"
 #import "AppDelegate.h"
 #import "Participant.h"
+#import "UIImageView+WebCache.h"
 
 @implementation ParticipantListViewController
 @synthesize fetchedResultsController=__fetchedResultsController;
@@ -41,11 +42,17 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
-{
+-(void)loadView {
+    [super loadView];
+    
     appDelegte = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegte managedObjectContext];
+}
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
+
     if (_refreshHeaderView == nil) {
 		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
 		view.delegate = self;
@@ -66,124 +73,20 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    detailViewController = [[DetailViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [super viewWillAppear:animated];    
-}
-
-- (void)updateParticipants {
-	_reloading = YES;
-
-    //retrieve all course participants that will need to be deleted from core data
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:managedObjectContext];
-    [request setEntity:entityDescription];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY courses == %@", course];
-    [request setPredicate:predicate];
-    NSError *error = nil;
-    NSArray *enrolledUsers = [managedObjectContext executeFetchRequest:request error:&error];
-
-    NSMutableDictionary *retainedParticipants = [[NSMutableDictionary alloc] init];
-    
-    NSLog(@"Number of participants in core data before web service call: %d", [enrolledUsers count]);
-    
-    
-    WSClient *client   = [[WSClient alloc] init];
-//    NSNumber *groupid = [NSNumber numberWithInt:1];
-//    NSDictionary *option1 = [[NSDictionary alloc] initWithObjectsAndKeys: @"true", @"value", @"onlyactive", @"name", nil];
-//    NSDictionary *option2 = [[NSDictionary alloc] initWithObjectsAndKeys: groupid, @"value", @"groupid", @"name", nil];
-
-    NSNumber *courseid = [course valueForKey:@"id"];
-    NSArray *options = [[NSArray alloc] init];
-    NSArray *paramvalues = [[NSArray alloc] initWithObjects: courseid, options, nil];
-    NSArray *paramkeys   = [[NSArray alloc] initWithObjects: @"courseid", @"options", nil];
-    NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys: paramkeys];
-    NSArray *result;
-    @try {
-        result = [client invoke: @"moodle_user_get_users_by_courseid" withParams: (NSArray *)params];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
-    [options release];
-    [paramvalues release];
-    [paramkeys release];
-    [params release];
-    [client release];
-
-    if (result) {
-        for ( NSDictionary *wsparticipant in result) {
-            
-            Participant *dbparticipant;
-            
-            //check if the user id is already in core data participants
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(site == %@ AND userid == %@)", [course valueForKey:@"site"], [wsparticipant objectForKey: @"id"]];
-            [request setPredicate:predicate];
-            NSArray *user = [managedObjectContext executeFetchRequest:request error:&error];
-            if ([user count] == 1) {
-                //retrieve the participant to update
-                NSLog(@"found one ");
-                dbparticipant = [user lastObject];
-            } else if ([user count] == 0) {
-                //the participant is not in core data, we add it
-                dbparticipant = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
-                
-            } else {
-                for (NSManagedObject *u in user) {
-                    [managedObjectContext deleteObject:u];
-                }
-                NSLog(@"Error !!!!!! There is more than one participant with id == %@", [wsparticipant objectForKey:@"id"]);
-            }
-            
-            //set the course values
-            [dbparticipant setValue:[wsparticipant objectForKey: @"id"]    forKey:@"userid"];
-            [dbparticipant setValue:[wsparticipant objectForKey: @"firstname"] forKey:@"firstname"];
-            [dbparticipant setValue:[wsparticipant objectForKey: @"lastname"]  forKey:@"lastname"];
-            [dbparticipant setValue:[wsparticipant objectForKey: @"fullname"]  forKey:@"fullname"];
-            [dbparticipant setValue:[wsparticipant objectForKey: @"username"]  forKey:@"username"];
-            [dbparticipant setValue:[wsparticipant objectForKey: @"profileimgurl"] forKey:@"profileimgurl"];
-            [dbparticipant setValue:[wsparticipant objectForKey: @"profileimgurlsmall"] forKey:@"profileimgurlsmall"];
-            [dbparticipant setValue:[course valueForKey:@"site"] forKey:@"site"];
-            
-            [dbparticipant addCoursesObject:course];
-            
-            //save the modification
-            if (![[dbparticipant managedObjectContext] save:&error]) {
-                NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
-                NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
-                if(detailedErrors != nil && [detailedErrors count] > 0) {
-                    for(NSError* detailedError in detailedErrors) {
-                        NSLog(@"  DetailedError: %@", [detailedError userInfo]);
-                    }
-                }
-                else {
-                    NSLog(@"  %@", [error userInfo]);
-                }
-            }
-            
-            NSNumber *participantexist = [[NSNumber alloc] initWithBool:YES];
-            [retainedParticipants setObject:participantexist forKey: [wsparticipant objectForKey:@"id"]];
-            [participantexist release];
-        }
-    }
-    for (Participant *participant in enrolledUsers) {
-        //if the participant is in the list to not delete
-        NSNumber *theparticipantexist = [retainedParticipants objectForKey:[participant valueForKey:@"userid"]];
-        if ([theparticipantexist intValue] == 0) {
-            NSLog(@"UnEnrol participant %@", participant);
-            [participant removeCoursesObject:course];
-        }
-    }
-    //save the modifications
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"Error saving entity: %@", [error localizedDescription]);
-    }
-    [retainedParticipants release];
+    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    if([Participant countWithContext:managedObjectContext course:course] == 0) {
+        // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+        HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+        [self.view.window addSubview:HUD];
+        HUD.delegate = self;
+        HUD.labelText = @"Loading";
+        [HUD showWhileExecuting:@selector(updateParticipants) onTarget:self withObject:nil animated:YES];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -194,12 +97,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
@@ -216,6 +113,8 @@
     return [sectionInfo numberOfObjects];
 }
 
+#pragma mark - Table view delegate
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"ParticipantCellIdentifier";
@@ -229,22 +128,19 @@
 
     // Configure the cell...
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
-    cell.imageView.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:[NSURL URLWithString:[oneParticipant valueForKey:@"profileimgurl"]]]];
+    [cell.imageView setImageWithURL:[NSURL URLWithString: [oneParticipant valueForKey:@"profileimageurl"]] placeholderImage: [UIImage imageNamed:@"user.png"]];
     cell.textLabel.text = [oneParticipant valueForKey:@"fullname"];
 
     return cell;
 }
 
-#pragma mark - Table view delegate
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *selectedParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Participant *selectedParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    detailViewController = [[DetailViewController alloc] initWithStyle:UITableViewStyleGrouped];
     detailViewController.participant = selectedParticipant;
     detailViewController.title = [selectedParticipant valueForKey:@"fullname"];
     detailViewController.course = course;
-
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
@@ -290,11 +186,6 @@
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
     {
-	    /*
-	     Replace this implementation with code to handle the error appropriately.
-
-	     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-	     */
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	    abort();
 	}
@@ -358,14 +249,12 @@
 
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
-
-
 - (void)doneLoadingTableViewData{
-	
+
 	//  model should call this when its done loading
 	_reloading = NO;
 	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
-	
+
 }
 
 #pragma mark -
@@ -374,34 +263,122 @@
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
 	[self updateParticipants];
 	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.5];
-	
+
 }
 
 - (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
-	
+
 	return _reloading; // should return if data source model is reloading
-	
+
 }
 
 - (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
-	
 	return [NSDate date]; // should return date data source was last changed
-	
+
 }
 
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{	
-	
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 	[_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
-    
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-	
 	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
-	
+}
+
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+- (void)hudWasHidden {
+    [HUD removeFromSuperview];
+    [HUD release];
+	HUD = nil;
+}
+
+#pragma mark - web service
+- (void)updateParticipants {
+	_reloading = YES;
+    
+    //retrieve all course participants that will need to be deleted from core data
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:managedObjectContext];
+    [request setEntity:entityDescription];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY courses == %@", course];
+    [request setPredicate:predicate];
+    NSError *error = nil;
+    NSArray *enrolledUsers = [managedObjectContext executeFetchRequest:request error:&error];
+    
+    NSMutableDictionary *retainedParticipants = [[NSMutableDictionary alloc] init];
+    NSLog(@"Number of participants in core data before web service call: %d", [enrolledUsers count]);
+    
+    WSClient *client   = [[WSClient alloc] init];
+    
+    NSNumber *courseid = [course valueForKey:@"id"];
+    NSArray *options = [[NSArray alloc] init];
+    NSArray *paramvalues = [[NSArray alloc] initWithObjects: courseid, options, nil];
+    NSArray *paramkeys   = [[NSArray alloc] initWithObjects: @"courseid", @"options", nil];
+    NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys: paramkeys];
+    NSArray *result;
+    @try {
+        result = [client invoke: @"moodle_user_get_users_by_courseid" withParams: (NSArray *)params];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+    // easy on memory
+    [options release];
+    [paramvalues release];
+    [paramkeys release];
+    [params release];
+    [client release];
+
+    if (result) {
+        for ( NSDictionary *wsparticipant in result) {
+            
+            Participant *dbparticipant;
+            
+            //check if the user id is already in core data participants
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(site == %@ AND userid == %@)", [course valueForKey:@"site"], [wsparticipant objectForKey: @"id"]];
+            [request setPredicate:predicate];
+            NSArray *user = [managedObjectContext executeFetchRequest:request error:&error];
+            if ([user count] == 1) {
+                //retrieve the participant to update
+                NSLog(@"found one ");
+                dbparticipant = [user lastObject];
+            } else if ([user count] == 0) {
+                //the participant is not in core data, we add it
+                dbparticipant = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
+                
+            } else {
+                for (NSManagedObject *u in user) {
+                    [managedObjectContext deleteObject:u];
+                }
+                NSLog(@"Error !!!!!! There is more than one participant with id == %@", [wsparticipant objectForKey:@"id"]);
+            }
+            
+            [Participant update:dbparticipant dict:wsparticipant course:course];
+
+            NSNumber *participantexist = [[NSNumber alloc] initWithBool:YES];
+            [retainedParticipants setObject:participantexist forKey: [wsparticipant objectForKey:@"id"]];
+            [participantexist release];
+        }
+    }
+    for (Participant *participant in enrolledUsers) {
+        //if the participant is in the list to not delete
+        NSNumber *theparticipantexist = [retainedParticipants objectForKey:[participant valueForKey:@"userid"]];
+        if ([theparticipantexist intValue] == 0) {
+            NSLog(@"Unenroll participant %@", participant);
+            [participant removeCoursesObject:course];
+        }
+    }
+
+    //save the modifications
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"Error saving entity: %@", [error localizedDescription]);
+    }
+    [retainedParticipants release];
 }
 
 @end
