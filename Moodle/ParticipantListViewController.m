@@ -9,7 +9,6 @@
 #import "ParticipantListViewController.h"
 #import "WSClient.h"
 #import "Constants.h"
-#import "HashValue.h"
 #import "Reachability.h"
 #import "AppDelegate.h"
 #import "Participant.h"

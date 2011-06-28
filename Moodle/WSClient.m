@@ -35,7 +35,7 @@
         [wsurl release];
     }
 
-    NSLog(@"API URL: %@", self.url);
+    NSLog(@"Request: %@ at %@", method, self.url);
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
     [req setMethod:method withObjects: params];
 

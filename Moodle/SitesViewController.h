@@ -10,7 +10,6 @@
 #import <Three20/Three20.h>
 #import "AppDelegate.h"
 
-
 @interface SitesViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
     NSArray *list;
     NSManagedObjectContext *managedObjectContext;

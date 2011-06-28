@@ -7,13 +7,16 @@
 //
 
 #import "DetailViewController.h"
-#import "HashValue.h"
 #import "Reachability.h"
 #import "WSClient.h"
 #import "Constants.h"
 
 // temp fix for https://github.com/facebook/three20/issues/194
 #import <Three20UINavigator/UIViewController+TTNavigator.h> 
+
+
+#pragma mark - view controller
+
 
 @implementation DetailViewController
 
@@ -321,12 +324,17 @@
     return rows;
 }
 
+- (void)configureCell {
+
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+//    MyTableViewCell *cell;
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
+//        cell = [[[MyTableViewCell alloc] initWithFrame: self.view.frame] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
@@ -356,9 +364,26 @@
     }
     if (indexPath.section == 1 || indexPath.section == 2) {
         key = [[info allKeys] lastObject];
+
+        
+        CGRect labelFrame = CGRectMake(10, 4, 70, 32);
+        
+        UILabel *labelView = [[UILabel alloc] initWithFrame:labelFrame];
+        labelView.text = NSLocalizedString(key, key);
+        [labelView setTextAlignment: UITextAlignmentRight];
+        [labelView setFont:[UIFont boldSystemFontOfSize:16.0]];
+        
+        CGRect textviewFrame = CGRectMake(90, 2, 200, 32);
+        UITextView *textView = [[UITextView alloc] initWithFrame:textviewFrame];
         cellText = [info valueForKey: key];
-        cell.detailTextLabel.text = cellText;
-        cell.textLabel.text = NSLocalizedString(key, key);
+        [textView setText:cellText];
+        [textView setEditable:NO];
+        [textView setFont:[UIFont fontWithName:@"Helvetica" size:16]];
+        [textView setDataDetectorTypes: UIDataDetectorTypeAll];
+        [textView setScrollEnabled:NO];
+        [cell.contentView addSubview:textView];
+        [cell.contentView addSubview:labelView];
+        [textView release];
     } else if (indexPath.section == 0) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         cell.textLabel.text = [self.participant valueForKey:@"desc"];
@@ -432,3 +457,9 @@
     userpicture.image = image;
 }
 @end
+
+
+
+
+
+
