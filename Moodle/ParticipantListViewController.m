@@ -120,7 +120,7 @@
 
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
     }
 
     NSManagedObject *oneParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -129,6 +129,7 @@
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     [cell.imageView setImageWithURL:[NSURL URLWithString: [oneParticipant valueForKey:@"profileimageurl"]] placeholderImage: [UIImage imageNamed:@"user.png"]];
     cell.textLabel.text = [oneParticipant valueForKey:@"fullname"];
+//    NSLog(@"%@", )
 
     return cell;
 }

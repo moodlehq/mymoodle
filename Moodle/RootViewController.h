@@ -17,6 +17,7 @@
 #import "Reachability.h"
 
 @interface RootViewController : TTViewController <TTLauncherViewDelegate> {
+    AppDelegate *appDelegate;
     /** view controllers*/
     SitesViewController *settingsViewController;
     /** modules */

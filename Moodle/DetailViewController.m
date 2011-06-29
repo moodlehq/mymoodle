@@ -24,6 +24,52 @@
 @synthesize participant=_participant;
 @synthesize course=_course;
 
+- (void)addContact {
+    ABAddressBookRef addressBook = ABAddressBookCreate();
+    ABRecordRef person = ABPersonCreate();
+    ABRecordSetValue(person, kABPersonFirstNameProperty, _participant.fullname, nil);
+    ABRecordSetValue(person, kABPersonNoteProperty, @"Imported from moodle", nil);  
+    
+    // adding phone number
+    ABMutableMultiValueRef phoneNumberMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    if (_participant.phone1)
+        ABMultiValueAddValueAndLabel(phoneNumberMultiValue, _participant.phone1, (CFStringRef)@"Phone", NULL);
+    if (_participant.phone2)
+        ABMultiValueAddValueAndLabel(phoneNumberMultiValue, _participant.phone2, (CFStringRef)@"Mobile", NULL);
+    ABRecordSetValue(person, kABPersonPhoneProperty, phoneNumberMultiValue, nil);
+    CFRelease(phoneNumberMultiValue);
+    
+    // Adding emails
+    ABMutableMultiValueRef emailMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    ABMultiValueAddValueAndLabel(emailMultiValue, _participant.email, (CFStringRef)@"Work", NULL);
+    ABRecordSetValue(person, kABPersonURLProperty, emailMultiValue, nil);
+    CFRelease(emailMultiValue);
+    
+    // Adding address  
+    ABMutableMultiValueRef addressMultipleValue = ABMultiValueCreateMutable(kABMultiDictionaryPropertyType);  
+    NSMutableDictionary *addressDictionary = [[NSMutableDictionary alloc] init];
+    if (_participant.address)
+        [addressDictionary setObject:_participant.address forKey:(NSString *)kABPersonAddressStreetKey];
+    if (_participant.city)
+        [addressDictionary setObject:_participant.city forKey:(NSString *)kABPersonAddressCityKey];  
+//    [addressDictionary setObject:@"6000" forKey:(NSString *)kABPersonAddressZIPKey];
+    if (_participant.country)
+        [addressDictionary setObject:_participant.country forKey:(NSString *)kABPersonAddressCountryKey];  
+//    [addressDictionary setObject:@"au" forKey:(NSString *)kABPersonAddressCountryCodeKey];  
+    ABMultiValueAddValueAndLabel(addressMultipleValue, addressDictionary, kABHomeLabel, NULL);  
+    [addressDictionary release];  
+    ABRecordSetValue(person, kABPersonAddressProperty, addressMultipleValue, nil);  
+    CFRelease(addressMultipleValue);  
+
+    ABAddressBookAddRecord(addressBook, person, nil);
+    ABAddressBookSave(addressBook, nil);
+    CFRelease(person);
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Contact" message:@"Contact added" delegate: self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
+    [alert release];
+}
+
 - (UIViewController*)post: (NSDictionary *)query {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"text", self, @"delegate", nil];
     TTPostController* controller = [[[TTPostController alloc] initWithNavigatorURL: nil query: options] autorelease];
@@ -62,11 +108,16 @@
         NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
         NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
         @try {
-            wsinfo = [client invoke: @"moodle_message_send_messages" withParams: (NSArray *)params];
+            wsinfo = [client invoke: @"moodle_message_send_instantmessages" withParams: (NSArray *)params];
         }
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
         }
+        [message release];
+        [messages release];
+        [paramvalues release];
+        [paramkeys release];
+        [params release];
     } else {
         NSNumber *userid   = [self.participant valueForKey:@"userid"];
         NSDictionary *note = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", text, @"text", @"text", @"format", [self.course valueForKey:@"id"], @"courseid", @"personal", @"publishstate", nil];
@@ -80,6 +131,11 @@
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
         }
+        [note release];
+        [notes release];
+        [paramvalues release];
+        [paramkeys release];
+        [params release];
     }
     NSDictionary *msg = [wsinfo lastObject];
     if ([msg valueForKey:@"errormessage"]) {
@@ -217,6 +273,8 @@
     }
     else
     {
+//        userpicture.image =  
+        NSLog(@"URL: %@", url);
         [manager downloadWithURL:url delegate:self];
     }
     
@@ -249,12 +307,14 @@
     
     
     UIButton *buttonRefresh = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonRefresh setTitle:@"Refresh" forState: UIControlStateNormal];
+    [buttonRefresh setTitle:@"Update" forState: UIControlStateNormal];
+    [buttonRefresh addTarget:self action:@selector(updateParticipant) forControlEvents:UIControlEventTouchUpInside];
     [buttonRefresh setFrame:CGRectMake(margin, 60, button_width, 50)];
     buttonRefresh.tag = 3;
     
     UIButton *buttonAddContact = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [buttonAddContact setTitle:@"Add contact" forState: UIControlStateNormal];
+    [buttonAddContact addTarget:self action:@selector(addContact) forControlEvents:UIControlEventTouchUpInside];
     [buttonAddContact setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 60, button_width, 50)];
     buttonAddContact.tag = 4;
     
@@ -331,10 +391,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//    MyTableViewCell *cell;
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
-//        cell = [[[MyTableViewCell alloc] initWithFrame: self.view.frame] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
@@ -457,9 +515,3 @@
     userpicture.image = image;
 }
 @end
-
-
-
-
-
-

@@ -12,6 +12,7 @@
 #import "MoodleStyleSheet.h"
 #import "Course.h"
 
+
 @implementation RootViewController
 
 /**
@@ -21,11 +22,13 @@
 -(void)displaySettingsView {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://sites/"] applyAnimated:YES]];
 }
+- (void)launchNotification {
+    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://sync/"] applyAnimated:YES]];
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc]
                                     initWithTitle:@"Sites"
                                     style:UIBarButtonItemStylePlain
@@ -41,11 +44,53 @@
  *
  */
 - (void)loadView {
-    [super loadView];
-    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
+    
+
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    managedObjectContext = [appDelegate managedObjectContext];
+    [super loadView];    
+    
+    
+    //    self.view.backgroundColor = UIColorFromRGB(RootBackground);
+    //    CGRect rect = self.view.bounds;
+    NSLog(@"AppFrame: %@", NSStringFromCGRect([UIScreen mainScreen].applicationFrame));
+    NSLog(@"ViewBounds: %@", NSStringFromCGRect(self.view.bounds));
+    NSLog(@"view : %@", NSStringFromCGRect(self.view.frame));
     CGRect rect = [UIScreen mainScreen].applicationFrame;
-    NSLog(@"%@", NSStringFromCGRect(rect));
-    launcherView = [[TTLauncherView alloc] initWithFrame: self.view.bounds];
+
+    UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"app_bg.png"]];
+    appBg.frame = CGRectMake(0, 0, 320, 460);
+    [self.view addSubview:appBg];
+    [appBg release];
+
+    UIImageView *header = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"header.png"]];
+    header.frame = CGRectMake((rect.size.width-240)/2, 35, 240, 34);
+    [self.view addSubview:header];
+    [header release];
+    
+    UITextView *connectedSite = [[UITextView alloc] initWithFrame:CGRectMake(20, 69, rect.size.width-40, 40)];
+    [connectedSite setText: [NSString stringWithFormat:@"Connected to: %@", [appDelegate.site valueForKey: @"url"]]];
+    [connectedSite setBackgroundColor:[UIColor clearColor]];
+    [connectedSite setScrollEnabled: NO];
+    [connectedSite setEditable: NO];
+    [connectedSite setTextAlignment:UITextAlignmentCenter];
+    [connectedSite setFont: [UIFont boldSystemFontOfSize:11]];
+    [self.view addSubview:connectedSite];
+    [connectedSite release];
+    
+
+    int headerHeight = 90;
+    
+    
+    int bgWidth = 276;
+    int bgHeight = 299;
+    UIImageView *rootBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"root_bg.png"]];
+    rootBackground.frame = CGRectMake((rect.size.width-276)/2, rect.origin.y+headerHeight, bgWidth, bgHeight);
+    [self.view addSubview: rootBackground];
+    [rootBackground release];
+
+    CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x+10, rootBackground.frame.origin.y+30, bgWidth-20, bgHeight-30);
+    launcherView = [[TTLauncherView alloc] initWithFrame: launcherFrame];
     launcherView.columnCount = 2;
     webLauncherItem = [[TTLauncherItem alloc] initWithTitle:NSLocalizedString(@"Web", "Web")
                                                         image:@"bundle://ToolGuide.png"
@@ -60,21 +105,56 @@
                                 nil]
                           , nil];
     launcherView.delegate = self;
-    launcherView.frame = CGRectMake(0, 0, rect.size.width, rect.size.height-80);
-
     [self.view addSubview: launcherView];
+    //defautl toolbar height ;44
 
-    TTButton *syncButton = [TTButton buttonWithStyle:@"notificationButton:" title: @""];
-    [syncButton setImage:@"bundle://sync.png" forState:UIControlStateNormal];
-    [syncButton addTarget:self
-               action:@selector(launchNotification:) forControlEvents: UIControlEventTouchUpInside];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(10, rect.size.height - 40, rect.size.width-20, 33)];
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:toolbar.bounds 
+                                                byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight
+                                                        cornerRadii:CGSizeMake(10.0, 10.0)];
 
-    syncButton.frame = CGRectMake(0, rect.size.height - 80, rect.size.width+10, 36.0);
-    [self.view addSubview: syncButton];
+    // Create the shape layer and set its path
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    maskLayer.frame = toolbar.bounds;
+    maskLayer.path = maskPath.CGPath;
+    // Set the newly created shape layer as the mask for the image view's layer
+    toolbar.layer.mask = maskLayer;
+    toolbar.tintColor = TTSTYLEVAR(toolbarTintColor);
+    
+    UIBarButtonItem *btnSync = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"sync.png"] style:UIBarButtonItemStylePlain target:self action:@selector(launchNotification)];
+    btnSync.tag = 1;
+    
+    UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
+    btnSettings.tag = 2;
+    
+    UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
+                         UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
+    
+    
+    toolbar.items = [NSArray arrayWithObjects:
+                      btnSync,
+                      space,
+                      btnSettings,
+                      nil];
+    [btnSync release];
+    [btnSettings release];
+    [self.view addSubview: toolbar];
+    [toolbar release];
+
+//    TTButton *syncButton = [TTButton buttonWithStyle:@"notificationButton:" title: @"Sync"];
+////    [syncButton setImage:@"bundle://sync.png" forState:UIControlStateNormal];
+//    [syncButton addTarget:self
+//               action:@selector(launchNotification:) forControlEvents: UIControlEventTouchUpInside];
+//
+//    syncButton.frame = ;
+//    [self.view addSubview: syncButton];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [[self navigationController] setNavigationBarHidden:YES animated:NO];
+
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
@@ -84,7 +164,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey: kSelectedSiteUrlKey];
     if (defaultSiteUrl == nil || appDelegate.site == nil) {
         [self displaySettingsView];
@@ -100,6 +179,8 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -122,9 +203,6 @@
     [launcherView release];
     [webLauncherItem release];
     [super dealloc];
-}
-- (void)launchNotification: (id)sender {
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sync/"] applyAnimated:YES]];
 }
 
 #pragma mark -

@@ -31,5 +31,6 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 // Color scheme
 #define ColorBackground    0xFFE773
-#define ColorNavigationBar 0xFF9640
+#define RootBackground     0xF0F0F0
+#define ColorNavigationBar 0xE59304
 #define LoginBackground    0xF08C2E

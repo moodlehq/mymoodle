@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
+#import <AddressBook/AddressBook.h>
 #import "SDWebImageManager.h"
 #import "Participant.h"
 
-@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate, SDWebImageManagerDelegate> {
+@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate, SDWebImageManagerDelegate, UIAlertViewDelegate> {
     Participant *_participant;
     NSManagedObject *_course;
     NSMutableArray  *contactinfo;

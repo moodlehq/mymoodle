@@ -16,6 +16,8 @@
 	<array>
 		<string>icon.png</string>
 		<string>iconhd.png</string>
+		<string>icon_retina.png</string>
+		<string>icon_iphone.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.moodle.Moodle</string>
