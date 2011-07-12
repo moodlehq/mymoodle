@@ -30,10 +30,7 @@
     
     
     self.view.backgroundColor = UIColorFromRGB(ColorBackground);
-    self.navigationController.navigationBar.tintColor = UIColorFromRGB(ColorNavigationBar);
-    
-    
-    
+
     UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle:@"Send to Moodle" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:

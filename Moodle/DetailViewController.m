@@ -243,7 +243,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self updateParticipant];
+//    [self updateParticipant];
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
@@ -270,11 +270,7 @@
     if (cachedImage)
     {
         userpicture.image = cachedImage;
-    }
-    else
-    {
-//        userpicture.image =  
-        NSLog(@"URL: %@", url);
+    } else {
         [manager downloadWithURL:url delegate:self];
     }
     
@@ -492,9 +488,17 @@
     NSArray *result;
     @try {
         result = [client invoke: @"moodle_user_get_course_participants_by_id" withParams: (NSArray *)params];
+        
+        if (result && [result isKindOfClass:[NSArray class]]) {
+            for (NSDictionary *theparticipant in result) {
+                [Participant update:self.participant dict:theparticipant course:nil];
+            }
+        }
     }
     @catch (NSException *exception) {
-        NSLog(@"%@", exception);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
     }
 
     [user release];
@@ -502,12 +506,6 @@
     [vals release];
     [keys release];
     [client release];
-
-    if (result && [result isKindOfClass:[NSArray class]]) {
-        for (NSDictionary *theparticipant in result) {
-            [Participant update:self.participant dict:theparticipant course:nil];
-        }
-    }
 }
 
 - (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image

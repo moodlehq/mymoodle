@@ -72,38 +72,57 @@ Boolean IsAACHardwareEncoderAvailable(void)
 {
     [super loadView];
     self.title = NSLocalizedString(@"Upload", "Upload");
-    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
-    CGRect rect = self.view.frame;
-    NSLog(@"y: %f-%f", rect.size.height, self.navigationController.view.frame.size.height);
-    int x = 40;
-    int y = (rect.size.height-self.navigationController.navigationBar.frame.size.height)/7;
-    int width = rect.size.width-x*2;
-    int height = y;
-    TTButton *button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Browse photo albums", "Browse photo albums")];
-    [button addTarget:self
+    
+    UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"screen_bg.png"]];
+    appBg.frame = CGRectMake(0, 0, 320, 416);
+    [self.view addSubview:appBg];
+    [appBg release];
+
+    UIImageView *uploadIcon = [[UIImageView alloc] initWithFrame:CGRectMake(120-57, 25, 57, 57)];
+    [uploadIcon setImage:[UIImage imageNamed:@"upload_title.png"]];
+    [self.view  addSubview:uploadIcon];
+    [uploadIcon release];
+
+    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(130, 35, 190, 55)];
+    [title setText:@"Upload"];
+    [title setFont: [UIFont fontWithName:@"SoulPapa" size:40]];
+    [title setBackgroundColor:[UIColor clearColor]];
+    [self.view addSubview:title];
+    [title release];
+
+    int x = 15;
+    int y = 90;
+    int width = 290;
+    int height = 90;
+    TTButton *tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"Browse photo albums", "Browse photo albums")];
+    [tbutton setImage:@"bundle://upload_photo_album.png" forState:UIControlStateNormal];
+    [tbutton addTarget:self
                action:@selector(loadGallery:)
                 forControlEvents:UIControlEventTouchUpInside];
-    [button setTitle:@"Browse photo albums" forState:UIControlStateNormal];
-    button.frame = CGRectMake(x, y, width, height);
-    [self.view addSubview:button];
+    [tbutton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+    tbutton.frame = CGRectMake(x, y, width, height);
+    [self.view addSubview:tbutton];
 
 
-    button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Take a picture or video", "Take a picture or video")];
-    [button addTarget:self
+    tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"Take a picture or video", "Take a picture or video")];
+    [tbutton setImage:@"bundle://upload_camera.png" forState:UIControlStateNormal];
+
+    [tbutton addTarget:self
                action:@selector(loadCamera:)
      forControlEvents:UIControlEventTouchUpInside];
-    [button setTitle:@"Take a picture or video" forState:UIControlStateNormal];
-    button.frame = CGRectMake(x, (2*y) + height, width, height);
-    [self.view addSubview:button];
+    [tbutton setTitle:@"Take a picture or video" forState:UIControlStateNormal];
+    tbutton.frame = CGRectMake(x, 70+90+40, width, height);
+    [self.view addSubview:tbutton];
 
-    if (IsAACHardwareEncoderAvailable()) { // do not display audio recorder if AAC not supported (we could use PCM but we would have to encode it and it's too slow)
-        button = [TTButton buttonWithStyle:@"toolbarButton:" title: NSLocalizedString(@"Record audio", "Record audio")];
-        [button addTarget:self
+    if (IsAACHardwareEncoderAvailable()) {
+        tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"Record audio", "Record audio")];
+        [tbutton setImage:@"bundle://upload_audio.png" forState:UIControlStateNormal];
+
+        [tbutton addTarget:self
                action:@selector(loadRecorder:)
          forControlEvents:UIControlEventTouchUpInside];
-        [button setTitle:@"Record audio" forState:UIControlStateNormal];
-        button.frame = CGRectMake(x, (3*y) + (2*height), width, height);
-        [self.view addSubview:button];
+        tbutton.frame = CGRectMake(x, 70+90*2+60, width, height);
+        [self.view addSubview:tbutton];
     }
 }
 

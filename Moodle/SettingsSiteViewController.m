@@ -16,7 +16,6 @@
 
 @implementation SettingsSiteViewController
 
-
 # pragma mark - private method
 - (UITextField *)_createCellTextField {
     UITextField *field = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -37,7 +36,6 @@
 }
 
 -(void)deleteSite {
-    NSLog(@"button clicked");
     UIActionSheet *deleteActionSheet = [[UIActionSheet alloc]
                                             initWithTitle:NSLocalizedString(@"deletesite", "Delete the site")
                                             delegate:self
@@ -48,11 +46,28 @@
     [deleteActionSheet release];
 }
 
+- (BOOL) validateUrl: (NSString *) candidate {
+    NSString *urlRegEx =
+    @"(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+";
+    NSPredicate *urlTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx]; 
+    return [urlTest evaluateWithObject:candidate];
+}
+
 - (IBAction)saveButtonPressed: (id)sender
 {
     NSManagedObjectContext *context = appDelegate.managedObjectContext;
     NSString *siteurl;
     siteurl = [siteurlField text];
+    
+
+    if (![self validateUrl:siteurl]) {
+        siteurl = [NSString stringWithFormat: @"http://%@", siteurl];
+    }
+
+    if ([siteurl hasSuffix:@"/"]) {
+        siteurl = [siteurl substringToIndex:[siteurl length] - 1];
+    }
+    
     NSString *username = [usernameField text];
     NSString *password = [passwordField text];
     
@@ -94,14 +109,13 @@
                 }
                 // profile pictre
                 NSString  *userpictureurl = [siteinfo objectForKey: @"userpictureurl"];
-                // base64 decode
                 NSString *sitename = [siteinfo objectForKey: @"sitename"];
                 //create/update the site
                 [appDelegate.site setValue: sitename       forKey: @"name"];
                 [appDelegate.site setValue: userpictureurl forKey: @"userpictureurl"];
                 [appDelegate.site setValue: sitetoken      forKey: @"token"];
                 [appDelegate.site setValue: siteurl        forKey: @"url"];
-                
+
                 NSManagedObject *user;
                 NSManagedObject *webservice;
                 NSArray *webservices = [siteinfo objectForKey:@"functions"];
@@ -112,8 +126,8 @@
                                                          inManagedObjectContext: context];
                 } else {
                     user = [appDelegate.site valueForKey:@"mainuser"];
+
                     // delete old records
-                    
                     NSFetchRequest *request = [[NSFetchRequest alloc] init];
                     NSEntityDescription *entity = [NSEntityDescription entityForName: @"WebService" inManagedObjectContext: context];
                     [request setEntity: entity];
@@ -137,12 +151,26 @@
                 [user setValue: [siteinfo objectForKey:@"userid"]    forKey:@"userid"];
                 [user setValue: [siteinfo objectForKey:@"username"]  forKey:@"username"];
                 [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
-                [user setValue: [siteinfo objectForKey:@"fullname"] forKey:@"fullname"];
+                [user setValue: [siteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
                 [user setValue: [siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
                 [user setValue: appDelegate.site                     forKey:@"site"];
                 
                 [appDelegate.site setValue: user forKey: @"mainuser"];
                 
+                
+                
+                // update active site info
+                sites = [context executeFetchRequest:siteRequest error:&error];
+                if ([sites count] > 0) {
+                    appDelegate.site = [sites lastObject];
+                }
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                //save the current site into user preference
+                [defaults setObject:[appDelegate.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+                [defaults setObject:[appDelegate.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+                [defaults setObject:[appDelegate.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+                [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+                [defaults synchronize];
                 //save the modification
                 if (![context save: &error]) {
                     NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
@@ -232,6 +260,8 @@
     [super dealloc];
 }
 - (void)viewWillAppear:(BOOL)animated {
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+
     [super viewWillAppear:animated];
     self.navigationController.view.backgroundColor = UIColorFromRGB(LoginBackground);
     self.tableView.backgroundColor = [UIColor clearColor];
@@ -245,7 +275,7 @@
     if (!newEntry) {
         siteurlField.text = [appDelegate.site valueForKey:@"url"];
     } else {
-        siteurlField.text = @"http://dsmacbook.moodle.local/moodlews";
+        siteurlField.text = @"http://dongsheng.moodle.local/moodle";
     }
     
     usernameCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];

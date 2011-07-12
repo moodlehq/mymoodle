@@ -99,9 +99,7 @@ static AppDelegate *moodleApp = NULL;
 
     [navigator.URLMap from: @"tt://sync/"  toModalViewController: [SyncViewController class]];
 
-    //if (![navigator restoreViewControllers]) {
     [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
-    //}
 
     //Set a method to be called when a notification is sent.
     Reachability *reachability = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];

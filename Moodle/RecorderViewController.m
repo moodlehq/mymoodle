@@ -9,68 +9,91 @@
 #import "RecorderViewController.h"
 #import "Constants.h"
 
-
 @implementation RecorderViewController
-
-- (void)dealloc
-{
-    [buttonRecord release];
-    [buttonReplay release];
-    [buttonUpload release];
-    [super dealloc];
+- (void)toggleRecordButton {
+    if (recording) {
+        buttonReplay.enabled = NO;
+        buttonUpload.enabled = NO;
+        [buttonRecord setTitle:@"Saving..." forState:UIControlStateHighlighted];
+        [buttonRecord setBackgroundImage:[UIImage imageNamed:@"stop_no_icon.png"] forState:UIControlStateNormal];
+        [buttonRecord setTitle:@"Stop" forState:UIControlStateNormal];
+    } else {
+        buttonReplay.enabled = YES;
+        buttonUpload.enabled = YES;
+        [buttonRecord setTitle:@"Initializing..." forState:UIControlStateHighlighted];
+        [buttonRecord setBackgroundImage:[UIImage imageNamed:@"record_no_icon.png"] forState:UIControlStateNormal];
+        [buttonRecord setTitle:@"Record" forState:UIControlStateNormal];
+    }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-
-    // Release any cached data, images, etc that aren't in use.
-}
 
 - (void)loadView {
     [super loadView];
-    UIImage *image = [ UIImage imageNamed: @"microphone.jpg" ];
-    UIImageView *imageView = [ [ UIImageView alloc ] initWithImage:image ];
-    imageView.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - TTToolbarHeight() - self.navigationController.navigationBar.frame.size.height);
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
-    [self.view addSubview: imageView];
-
     
-    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
+    UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"screen_bg.png"]];
+    appBg.frame = CGRectMake(0, 0, 320, 416);
+    [self.view addSubview:appBg];
+    [appBg release];
+
+    recording = NO;
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 
-    buttonRecord = [[UIBarButtonItem alloc] initWithTitle:@"Record"
-                                                    style:UIBarButtonItemStyleBordered target:self action:@selector(startRecording)];
-    buttonRecord.tag = 1;
-    buttonRecord.enabled = YES;
+    UILabel *title = [[UILabel alloc] initWithFrame: CGRectMake(0, 10, 320, 60)];
+    [title setText: @"Record Audio"];
+    [title setBackgroundColor:[UIColor clearColor]];
+    [title setTextAlignment:UITextAlignmentCenter];
+//    [title setFont:[UIFont boldSystemFontOfSize:28]];
+    [title setFont: [UIFont fontWithName:@"SoulPapa" size:40]];
+    [self.view addSubview:title];
+    [title release];
 
+    UIImageView *recordBG = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"root_bg.png"]];
+    recordBG.frame = CGRectMake((320-276)/2, 65, 276, 299);
+    [self.view addSubview: recordBG];
+    [recordBG release];
 
-    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
-                    UIBarButtonSystemItemPlay target:self action:@selector(replayAudio)];
+    uv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"level_1.png"]];
+    [uv setFrame:CGRectMake((320-222)/2, 70, 222, 222)];
+    [self.view addSubview:uv];
+    [uv release];
+
+    buttonRecord = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self toggleRecordButton];
+//    [buttonRecord settit
+    [buttonRecord.titleLabel setFont:[UIFont boldSystemFontOfSize:28]];
+    [buttonRecord.titleLabel setTextAlignment:UITextAlignmentCenter];
+    [buttonRecord setFrame:CGRectMake((320-225)/2, 280, 225, 73)];
+    [buttonRecord addTarget:self action:@selector(startRecording) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:buttonRecord];
+
+    buttonReplay = [[UIBarButtonItem alloc] initWithTitle:@"Replay" style:UIBarButtonItemStylePlain target:self action:@selector(replayAudio)];
     buttonReplay.tag = 2;
     buttonReplay.enabled = NO;
 
 
-    buttonUpload = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:
-                    UIBarButtonSystemItemDone target:self action:@selector(uploadPressed)];
+    buttonUpload = [[UIBarButtonItem alloc] initWithTitle:@"Upload" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed)];
     buttonUpload.tag = 3;
-    buttonUpload.title = @"Upload";
     buttonUpload.enabled = NO;
 
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                          UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
 
 
-    _toolbar = [[UIToolbar alloc] initWithFrame:
-                CGRectMake(0, self.view.bounds.size.height - TTToolbarHeight(),
-                           self.view.bounds.size.width, TTToolbarHeight())];
+    _toolbar = [[[UIToolbar alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 40, self.view.frame.size.width-20, 33)] autorelease];
+    
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:_toolbar.bounds 
+                                                   byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight
+                                                         cornerRadii:CGSizeMake(10.0, 10.0)];
+    // Create the shape layer and set its path
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    maskLayer.frame = _toolbar.bounds;
+    maskLayer.path = maskPath.CGPath;
+    // Set the newly created shape layer as the mask for the image view's layer
+    _toolbar.layer.mask = maskLayer;
     _toolbar.autoresizingMask =
     UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-    _toolbar.tintColor = TTSTYLEVAR(toolbarTintColor);
+    _toolbar.tintColor = UIColorFromRGB(ColorToolbar);
     _toolbar.items = [NSArray arrayWithObjects:
-                      buttonRecord,
-                      space,
                       buttonReplay,
                       space,
                       buttonUpload,
@@ -78,34 +101,6 @@
     [self.view addSubview:_toolbar];
 }
 
-#pragma mark - View lifecycle
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    //[timerLabel setFont:[UIFont fontWithName:@"DBLCDTempBlack" size:36.0]];    recording = NO;
-    playing = NO;
-}
-
-- (void)viewDidUnload
-{
-    buttonRecord = nil;
-    buttonReplay = nil;
-    buttonUpload = nil;
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return NO;
-}
 
 - (void)uploadAudio
 {
@@ -126,28 +121,30 @@
     NSError *err;
     [fm removeItemAtPath:recorderFilePath error:&err];
 }
+
 - (void)onTimer: (NSTimer *)theTimer {
     static int count = 0;
     count += 1;
-    int seconds_in_minute = count % 60;
-    int minutes_in_hour = (count / 60) % 60;
-    int hour_in_day = (count / 3600) %24;
+//    int seconds_in_minute = count % 60;
+//    int minutes_in_hour = (count / 60) % 60;
+//    int hour_in_day = (count / 3600) %24;
     [recorder updateMeters];
     
-    for (int k=0; k < 2; k++) {
-        float peak = [recorder peakPowerForChannel:k];
-        float average = [recorder averagePowerForChannel:k];
-        NSLog(@"Peak power for channel %i: %4.2f",k,peak);
-        NSLog(@"Average power for channel %i:%4.2f",k,average);
-        NSLog(@"%@", [NSString stringWithFormat:@"%4.2f", peak]);
-        //peakLabel.text = aString ;
+    float power =  [recorder peakPowerForChannel:0];
+
+    int  level = (int)((power+40)/2);
+    if (level > 20) {
+        level = 20;
     }
-    
-    timerLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d", hour_in_day, minutes_in_hour, seconds_in_minute];
+    if (level < 1) {
+        level = 1;
+    }
+    [uv setImage:[UIImage imageNamed:[NSString stringWithFormat:@"level_%d.png", level]]];
 }
 
 - (IBAction) startRecording {
     if (recording == NO) {
+
         timer = [NSTimer scheduledTimerWithTimeInterval:(0.2) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         NSError *err = nil;
@@ -217,14 +214,10 @@
         [recorder record];
         recording = YES;
         buttonReplay.enabled = NO;
-        [buttonRecord setTitle:@"Stop"];
     } else {
         [recorder stop];
         [timer invalidate];
         recording = NO;
-        [buttonRecord setTitle:@"Record"];
-        buttonReplay.enabled = YES;
-        buttonUpload.enabled = YES;
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         NSError *err = nil;
         NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
@@ -232,7 +225,9 @@
             NSLog(@"audio data: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
         }
     }
+    [self toggleRecordButton];
 }
+
 
 - (IBAction) replayAudio {
     AVAudioPlayer* player =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recorderFilePath] error:NULL];
@@ -274,5 +269,48 @@
     [HUD release];
 	HUD = nil;
 }
+         
+#pragma mark - View lifecycle
+ - (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    //[timerLabel setFont:[UIFont fontWithName:@"DBLCDTempBlack" size:36.0]];
+    recording = NO;
+    playing = NO;
+}
+ 
+ - (void)viewDidUnload
+{
+    buttonReplay = nil;
+    buttonUpload = nil;
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+ 
+ 
+ - (void)dealloc
+{
+    [buttonReplay release];
+    [buttonUpload release];
+    [super dealloc];
+}
+ 
+ - (void)viewWillAppear:(BOOL)animated {
+     NSLog(@"AppFrame: %@", NSStringFromCGRect([UIScreen mainScreen].applicationFrame));
+     NSLog(@"ViewBounds: %@", NSStringFromCGRect(self.view.bounds));
+     NSLog(@"view : %@", NSStringFromCGRect(self.view.frame));
+     [super viewWillAppear:animated];
+ }
+ 
+ - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return NO;
+}
 
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
 @end

@@ -60,6 +60,66 @@
     NSArray *result;
     @try {
         result = [client invoke: @"moodle_enrol_get_users_courses" withParams: wsparams];
+        
+        NSError *error;
+        
+        //retrieve all courses that will need to be deleted from core data if they are not returned by the web service call
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
+        [request setEntity:entityDescription];
+        NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+        [request setPredicate:coursePredicate];
+        NSArray *allCourses = [managedObjectContext executeFetchRequest: request error:&error];
+        
+        NSLog(@"Number of course in core data before web service call: %d", [allCourses count]);
+        
+        NSMutableDictionary *retainedCourses = [[NSMutableDictionary alloc] init];
+        
+        //update core data courses with course from web service call
+        if ([result isKindOfClass: [NSArray class]]) {
+            for (NSDictionary *wscourse in result) {
+                NSManagedObject *course;
+                
+                //check if the course id is already in core data
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                          @"(id = %@ AND site = %@)", [wscourse objectForKey:@"id"], appDelegate.site];
+                [request setPredicate:predicate];
+                NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
+                
+                if ([existingCourses count] == 1) {
+                    NSLog(@"Found existing course: %@", [existingCourses valueForKey:@"fullname"]);
+                    course = [existingCourses lastObject];
+                    
+                } else if ([existingCourses count] == 0) {
+                    course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
+                } else {
+                    NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
+                }
+                
+                //set the course values
+                [course setValue: appDelegate.site forKey:@"site"];
+                [course setValue: [wscourse objectForKey:@"id"] forKey:@"id"];
+                [course setValue: [wscourse objectForKey:@"fullname"]  forKey:@"fullname"];
+                [course setValue: [wscourse objectForKey:@"shortname"] forKey:@"shortname"];
+                
+                NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
+                [retainedCourses setObject: courseexist forKey: [wscourse objectForKey:@"id"]];
+                [courseexist release];
+            }
+        }
+        for (NSManagedObject *c in allCourses) {
+            NSNumber *thecourseexist = [retainedCourses objectForKey:[c valueForKey:@"id"]];
+            if ([thecourseexist intValue] == 0) {
+                NSLog(@"Deleting the course %@", c);
+                [managedObjectContext deleteObject: c];
+            }
+        }
+        //save the modifications
+        if ([managedObjectContext hasChanges] && ![managedObjectContext save: nil]) {
+            //NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
+
+        [retainedCourses release];
     }
     @catch (NSException *exception) {
         NSLog(@"%@", exception);
@@ -67,65 +127,6 @@
         [alert show];
         [alert release];
     }
-    
-    NSError *error;
-    
-    //retrieve all courses that will need to be deleted from core data if they are not returned by the web service call
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
-    [request setEntity:entityDescription];
-    NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-    [request setPredicate:coursePredicate];
-    NSArray *allCourses = [managedObjectContext executeFetchRequest: request error:&error];
-
-    NSLog(@"Number of course in core data before web service call: %d", [allCourses count]);
-    
-    NSMutableDictionary *retainedCourses = [[NSMutableDictionary alloc] init];
-    
-    //update core data courses with course from web service call
-    if ([result isKindOfClass: [NSArray class]]) {
-        for (NSDictionary *wscourse in result) {
-            NSManagedObject *course;
-            
-            //check if the course id is already in core data
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(id = %@ AND site = %@)", [wscourse objectForKey:@"id"], appDelegate.site];
-            [request setPredicate:predicate];
-            NSArray *existingCourses = [managedObjectContext executeFetchRequest:request error:&error];
-            
-            if ([existingCourses count] == 1) {
-                NSLog(@"Found existing course: %@", [existingCourses valueForKey:@"fullname"]);
-                course = [existingCourses lastObject];
-                
-            } else if ([existingCourses count] == 0) {
-                course = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
-            } else {
-                NSLog(@"Error !!!!!! There is more than one course with id == %@", [wscourse objectForKey:@"id"]);
-            }
-            
-            //set the course values
-            [course setValue: appDelegate.site forKey:@"site"];
-            [course setValue: [wscourse objectForKey:@"id"] forKey:@"id"];
-            [course setValue: [wscourse objectForKey:@"fullname"]  forKey:@"fullname"];
-            [course setValue: [wscourse objectForKey:@"shortname"] forKey:@"shortname"];
-            
-            NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
-            [retainedCourses setObject: courseexist forKey: [wscourse objectForKey:@"id"]];
-            [courseexist release];
-        }
-    }
-    for (NSManagedObject *c in allCourses) {
-        NSNumber *thecourseexist = [retainedCourses objectForKey:[c valueForKey:@"id"]];
-        if ([thecourseexist intValue] == 0) {
-            NSLog(@"Deleting the course %@", c);
-            [managedObjectContext deleteObject: c];
-        }
-    }
-    //save the modifications
-    if ([managedObjectContext hasChanges] && ![managedObjectContext save: nil]) {
-        //NSLog(@"Error saving entity: %@", [error localizedDescription]);
-    }
-    [retainedCourses release];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

@@ -38,7 +38,7 @@
     NSLog(@"Request: %@ at %@", method, self.url);
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost: self.url] autorelease];
     [req setMethod:method withObjects: params];
-
+    NSLog(@"Request: %@", [req source]);
 	ASIHTTPRequest *http =[[ASIHTTPRequest alloc] initWithURL: [req host]];
 	[http setRequestMethod:@"POST"];
 	[http setShouldPresentCredentialsBeforeChallenge: YES];

@@ -23,6 +23,7 @@
     /** modules */
     TTLauncherView *launcherView;
     TTLauncherItem *webLauncherItem;
+    UITextView *connectedSite;
     NSManagedObjectContext *managedObjectContext;
 
 }

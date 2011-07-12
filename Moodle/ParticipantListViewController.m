@@ -322,9 +322,56 @@
     NSArray *result;
     @try {
         result = [client invoke: @"moodle_user_get_users_by_courseid" withParams: (NSArray *)params];
+        if (result) {
+            for (NSDictionary *wsparticipant in result) {
+                
+                Participant *dbparticipant;
+                
+                //check if the user id is already in core data participants
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                          @"(site == %@ AND userid == %@)", [course valueForKey:@"site"], [wsparticipant objectForKey: @"id"]];
+                [request setPredicate:predicate];
+                NSArray *user = [managedObjectContext executeFetchRequest:request error:&error];
+                if ([user count] == 1) {
+                    //retrieve the participant to update
+                    NSLog(@"found one ");
+                    dbparticipant = [user lastObject];
+                } else if ([user count] == 0) {
+                    //the participant is not in core data, we add it
+                    dbparticipant = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
+                    
+                } else {
+                    for (NSManagedObject *u in user) {
+                        [managedObjectContext deleteObject:u];
+                    }
+                    NSLog(@"Error !!!!!! There is more than one participant with id == %@", [wsparticipant objectForKey:@"id"]);
+                }
+                
+                [Participant update:dbparticipant dict:wsparticipant course:course];
+                
+                NSNumber *participantexist = [[NSNumber alloc] initWithBool:YES];
+                [retainedParticipants setObject:participantexist forKey: [wsparticipant objectForKey:@"id"]];
+                [participantexist release];
+            }
+        }
+        for (Participant *participant in enrolledUsers) {
+            //if the participant is in the list to not delete
+            NSNumber *theparticipantexist = [retainedParticipants objectForKey:[participant valueForKey:@"userid"]];
+            if ([theparticipantexist intValue] == 0) {
+                NSLog(@"Unenroll participant %@", participant);
+                [participant removeCoursesObject:course];
+            }
+        }
+        
+        //save the modifications
+        if (![managedObjectContext save:&error]) {
+            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
     }
     @catch (NSException *exception) {
-        NSLog(@"%@", exception);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
     }
     // easy on memory
     [options release];
@@ -332,52 +379,6 @@
     [paramkeys release];
     [params release];
     [client release];
-
-    if (result) {
-        for ( NSDictionary *wsparticipant in result) {
-            
-            Participant *dbparticipant;
-            
-            //check if the user id is already in core data participants
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(site == %@ AND userid == %@)", [course valueForKey:@"site"], [wsparticipant objectForKey: @"id"]];
-            [request setPredicate:predicate];
-            NSArray *user = [managedObjectContext executeFetchRequest:request error:&error];
-            if ([user count] == 1) {
-                //retrieve the participant to update
-                NSLog(@"found one ");
-                dbparticipant = [user lastObject];
-            } else if ([user count] == 0) {
-                //the participant is not in core data, we add it
-                dbparticipant = [NSEntityDescription insertNewObjectForEntityForName:[entityDescription name] inManagedObjectContext:managedObjectContext];
-                
-            } else {
-                for (NSManagedObject *u in user) {
-                    [managedObjectContext deleteObject:u];
-                }
-                NSLog(@"Error !!!!!! There is more than one participant with id == %@", [wsparticipant objectForKey:@"id"]);
-            }
-            
-            [Participant update:dbparticipant dict:wsparticipant course:course];
-
-            NSNumber *participantexist = [[NSNumber alloc] initWithBool:YES];
-            [retainedParticipants setObject:participantexist forKey: [wsparticipant objectForKey:@"id"]];
-            [participantexist release];
-        }
-    }
-    for (Participant *participant in enrolledUsers) {
-        //if the participant is in the list to not delete
-        NSNumber *theparticipantexist = [retainedParticipants objectForKey:[participant valueForKey:@"userid"]];
-        if ([theparticipantexist intValue] == 0) {
-            NSLog(@"Unenroll participant %@", participant);
-            [participant removeCoursesObject:course];
-        }
-    }
-
-    //save the modifications
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"Error saving entity: %@", [error localizedDescription]);
-    }
     [retainedParticipants release];
 }
 

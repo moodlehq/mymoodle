@@ -16,13 +16,14 @@
 
 @interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate> {
     NSString *recorderFilePath;
-    UIToolbar *_toolbar;
     AVAudioRecorder *recorder;
     TTStyledTextLabel *timerLabel;
+    UIImageView *uv;
     NSTimer *timer;
     BOOL recording;
     BOOL playing;
-    UIBarButtonItem *buttonRecord;
+    UIToolbar *_toolbar;
+    UIButton *buttonRecord;
     UIBarButtonItem *buttonReplay;
     UIBarButtonItem *buttonUpload;
     MBProgressHUD *HUD;
