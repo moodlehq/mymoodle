@@ -2,7 +2,7 @@
 //  RootViewController.h
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 17/03/11.
+//  Created by Jerome Mouneyrac on 17/03/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
@@ -25,7 +25,7 @@
     TTLauncherItem *webLauncherItem;
     UITextView *connectedSite;
     NSManagedObjectContext *managedObjectContext;
-
 }
+
 - (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url;
 @end

@@ -56,6 +56,8 @@
 - (void)viewWillAppear:(BOOL)animated {
 //    settingsSiteViewController = [[SettingsSiteViewController alloc] initWithStyle:UITableViewStyleGrouped];
 //    settingsSiteViewController.fetchedResultsController = self.fetchedResultsController;
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+
     [self.tableView reloadData];
     [super viewWillAppear:animated];
 }

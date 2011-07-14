@@ -110,10 +110,10 @@
 //    self.tableView.tableHeaderView = containerView;
 //    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
-                                              initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered
+                                              initWithTitle:NSLocalizedString(@"cancel", @"Cancel") style:UIBarButtonItemStyleBordered
                                               target:self action:@selector(dismiss)] autorelease];
     self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
-                                              initWithTitle:@"Send all" style:UIBarButtonItemStyleBordered
+                                              initWithTitle:NSLocalizedString(@"Send all", @"Send all") style:UIBarButtonItemStyleBordered
                                               target:self action:@selector(syncPressed)] autorelease];
 }
 - (void)viewDidAppear:(BOOL)animated

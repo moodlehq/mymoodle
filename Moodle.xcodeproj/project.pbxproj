@@ -117,7 +117,6 @@
 		B59600DA13CC49EB00438682 /* upload_camera.png in Resources */ = {isa = PBXBuildFile; fileRef = B59600D613CC49EB00438682 /* upload_camera.png */; };
 		B59600DB13CC49EB00438682 /* upload_cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = B59600D713CC49EB00438682 /* upload_cloud.png */; };
 		B59600DC13CC49EB00438682 /* upload_photo_album.png in Resources */ = {isa = PBXBuildFile; fileRef = B59600D813CC49EB00438682 /* upload_photo_album.png */; };
-		B596FF9013CBF36B00438682 /* LevelMeterView.m in Sources */ = {isa = PBXBuildFile; fileRef = B596FF8F13CBF36B00438682 /* LevelMeterView.m */; };
 		B5A6C65C1389792A007B46F0 /* MoodleStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */; };
 		B5A8DD6113B9D9AA007A5EC1 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A8DD6013B9D9AA007A5EC1 /* AddressBook.framework */; };
 		B5B0EAF41383ACFE000A9330 /* MoodleHelp.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAEA1383ACFE000A9330 /* MoodleHelp.png */; };
@@ -136,6 +135,7 @@
 		B5B0EB1F1383AEB6000A9330 /* XMLValueDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */; };
 		B5C4329513A7BDC100F8F1A9 /* item.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329413A7BDC100F8F1A9 /* item.png */; };
 		B5C4329713A7C99B00F8F1A9 /* course.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329613A7C99B00F8F1A9 /* course.png */; };
+		B5C6BB2613CEDC54007B1517 /* button_upload.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C6BB2413CEDC54007B1517 /* button_upload.png */; };
 		B5D48B3713BB1EB70063968A /* icon_retina.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D48B2F13BB17FD0063968A /* icon_retina.png */; };
 		B5D48B3813BB1EBF0063968A /* icon_iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D48B3313BB18680063968A /* icon_iphone.png */; };
 		B5D4EFFF13726FF000FD121F /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5D4EFFE13726FF000FD121F /* UploadViewController.m */; };
@@ -322,7 +322,7 @@
 		02618A1F1331A581008D3037 /* Moodle-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Moodle-Prefix.pch"; sourceTree = "<group>"; };
 		02618A201331A581008D3037 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		02618A221331A581008D3037 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		02618A231331A581008D3037 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		02618A231331A581008D3037 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		02618A261331A582008D3037 /* Moodle.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Moodle.xcdatamodel; sourceTree = "<group>"; };
 		02618A2B1331A582008D3037 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		02618A2C1331A582008D3037 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
@@ -461,8 +461,6 @@
 		B59600D613CC49EB00438682 /* upload_camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = upload_camera.png; path = Images/icons/upload_camera.png; sourceTree = SOURCE_ROOT; };
 		B59600D713CC49EB00438682 /* upload_cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = upload_cloud.png; path = Images/icons/upload_cloud.png; sourceTree = SOURCE_ROOT; };
 		B59600D813CC49EB00438682 /* upload_photo_album.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = upload_photo_album.png; path = Images/icons/upload_photo_album.png; sourceTree = SOURCE_ROOT; };
-		B596FF8E13CBF36B00438682 /* LevelMeterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LevelMeterView.h; sourceTree = "<group>"; };
-		B596FF8F13CBF36B00438682 /* LevelMeterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LevelMeterView.m; sourceTree = "<group>"; };
 		B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleStyleSheet.h; sourceTree = "<group>"; };
 		B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleStyleSheet.m; sourceTree = "<group>"; };
 		B5A8DD6013B9D9AA007A5EC1 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -491,6 +489,7 @@
 		B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLValueDecoder.m; path = XMLRPC/XMLValueDecoder.m; sourceTree = SOURCE_ROOT; };
 		B5C4329413A7BDC100F8F1A9 /* item.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = item.png; path = Images/item.png; sourceTree = SOURCE_ROOT; };
 		B5C4329613A7C99B00F8F1A9 /* course.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = course.png; path = Images/course.png; sourceTree = SOURCE_ROOT; };
+		B5C6BB2413CEDC54007B1517 /* button_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button_upload.png; path = Images/buttons/button_upload.png; sourceTree = SOURCE_ROOT; };
 		B5D48B2F13BB17FD0063968A /* icon_retina.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_retina.png; sourceTree = "<group>"; };
 		B5D48B3313BB18680063968A /* icon_iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_iphone.png; sourceTree = "<group>"; };
 		B5D4EFFD13726FF000FD121F /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
@@ -834,8 +833,10 @@
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B596FF8D13CBF35F00438682 /* LevelMeter */,
 				B54BE9CC13BB66C000A5BBB3 /* MoodleKit.h */,
+				B5DABB1B138E2BF6004AE472 /* Constants.h */,
+				B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */,
+				B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */,
 				B5DABB25138E2C14004AE472 /* Models */,
 				B57CD18E133C79D500CCB81A /* Controllers */,
 				B5B0EB201383AFC3000A9330 /* Reachability */,
@@ -892,13 +893,10 @@
 			children = (
 				02618A221331A581008D3037 /* AppDelegate.h */,
 				02618A231331A581008D3037 /* AppDelegate.m */,
-				B5DABB1B138E2BF6004AE472 /* Constants.h */,
 				02618A2B1331A582008D3037 /* RootViewController.h */,
 				02618A2C1331A582008D3037 /* RootViewController.m */,
 				B56983CA13896647003FECD2 /* WebViewController.h */,
 				B56983CB13896648003FECD2 /* WebViewController.m */,
-				B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */,
-				B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */,
 				B5DABB37138E57CE004AE472 /* MoodleImagePickerController.h */,
 				B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */,
 				B5DABB20138E2BF6004AE472 /* SyncViewController.h */,
@@ -963,6 +961,7 @@
 				B59600BE13CC247300438682 /* sync.png */,
 				B59600B013CC241500438682 /* button_red.png */,
 				B5B0EAFA1383AD7D000A9330 /* checkmark.png */,
+				B5C6BB2413CEDC54007B1517 /* button_upload.png */,
 				B5C4329613A7C99B00F8F1A9 /* course.png */,
 				B5C4329413A7BDC100F8F1A9 /* item.png */,
 				B53FAB3F1398B566008206EA /* Complete.png */,
@@ -1025,15 +1024,6 @@
 				B59600CF13CC383800438682 /* screen_bg.png */,
 			);
 			name = "shared-bg";
-			sourceTree = "<group>";
-		};
-		B596FF8D13CBF35F00438682 /* LevelMeter */ = {
-			isa = PBXGroup;
-			children = (
-				B596FF8E13CBF36B00438682 /* LevelMeterView.h */,
-				B596FF8F13CBF36B00438682 /* LevelMeterView.m */,
-			);
-			name = LevelMeter;
 			sourceTree = "<group>";
 		};
 		B5B0EB201383AFC3000A9330 /* Reachability */ = {
@@ -1377,6 +1367,7 @@
 				B59600DA13CC49EB00438682 /* upload_camera.png in Resources */,
 				B59600DB13CC49EB00438682 /* upload_cloud.png in Resources */,
 				B59600DC13CC49EB00438682 /* upload_photo_album.png in Resources */,
+				B5C6BB2613CEDC54007B1517 /* button_upload.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1464,7 +1455,6 @@
 				B5902FC813B238300053E1D6 /* SDWebImageManager.m in Sources */,
 				B5902FC913B238300053E1D6 /* UIImageView+WebCache.m in Sources */,
 				B51C0F9D13B4556300276760 /* Course.m in Sources */,
-				B596FF9013CBF36B00438682 /* LevelMeterView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1554,13 +1544,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1570,8 +1560,8 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1580,10 +1570,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1594,7 +1584,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4FB23CDA-931D-4228-844C-FCABF18F8DB3";
 				SDKROOT = iphoneos;
 			};
@@ -1604,8 +1594,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -1613,8 +1603,8 @@
 				INFOPLIST_FILE = "Moodle/Moodle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6A572B93-7D6C-4B1B-8B6F-5BEB43005B8C";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6A572B93-7D6C-4B1B-8B6F-5BEB43005B8C";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1624,16 +1614,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: dongsheng cai (9U99M2A73Z)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Moodle/Moodle-Prefix.pch";
 				INFOPLIST_FILE = "Moodle/Moodle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6A572B93-7D6C-4B1B-8B6F-5BEB43005B8C";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6A572B93-7D6C-4B1B-8B6F-5BEB43005B8C";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

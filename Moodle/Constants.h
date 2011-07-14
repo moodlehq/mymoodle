@@ -8,6 +8,8 @@
 
 // Handy macroes
 #define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
+#define AUDIO_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Audio"]
+#define PHOTO_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Photo"]
 
 #define UIColorFromRGB(rgbValue) [UIColor \
 colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
@@ -29,9 +31,16 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define kSelectedSiteNameKey     @"Selected Site Name"
 #define kSelectedUserIdKey       @"Selected User ID"
 
+#define kResetSite @"ResetActiveSite"
+
+
 // Color scheme
 #define ColorBackground    0xFFE773
 #define RootBackground     0xF0F0F0
 #define ColorToolbar       0xE59304
 #define LoginBackground    0xF08C2E
 #define ColorNavigationBar 0x000000
+
+#define URL_MOODLE_HELP @"http://docs.moodle.org/"
+
+

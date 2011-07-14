@@ -16,42 +16,8 @@
 @synthesize fetchedResultsController=__fetchedResultsController;
 @synthesize participantListViewController;
 
-- (void)loadView {
-    [super loadView];
-    
-    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    managedObjectContext = appDelegate.managedObjectContext;
+#pragma mark - Update courses
 
-}
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    [__fetchedResultsController release];
-    [super dealloc];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-#pragma mark - View lifecycle
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
 - (void)updateCourses {
 	_reloading = YES;
     WSClient *client = [[[WSClient alloc] init] autorelease];
@@ -118,15 +84,45 @@
         if ([managedObjectContext hasChanges] && ![managedObjectContext save: nil]) {
             //NSLog(@"Error saving entity: %@", [error localizedDescription]);
         }
-
+        
         [retainedCourses release];
     }
     @catch (NSException *exception) {
-        NSLog(@"%@", exception);
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate: nil cancelButtonTitle:@"Continue" otherButtonTitles: nil];
         [alert show];
         [alert release];
     }
+}
+
+#pragma mark - View lifecycle
+
+- (void)loadView {
+    [super loadView];
+}
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [__fetchedResultsController release];
+    [super dealloc];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -147,6 +143,7 @@
         }
     }
 }
+
 - (void)viewDidLoad
 {
     if (_refreshHeaderView == nil) {
@@ -168,11 +165,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    managedObjectContext = appDelegate.managedObjectContext;
 
     self.title = NSLocalizedString(@"mycourses", @"My courses title");
 
     participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
+    [super viewWillAppear:animated];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -254,7 +255,6 @@
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:managedObjectContext];
     [fetchRequest setEntity:entity];
-
     //Set the predicate for only current site
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
     [fetchRequest setPredicate:predicate];
@@ -397,8 +397,11 @@
 #pragma mark -
 #pragma mark MBProgressHUDDelegate methods
 - (void)hudWasHidden {
+    // reset loading flag
+    _reloading = NO;
     [HUD removeFromSuperview];
     [HUD release];
 	HUD = nil;
 }
+
 @end

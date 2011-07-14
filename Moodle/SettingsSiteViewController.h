@@ -20,7 +20,9 @@
 
 @interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate> {
     AppDelegate *appDelegate;
+
     BOOL newEntry;
+
     UITableViewCell *siteurlCell;
     UITextField     *siteurlField;
    

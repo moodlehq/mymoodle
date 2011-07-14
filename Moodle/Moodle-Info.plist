@@ -14,8 +14,6 @@
 	<string></string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>icon.png</string>
-		<string>iconhd.png</string>
 		<string>icon_retina.png</string>
 		<string>icon_iphone.png</string>
 	</array>
@@ -39,6 +37,10 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>soulpapa.ttf</string>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -47,9 +49,5 @@
 	<array/>
 	<key>UTImportedTypeDeclarations</key>
 	<array/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>soulpapa.ttf</string>
-	</array>
 </dict>
 </plist>

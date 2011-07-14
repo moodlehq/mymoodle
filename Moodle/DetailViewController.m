@@ -14,19 +14,59 @@
 // temp fix for https://github.com/facebook/three20/issues/194
 #import <Three20UINavigator/UIViewController+TTNavigator.h> 
 
-
 #pragma mark - view controller
-
-
 @implementation DetailViewController
-
 
 @synthesize participant=_participant;
 @synthesize course=_course;
 
+// load user
+-(void)updateParticipant {
+    WSClient *client   = [[WSClient alloc] init];
+    
+    // build individual user
+    NSNumber *userid   = [self.participant valueForKey:@"userid"];
+    NSNumber *courseid = [self.course      valueForKey:@"id"];
+    NSDictionary *user = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", courseid, @"courseid", nil];
+    
+    // build user list, we have only one user
+    NSArray *userlist = [[NSArray alloc] initWithObjects: user, nil];
+    
+    NSArray *vals = [[NSArray alloc] initWithObjects: userlist,    nil];
+    NSArray *keys = [[NSArray alloc] initWithObjects: @"userlist", nil];
+    
+    NSDictionary *params = [[NSDictionary alloc] initWithObjects:vals forKeys:keys];
+    NSArray *result;
+    @try {
+        result = [client invoke: @"moodle_user_get_course_participants_by_id" withParams: (NSArray *)params];
+        
+        if (result && [result isKindOfClass:[NSArray class]]) {
+            for (NSDictionary *theparticipant in result) {
+                [Participant update:self.participant dict:theparticipant course:nil];
+            }
+        }
+    }
+    @catch (NSException *exception) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
+    }
+    
+    [user release];
+    [userlist release];
+    [vals release];
+    [keys release];
+    [client release];
+}
+
 - (void)addContact {
+
     ABAddressBookRef addressBook = ABAddressBookCreate();
     ABRecordRef person = ABPersonCreate();
+
+    NSData *dataRef = UIImagePNGRepresentation(userpicture.image);
+    ABPersonSetImageData(person, (CFDataRef)dataRef, nil);
+
     ABRecordSetValue(person, kABPersonFirstNameProperty, _participant.fullname, nil);
     ABRecordSetValue(person, kABPersonNoteProperty, @"Imported from moodle", nil);  
     
@@ -101,41 +141,53 @@
     WSClient *client   = [[WSClient alloc] init];
     NSArray *wsinfo;
     if (postControllerType == 1) {
-        NSNumber *userid   = [self.participant valueForKey:@"userid"];
-        NSDictionary *message = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"touserid", text, @"text", nil];
-        NSArray *messages = [[NSArray alloc] initWithObjects: message, nil];
-        NSArray *paramvalues = [[NSArray alloc] initWithObjects: messages, nil];
-        NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
-        NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
         @try {
+            NSNumber *userid   = [self.participant valueForKey:@"userid"];
+            NSDictionary *message = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"touserid", text, @"text", nil];
+            NSArray *messages = [[NSArray alloc] initWithObjects: message, nil];
+            NSArray *paramvalues = [[NSArray alloc] initWithObjects: messages, nil];
+            NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
+            NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
             wsinfo = [client invoke: @"moodle_message_send_instantmessages" withParams: (NSArray *)params];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Message sent" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
+            [message release];
+            [messages release];
+            [paramvalues release];
+            [paramkeys release];
+            [params release];
         }
         @catch (NSException *exception) {
-            NSLog(@"%@", exception);
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
         }
-        [message release];
-        [messages release];
-        [paramvalues release];
-        [paramkeys release];
-        [params release];
     } else {
-        NSNumber *userid   = [self.participant valueForKey:@"userid"];
-        NSDictionary *note = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", text, @"text", @"text", @"format", [self.course valueForKey:@"id"], @"courseid", @"personal", @"publishstate", nil];
-        NSArray *notes = [[NSArray alloc] initWithObjects: note, nil];
-        NSArray *paramvalues = [[NSArray alloc] initWithObjects: notes, nil];
-        NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"notes", nil];
-        NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
+
         @try {
+            NSNumber *userid   = [self.participant valueForKey:@"userid"];
+            NSDictionary *note = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", text, @"text", @"text", @"format", [self.course valueForKey:@"id"], @"courseid", @"personal", @"publishstate", nil];
+            NSArray *notes = [[NSArray alloc] initWithObjects: note, nil];
+            NSArray *paramvalues = [[NSArray alloc] initWithObjects: notes, nil];
+            NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"notes", nil];
+            NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
             wsinfo = [client invoke: @"moodle_notes_create_notes" withParams: (NSArray *)params];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Note added" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
+            [note release];
+            [notes release];
+            [paramvalues release];
+            [paramkeys release];
+            [params release];
         }
         @catch (NSException *exception) {
-            NSLog(@"%@", exception);
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
         }
-        [note release];
-        [notes release];
-        [paramvalues release];
-        [paramkeys release];
-        [params release];
     }
     NSDictionary *msg = [wsinfo lastObject];
     if ([msg valueForKey:@"errormessage"]) {
@@ -224,7 +276,6 @@
     
 
     [[TTNavigator navigator].URLMap from:@"tt://post" toViewController:self selector:@selector(post:)];
-
 }
 
 - (void)viewDidUnload
@@ -243,7 +294,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    [self updateParticipant];
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
@@ -466,46 +516,6 @@
             break;
     }
     return title;
-}
-
-
-// load user
--(void)updateParticipant {
-    WSClient *client   = [[WSClient alloc] init];
-    
-    // build individual user
-    NSNumber *userid   = [self.participant valueForKey:@"userid"];
-    NSNumber *courseid = [self.course      valueForKey:@"id"];
-    NSDictionary *user = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", courseid, @"courseid", nil];
-    
-    // build user list, we have only one user
-    NSArray *userlist = [[NSArray alloc] initWithObjects: user, nil];
-
-    NSArray *vals = [[NSArray alloc] initWithObjects: userlist,    nil];
-    NSArray *keys = [[NSArray alloc] initWithObjects: @"userlist", nil];
-
-    NSDictionary *params = [[NSDictionary alloc] initWithObjects:vals forKeys:keys];
-    NSArray *result;
-    @try {
-        result = [client invoke: @"moodle_user_get_course_participants_by_id" withParams: (NSArray *)params];
-        
-        if (result && [result isKindOfClass:[NSArray class]]) {
-            for (NSDictionary *theparticipant in result) {
-                [Participant update:self.participant dict:theparticipant course:nil];
-            }
-        }
-    }
-    @catch (NSException *exception) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
-        [alert show];
-        [alert release];
-    }
-
-    [user release];
-    [userlist release];
-    [vals release];
-    [keys release];
-    [client release];
 }
 
 - (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image

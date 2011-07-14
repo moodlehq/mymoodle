@@ -14,9 +14,10 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-@interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate> {
+@interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate, UIActionSheetDelegate> {
     NSString *recorderFilePath;
     AVAudioRecorder *recorder;
+    AVAudioPlayer *player;
     TTStyledTextLabel *timerLabel;
     UIImageView *uv;
     NSTimer *timer;

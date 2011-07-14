@@ -10,6 +10,7 @@
 #import "Constants.h"
 
 @implementation RecorderViewController
+
 - (void)toggleRecordButton {
     if (recording) {
         buttonReplay.enabled = NO;
@@ -26,7 +27,6 @@
     }
 }
 
-
 - (void)loadView {
     [super loadView];
     
@@ -35,10 +35,9 @@
     [self.view addSubview:appBg];
     [appBg release];
 
-    recording = NO;
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 
-    UILabel *title = [[UILabel alloc] initWithFrame: CGRectMake(0, 10, 320, 60)];
+    UILabel *title = [[UILabel alloc] initWithFrame: CGRectMake(0, 15, 320, 60)];
     [title setText: @"Record Audio"];
     [title setBackgroundColor:[UIColor clearColor]];
     [title setTextAlignment:UITextAlignmentCenter];
@@ -48,7 +47,7 @@
     [title release];
 
     UIImageView *recordBG = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"root_bg.png"]];
-    recordBG.frame = CGRectMake((320-276)/2, 65, 276, 299);
+    recordBG.frame = CGRectMake((320-276)/2, 70, 276, 299);
     [self.view addSubview: recordBG];
     [recordBG release];
 
@@ -65,13 +64,12 @@
     [buttonRecord setFrame:CGRectMake((320-225)/2, 280, 225, 73)];
     [buttonRecord addTarget:self action:@selector(startRecording) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonRecord];
-
-    buttonReplay = [[UIBarButtonItem alloc] initWithTitle:@"Replay" style:UIBarButtonItemStylePlain target:self action:@selector(replayAudio)];
+    
+    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action: @selector(replayAudio)];
     buttonReplay.tag = 2;
     buttonReplay.enabled = NO;
-
-
-    buttonUpload = [[UIBarButtonItem alloc] initWithTitle:@"Upload" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed)];
+    
+    buttonUpload = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button_upload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     buttonUpload.tag = 3;
     buttonUpload.enabled = NO;
 
@@ -104,30 +102,25 @@
 
 - (void)uploadAudio
 {
-    NSLog(@"Uploading audio");
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
     NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
-    NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/files/upload.php", host];
+    NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/webservice/upload.php", host];
 
     NSURL *url = [NSURL URLWithString:uploadurl];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request addPostValue:token forKey:@"token"];
     [request setFile:recorderFilePath forKey:@"thefile"];
     [request startSynchronous];
-    NSLog(@"end uploading");
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://upload/"] applyAnimated:YES]];
 
     NSFileManager *fm = [NSFileManager defaultManager];
     NSError *err;
     [fm removeItemAtPath:recorderFilePath error:&err];
+    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)onTimer: (NSTimer *)theTimer {
-    static int count = 0;
-    count += 1;
-//    int seconds_in_minute = count % 60;
-//    int minutes_in_hour = (count / 60) % 60;
-//    int hour_in_day = (count / 3600) %24;
+
     [recorder updateMeters];
     
     float power =  [recorder peakPowerForChannel:0];
@@ -142,10 +135,9 @@
     [uv setImage:[UIImage imageNamed:[NSString stringWithFormat:@"level_%d.png", level]]];
 }
 
-- (IBAction) startRecording {
+- (void) startRecording {
     if (recording == NO) {
-
-        timer = [NSTimer scheduledTimerWithTimeInterval:(0.2) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
+        timer = [NSTimer scheduledTimerWithTimeInterval:(0.1) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         NSError *err = nil;
         [audioSession setCategory :AVAudioSessionCategoryPlayAndRecord error:&err];
@@ -172,7 +164,8 @@
         // Create a new dated file
         NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
         NSString *caldate = [now description];
-        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.mp4", DOCUMENTS_FOLDER, caldate] retain];
+        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.mp4", AUDIO_FOLDER, caldate] retain];
+        NSLog(@"saving path %@", recorderFilePath);
 
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         err = nil;
@@ -215,6 +208,7 @@
         recording = YES;
         buttonReplay.enabled = NO;
     } else {
+        [uv setImage:[UIImage imageNamed:@"level_1.png"]];
         [recorder stop];
         [timer invalidate];
         recording = NO;
@@ -229,24 +223,69 @@
 }
 
 
-- (IBAction) replayAudio {
-    AVAudioPlayer* player =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recorderFilePath] error:NULL];
-    player.delegate = self;
-    UInt32 audioRoute = kAudioSessionOverrideAudioRoute_Speaker;
-    AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(audioRoute), &audioRoute);
-    [player play];
+- (void) replayAudio {
+    if (playing == NO) {
+        playing = YES;
+        player =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recorderFilePath] error:NULL];
+        player.delegate = self;
+        UInt32 audioRoute = kAudioSessionOverrideAudioRoute_Speaker;
+        AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(audioRoute), &audioRoute);
+        [player play];
+    } else {
+        if ([player isPlaying]) {
+            [player stop];
+        }
+        playing = NO;
+    }
 }
 
-- (IBAction)uploadPressed {
-    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-    HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
-    [self.view.window addSubview:HUD];
-
-    // Regiser for HUD callbacks so we can remove it from the window at the right time
-    HUD.delegate = self;
-    // Show the HUD while the provided method executes in a new thread
-    [HUD showWhileExecuting:@selector(uploadAudio) onTarget:self withObject:nil animated:YES];
+- (NSString *)stringFromFileSize:(int)theSize
+{
+	float floatSize = theSize;
+	if (theSize<1023)
+		return([NSString stringWithFormat:@"%i bytes",theSize]);
+	floatSize = floatSize / 1024;
+	if (floatSize<1023)
+		return([NSString stringWithFormat:@"%1.1f KB",floatSize]);
+	floatSize = floatSize / 1024;
+	if (floatSize<1023)
+		return([NSString stringWithFormat:@"%1.1f MB",floatSize]);
+	floatSize = floatSize / 1024;
+    
+	return([NSString stringWithFormat:@"%1.1f GB",floatSize]);
 }
+
+-(IBAction)uploadPressed:(id)sender {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDictionary *fileAttributes = [fm attributesOfItemAtPath: recorderFilePath error:nil];
+    NSString *filesize = [self stringFromFileSize:[[fileAttributes valueForKey:NSFileSize] intValue]];
+    NSString *title = [NSString stringWithFormat:@"Are you sure to upload this file sized: %@", filesize];
+
+	UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: title delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Upload" otherButtonTitles: nil];
+	popupQuery.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+	[popupQuery showInView:self.view];
+	[popupQuery release];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+        // upload button
+        // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+        HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+        [self.view.window addSubview:HUD];
+        
+        // Regiser for HUD callbacks so we can remove it from the window at the right time
+        HUD.delegate = self;
+        // Show the HUD while the provided method executes in a new thread
+        [HUD showWhileExecuting:@selector(uploadAudio) onTarget:self withObject:nil animated:YES];
+	} else if (buttonIndex == 1) {
+        // cancel
+	}
+}
+
+//- (void)uploadPressed {
+
+//}
 
 #pragma mark -
 #pragma mark AVAudioRecorderDelegate method
@@ -257,8 +296,9 @@
 
 #pragma mark -
 #pragma mark AVAudioPlayerDelegate method
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
-    [player release];
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)theplayer successfully:(BOOL)flag {
+    playing = NO;
+    [theplayer release];
 }
 
 #pragma mark -
@@ -274,10 +314,6 @@
  - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    //[timerLabel setFont:[UIFont fontWithName:@"DBLCDTempBlack" size:36.0]];
-    recording = NO;
-    playing = NO;
 }
  
  - (void)viewDidUnload
@@ -288,21 +324,19 @@
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
- 
- 
- - (void)dealloc
+
+- (void)dealloc
 {
     [buttonReplay release];
     [buttonUpload release];
     [super dealloc];
 }
  
- - (void)viewWillAppear:(BOOL)animated {
-     NSLog(@"AppFrame: %@", NSStringFromCGRect([UIScreen mainScreen].applicationFrame));
-     NSLog(@"ViewBounds: %@", NSStringFromCGRect(self.view.bounds));
-     NSLog(@"view : %@", NSStringFromCGRect(self.view.frame));
-     [super viewWillAppear:animated];
- }
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    recording = NO;
+    playing = NO;
+}
  
  - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

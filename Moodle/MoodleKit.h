@@ -14,3 +14,6 @@
 #import "WSClient.h"
 #import "SDWebImageManager.h"
 #import "CJSONDeserializer.h"
+#import "MoodleMedia.h"
+#import "MoodleSite.h"
+#import "MoodleStyleSheet.h"

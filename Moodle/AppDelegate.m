@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "Constants.h"
 
 // view controllers
 #import "RootViewController.h"
@@ -18,9 +17,6 @@
 #import "SyncViewController.h"
 #import "RecorderViewController.h"
 #import "CoursesViewController.h"
-#import "MoodleStyleSheet.h"
-#import "Reachability.h"
-
 
 @implementation AppDelegate
 
@@ -31,6 +27,7 @@ static AppDelegate *moodleApp = NULL;
 @synthesize managedObjectContext=__managedObjectContext;
 @synthesize managedObjectModel=__managedObjectModel;
 @synthesize persistentStoreCoordinator=__persistentStoreCoordinator;
+
 
 - (id)init {
     MLog(@"Moodle app init");
@@ -54,6 +51,12 @@ static AppDelegate *moodleApp = NULL;
     }
 
     return moodleApp;
+}
+
+
+- (void) resetSite: (id)object {
+    NSLog(@"reset site!!!!!");
+    self.site = nil;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -96,15 +99,35 @@ static AppDelegate *moodleApp = NULL;
     [navigator.URLMap from: @"tt://sites/"         toViewController: [SitesViewController class]];
     [navigator.URLMap from: @"tt://settings/"      toViewController: [SettingsSiteViewController class]];
     [navigator.URLMap from: @"tt://settings/(initWithNew:)" toViewController: [SettingsSiteViewController class]];
-
     [navigator.URLMap from: @"tt://sync/"  toModalViewController: [SyncViewController class]];
 
     [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
 
+    // make all dictionary ready
+    NSFileManager *NSFm= [NSFileManager defaultManager]; 
+    BOOL isDir=YES;
+    
+    if(![NSFm fileExistsAtPath: AUDIO_FOLDER isDirectory:&isDir]) {
+        if (![NSFm createDirectoryAtPath:AUDIO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
+            NSLog(@"Error: Create folder failed");
+        } else {
+            NSLog(@"Folder created");
+        }
+    }
+    if(![NSFm fileExistsAtPath: PHOTO_FOLDER isDirectory:&isDir]) {
+        if (![NSFm createDirectoryAtPath: PHOTO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
+            NSLog(@"Error: Create folder failed");
+        } else {
+            NSLog(@"Folder created");
+        }
+    }
+    
+    
     //Set a method to be called when a notification is sent.
     Reachability *reachability = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];
     [reachability startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(resetSite:) name: kResetSite object: nil];
     return YES;
 }
 

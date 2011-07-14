@@ -14,11 +14,14 @@
 #import <Three20/Three20.h>
 
 @interface CoursesViewController : UITableViewController <UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, EGORefreshTableHeaderDelegate, MBProgressHUDDelegate> {
-    ParticipantListViewController *participantListViewController;
     NSManagedObjectContext *managedObjectContext;
     AppDelegate *appDelegate;
+    
     EGORefreshTableHeaderView *_refreshHeaderView;
     MBProgressHUD *HUD;
+    
+    ParticipantListViewController *participantListViewController;
+
 	//  Reloading var should really be your tableviews datasource
 	//  Putting it here for demo purposes 
 	BOOL _reloading;

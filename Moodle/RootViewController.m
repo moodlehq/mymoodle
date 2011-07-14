@@ -2,7 +2,7 @@
 //  RootViewController.m
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 17/03/11.
+//  Created by Jerome Mouneyrac on 17/03/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
@@ -31,7 +31,7 @@
 {
     [super viewDidLoad];
     UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc]
-                                    initWithTitle:@"Sites"
+                                    initWithTitle:NSLocalizedString(@"Sites", "Sites")
                                     style:UIBarButtonItemStylePlain
                                     target:self
                                     action:@selector(displaySettingsView)];
@@ -44,26 +44,27 @@
  *
  */
 - (void)loadView {
-    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    managedObjectContext = [appDelegate managedObjectContext];
+
     [super loadView];
+    
+    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 
-    NSLog(@"AppFrame: %@", NSStringFromCGRect([UIScreen mainScreen].applicationFrame));
-    NSLog(@"ViewBounds: %@", NSStringFromCGRect(self.view.bounds));
-    NSLog(@"view : %@", NSStringFromCGRect(self.view.frame));
-    CGRect rect = [UIScreen mainScreen].applicationFrame;
+    CGRect appRect = [UIScreen mainScreen].applicationFrame;
 
+    // app background
     UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"app_bg.png"]];
-    appBg.frame = CGRectMake(0, 0, 320, 460);
+    appBg.frame = CGRectMake(0, 0, appRect.size.width, appRect.size.height);
     [self.view addSubview:appBg];
     [appBg release];
 
+    // Header
     UIImageView *header = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"header.png"]];
-    header.frame = CGRectMake((rect.size.width-240)/2, 35, 240, 34);
+    header.frame = CGRectMake((appRect.size.width-240)/2, 35, 240, 34);
     [self.view addSubview:header];
     [header release];
     
-    connectedSite = [[UITextView alloc] initWithFrame:CGRectMake(20, 69, rect.size.width-40, 40)];
+    // text view
+    connectedSite = [[UITextView alloc] initWithFrame:CGRectMake(20, 69, appRect.size.width-40, 40)];
     [connectedSite setBackgroundColor:[UIColor clearColor]];
     [connectedSite setScrollEnabled: NO];
     [connectedSite setEditable: NO];
@@ -77,11 +78,11 @@
     int bgWidth = 276;
     int bgHeight = 299;
     UIImageView *rootBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"root_bg.png"]];
-    rootBackground.frame = CGRectMake((rect.size.width-276)/2, rect.origin.y+headerHeight, bgWidth, bgHeight);
+    rootBackground.frame = CGRectMake((appRect.size.width-276)/2, appRect.origin.y+headerHeight, bgWidth, bgHeight);
     [self.view addSubview: rootBackground];
     [rootBackground release];
 
-    CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x+10, rootBackground.frame.origin.y+30, bgWidth-20, bgHeight+30);
+    CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x+10, rootBackground.frame.origin.y+30, bgWidth-20, bgHeight+40);
     launcherView = [[TTLauncherView alloc] initWithFrame: launcherFrame];
     launcherView.columnCount = 2;
     webLauncherItem = [[TTLauncherItem alloc] initWithTitle:NSLocalizedString(@"Web", "Web")
@@ -93,14 +94,14 @@
                                 [self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image: @"bundle://Upload.png" URL:@"tt://upload/"],
                                 [self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image: @"bundle://Participants.png" URL:@"tt://participants/"],
                                 webLauncherItem,
-                                [self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image: @"bundle://MoodleHelp.png" URL:@"http://docs.moodle.org/"],
+                                [self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image: @"bundle://MoodleHelp.png" URL:URL_MOODLE_HELP],
                                 nil]
                           , nil];
     launcherView.delegate = self;
     [self.view addSubview: launcherView];
-    //defautl toolbar height ;44
-
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(10, rect.size.height - 40, rect.size.width-20, 33)];
+    
+    //defautl toolbar height: 44
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(10, appRect.size.height - 40, appRect.size.width-20, 33)];
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:toolbar.bounds 
                                                 byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight
                                                         cornerRadii:CGSizeMake(10.0, 10.0)];
@@ -134,10 +135,11 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    managedObjectContext = [appDelegate managedObjectContext];
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
 
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
-    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
     [connectedSite setText: [NSString stringWithFormat:@"Connected to: %@", [appDelegate.site valueForKey: @"url"]]];
     [super viewWillAppear:animated];
@@ -147,6 +149,8 @@
 {
     [super viewDidAppear:animated];
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey: kSelectedSiteUrlKey];
+    NSLog(@"%@", appDelegate.site);
+    NSLog(@"%@", defaultSiteUrl);
     if (defaultSiteUrl == nil || appDelegate.site == nil) {
         [self displaySettingsView];
     }

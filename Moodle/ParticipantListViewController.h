@@ -2,7 +2,7 @@
 //  ParticipantListViewController.h
 //  Moodle
 //
-//  Created by jerome Mouneyrac on 14/04/11.
+//  Created by Jerome Mouneyrac on 14/04/11.
 //  Copyright 2011 Moodle. All rights reserved.
 //
 
@@ -15,13 +15,15 @@
 
 @interface ParticipantListViewController : UITableViewController <NSFetchedResultsControllerDelegate, EGORefreshTableHeaderDelegate, MBProgressHUDDelegate> {
     AppDelegate *appDelegate;
-    NSManagedObject *course;
-    AppDelegate *appDelegte;
-    DetailViewController *participantViewController;
     NSManagedObjectContext *managedObjectContext;
+
+    NSManagedObject *course;
+    
     EGORefreshTableHeaderView *_refreshHeaderView;
-	BOOL _reloading;
     MBProgressHUD *HUD;
+    
+    DetailViewController *participantViewController;
+	BOOL _reloading;
 }
 - (void) updateParticipants;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;

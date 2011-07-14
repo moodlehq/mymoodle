@@ -30,6 +30,7 @@
     [field setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     return [field autorelease];
 }
+
 # pragma mark - Button actions
 -(IBAction)cancel: (id)sender{
     [self.navigationController popViewControllerAnimated:YES];
@@ -46,9 +47,37 @@
     [deleteActionSheet release];
 }
 
+# pragma mark - action sheet delegate
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
+    if (buttonIndex != [actionSheet cancelButtonIndex]) {
+        //delete the entry
+        [appDelegate.managedObjectContext deleteObject: appDelegate.site];
+        NSError *error;
+        if (![appDelegate.managedObjectContext save:&error]) {
+            NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+            NSArray *detailedErrors = [[error userInfo] objectForKey: NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    NSLog(@"Detailed Error: %@", [detailedError userInfo]);
+                }
+            } else {
+                NSLog(@"  %@", [error userInfo]);
+            }
+        }
+        // send notification to appdelete to reset site
+        [[NSNotificationCenter defaultCenter] postNotificationName: kResetSite 
+                                                            object: nil];
+        //return the list of sites
+        NSArray *allControllers = self.navigationController.viewControllers;
+        UITableViewController *parent = [allControllers lastObject];
+        [parent.tableView reloadData];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
 - (BOOL) validateUrl: (NSString *) candidate {
-    NSString *urlRegEx =
-    @"(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+";
+    NSString *urlRegEx = @"(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+";
     NSPredicate *urlTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx]; 
     return [urlTest evaluateWithObject:candidate];
 }
@@ -179,8 +208,7 @@
                         for(NSError* detailedError in detailedErrors) {
                             NSLog(@"Detailed Error: %@", [detailedError userInfo]);
                         }
-                    }
-                    else {
+                    } else {
                         NSLog(@"  %@", [error userInfo]);
                     }
                 }
@@ -218,24 +246,6 @@
     [newPath release];
     [nextField becomeFirstResponder];
 }
-# pragma mark - action sheet delegate
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
-    if (buttonIndex != [actionSheet cancelButtonIndex]) {
-        //delete the entry
-        [appDelegate.managedObjectContext deleteObject: appDelegate.site];
-        NSError *error;
-        if (![appDelegate.managedObjectContext save:&error]) {
-            NSLog(@"Error saving entity: %@", [error localizedDescription]);
-        }
-        //return the list of sites
-        [self.navigationController popViewControllerAnimated:YES];
-        NSArray *allControllers = self.navigationController.viewControllers;
-        UITableViewController *parent = [allControllers lastObject];
-        [parent.tableView reloadData];
-    }
-}
-
 
 #pragma mark - View lifecycle
 
@@ -251,18 +261,22 @@
 
     return self;
 }
-- (void)loadView {
-    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [super loadView];
 
+- (void)loadView {
+    [super loadView];
 }
+
 - (void)dealloc {
     [super dealloc];
 }
+
 - (void)viewWillAppear:(BOOL)animated {
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
 
     [super viewWillAppear:animated];
+
     self.navigationController.view.backgroundColor = UIColorFromRGB(LoginBackground);
     self.tableView.backgroundColor = [UIColor clearColor];
     
@@ -285,7 +299,6 @@
     [usernameField setReturnKeyType:UIReturnKeyNext];
     [usernameCell addSubview:usernameField];
     if (!newEntry) {
-        NSLog(@"%@", [appDelegate.site valueForKey: @"mainuser"]);
         usernameField.text = [appDelegate.site valueForKeyPath:@"mainuser.username"];
     } else {
         usernameField.text = @"teacher";
@@ -315,18 +328,20 @@
     [topLabel setText:@"Moodle"];
 
     if (!newEntry) {
-        int button_width = 320;
-        UIImage *buttonImage = [UIImage imageNamed:@"button_red.png"] ;
+        int buttonWidth = 300;
+        int buttonHeight = 45;
+        UIView *buttonView = [[UIView alloc] initWithFrame:CGRectMake(10, 0, buttonWidth, buttonHeight)];
         UIButton *btnDelete = [UIButton buttonWithType:UIButtonTypeCustom];
-        [btnDelete setBackgroundImage:buttonImage forState:UIControlStateNormal];
-        CGRect size = CGRectMake((self.view.frame.size.width-button_width)/2, 0, button_width, 40);
-        [btnDelete setFrame: size];
-        [btnDelete setTitle:NSLocalizedString(@"delete", "delete") forState:UIControlStateNormal];
+        [btnDelete setBackgroundImage:[UIImage imageNamed:@"button_red.png"] forState:UIControlStateNormal];
+        [btnDelete setTitle: NSLocalizedString(@"delete", "delete") forState:UIControlStateNormal];
+        [btnDelete setFrame:CGRectMake(0, 0, buttonWidth, buttonHeight)];
         [btnDelete.titleLabel setFont:[UIFont boldSystemFontOfSize:20]];
         [btnDelete addTarget:self action:@selector(deleteSite) forControlEvents:UIControlEventTouchUpInside];
-        self.tableView.tableFooterView = btnDelete;
+        [buttonView addSubview:btnDelete];
+        self.tableView.tableFooterView = buttonView;
     }
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -380,6 +395,7 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         return 65.0f;
