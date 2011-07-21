@@ -67,8 +67,13 @@
     [appBg release];
 
     // Header
-    UIImageView *header = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"header.png"]];
-    header.frame = CGRectMake((appRect.size.width-240)/2, 35, 240, 34);
+//    UIImageView *header = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"header.png"]];
+    UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake((appRect.size.width-240)/2, 40, 240, 34)];
+    [header setText:@"MoodleMobile"];
+    [header setTextColor:UIColorFromRGB(ColorToolbar)];
+    [header setFont:[UIFont fontWithName:@"SoulPapa" size:40]];
+    [header setBackgroundColor:[UIColor clearColor]];
+    [header setTextAlignment:UITextAlignmentCenter];
     [self.view addSubview:header];
     [header release];
     
