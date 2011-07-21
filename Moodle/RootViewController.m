@@ -19,7 +19,7 @@
  * "Sites" button action
  *
  */
--(void)displaySettingsView {
+- (void)displaySettingsView {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://sites/"] applyAnimated:YES]];
 }
 
@@ -27,16 +27,25 @@
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://sync/"] applyAnimated:YES]];
 }
 
+- (void)actionSheet {
+    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self cancelButtonTitle:@"Cancel" destructiveButtonTitle: NSLocalizedString(@"Sites", "Sites") otherButtonTitles: NSLocalizedString(@"about", "About"), nil];
+	popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+	[popupQuery showInView:self.view];
+	[popupQuery release];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex {
+    NSLog(@"button index: %d", buttonIndex);
+	if (buttonIndex == 0) {
+        [self displaySettingsView];
+	} else if (buttonIndex == 1) {
+        // cancel
+	}
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIBarButtonItem *sitesButton = [[UIBarButtonItem alloc]
-                                    initWithTitle:NSLocalizedString(@"Sites", "Sites")
-                                    style:UIBarButtonItemStylePlain
-                                    target:self
-                                    action:@selector(displaySettingsView)];
-    self.navigationItem.rightBarButtonItem = sitesButton;
-    [sitesButton release];
 }
 
 /**
@@ -116,7 +125,7 @@
     UIBarButtonItem *btnSync = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"sync.png"] style:UIBarButtonItemStylePlain target:self action:@selector(launchNotification)];
     btnSync.tag = 1;
 
-    UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
+    UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(actionSheet)];
     btnSettings.tag = 2;
     
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:

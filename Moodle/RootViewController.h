@@ -16,7 +16,7 @@
 #import "CoursesViewController.h"
 #import "Reachability.h"
 
-@interface RootViewController : TTViewController <TTLauncherViewDelegate> {
+@interface RootViewController : TTViewController <TTLauncherViewDelegate, UIActionSheetDelegate> {
     AppDelegate *appDelegate;
     /** view controllers*/
     SitesViewController *settingsViewController;
