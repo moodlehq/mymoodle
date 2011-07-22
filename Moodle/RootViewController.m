@@ -29,7 +29,7 @@
 
 - (void)actionSheet {
     UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self cancelButtonTitle:@"Cancel" destructiveButtonTitle: NSLocalizedString(@"Sites", "Sites") otherButtonTitles: NSLocalizedString(@"about", "About"), nil];
-	popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+	popupQuery.actionSheetStyle = UIActionSheetStyleDefault;
 	[popupQuery showInView:self.view];
 	[popupQuery release];
 }

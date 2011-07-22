@@ -10,9 +10,9 @@
 #import "Reachability.h"
 #import "WSClient.h"
 #import "Constants.h"
-
 // temp fix for https://github.com/facebook/three20/issues/194
-#import <Three20UINavigator/UIViewController+TTNavigator.h> 
+#import <Three20UINavigator/UIViewController+TTNavigator.h>
+#import "Three20Core/NSStringAdditions.h"
 
 #pragma mark - view controller
 @implementation DetailViewController
@@ -23,7 +23,7 @@
 // load user
 -(void)updateParticipant {
     WSClient *client   = [[WSClient alloc] init];
-    
+
     // build individual user
     NSNumber *userid   = [self.participant valueForKey:@"userid"];
     NSNumber *courseid = [self.course      valueForKey:@"id"];
@@ -441,16 +441,16 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    
+
     // Cache a date formatter to create a string representation of the date object.
     static NSDateFormatter *dateFormatter = nil;
     if (dateFormatter == nil) {
         dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy"];
     }
-    
+
     // Set the text in the cell for the section/row.
-    
+
     NSString *cellText = nil;
     NSDictionary *info;
     NSString *key;
@@ -469,14 +469,13 @@
     if (indexPath.section == 1 || indexPath.section == 2) {
         key = [[info allKeys] lastObject];
 
-        
         CGRect labelFrame = CGRectMake(10, 4, 70, 32);
-        
+
         UILabel *labelView = [[UILabel alloc] initWithFrame:labelFrame];
         labelView.text = NSLocalizedString(key, key);
         [labelView setTextAlignment: UITextAlignmentRight];
         [labelView setFont:[UIFont boldSystemFontOfSize:16.0]];
-        
+
         CGRect textviewFrame = CGRectMake(90, 2, 200, 32);
         UITextView *textView = [[UITextView alloc] initWithFrame:textviewFrame];
         cellText = [info valueForKey: key];
@@ -490,7 +489,8 @@
         [textView release];
     } else if (indexPath.section == 0) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        cell.textLabel.text = [self.participant valueForKey:@"desc"];
+        NSString *desc = [self.participant valueForKey:@"desc"];
+        cell.textLabel.text = [desc stringByRemovingHTMLTags];
     }
     return cell;
 }
