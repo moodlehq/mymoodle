@@ -69,7 +69,7 @@
     // Header
 //    UIImageView *header = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"header.png"]];
     UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake((appRect.size.width-240)/2, 40, 240, 34)];
-    [header setText:@"MoodleMobile"];
+    [header setText:@"Moodle"];
     [header setTextColor:UIColorFromRGB(ColorToolbar)];
     [header setFont:[UIFont fontWithName:@"SoulPapa" size:40]];
     [header setBackgroundColor:[UIColor clearColor]];

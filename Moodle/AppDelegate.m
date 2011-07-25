@@ -36,9 +36,9 @@ static AppDelegate *moodleApp = NULL;
 
 		NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 		[[NSUserDefaults standardUserDefaults] setObject:appVersion forKey:@"moodle_app_version"];
-        NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"moodle-ios/%@", appVersion], @"UserAgent", nil];
-        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
-        [dictionary release];
+//        NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"moodle-ios/%@", appVersion], @"UserAgent", nil];
+//        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+//        [dictionary release];
     }
 
     return moodleApp;
