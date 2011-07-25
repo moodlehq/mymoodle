@@ -203,7 +203,7 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.imageView.image = [UIImage imageNamed: @"course.png"];
+//    cell.imageView.image = [UIImage imageNamed: @"course.png"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
     cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
@@ -219,7 +219,7 @@
     }
 
     NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.imageView.image = [UIImage imageNamed: @"course.png"];
+//    cell.imageView.image = [UIImage imageNamed: @"course.png"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
     cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];

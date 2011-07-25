@@ -34,8 +34,6 @@
     // recreate folder
     if (![fileManager createDirectoryAtPath: AUDIO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
         NSLog(@"Error: Create folder failed");
-    } else {
-        NSLog(@"Folder created");
     }
 }
 
@@ -284,18 +282,60 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 0) {
-        // upload button
-        // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-        HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
-        [self.view.window addSubview:HUD];
-        
-        // Regiser for HUD callbacks so we can remove it from the window at the right time
-        HUD.delegate = self;
-        // Show the HUD while the provided method executes in a new thread
-        [HUD showWhileExecuting:@selector(uploadAudio) onTarget:self withObject:nil animated:YES];
+        if (appDelegate.netStatus == NotReachable) {
+            NSLog(@"Network not reachable");
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable, do you want to put this file in queen?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            [alert show];
+            [alert release];
+        } else {
+            // upload button
+            // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+            HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+            [self.view.window addSubview:HUD];
+            
+            // Regiser for HUD callbacks so we can remove it from the window at the right time
+            HUD.delegate = self;
+            // Show the HUD while the provided method executes in a new thread
+            [HUD showWhileExecuting:@selector(uploadAudio) onTarget:self withObject:nil animated:YES];
+        }
+
 	} else if (buttonIndex == 1) {
         // cancel
 	}
+}
+#pragma mark -
+#pragma mark UIAlertView delegate method
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
+    if (buttonIndex == [alertView cancelButtonIndex]) {
+        // do nothing
+        // NSFileManager *fileManager = [NSFileManager defaultManager];
+        // [fileManager removeItemAtPath:filePath error:nil];
+    } else {
+        NSLog(@"Put file in queen");
+        NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+        if (![managedObjectContext save: nil]) {
+        }
+        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+        [formatter release];
+        [job setValue: @"MoodleMedia"    forKey: @"target"];
+        [job setValue: @"upload"         forKey: @"action"];
+        [job setValue: stringFromDate    forKey: @"desc"];
+        [job setValue: recorderFilePath  forKey: @"data"];
+        [job setValue: @"path"           forKey: @"dataformat"];
+        [job setValue: @"undone"         forKey: @"status"];
+        [job setValue: appDelegate.site  forKey: @"site"];
+        [job setValue: [NSDate date]     forKey: @"created"];
+        
+        NSError *error;
+        if (![managedObjectContext save: &error]) {
+            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -
@@ -332,8 +372,6 @@
     buttonReplay = nil;
     buttonUpload = nil;
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)dealloc
@@ -345,6 +383,7 @@
  
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [self cleanupFiles];
     recording = NO;
     playing = NO;

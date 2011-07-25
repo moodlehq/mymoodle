@@ -8,14 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "Constants.h"
+#import "AppDelegate.h"
 #import "MBProgressHUD.h"
 #import "ASIFormDataRequest.h"
 #import <Three20/Three20.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-@interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate, UIActionSheetDelegate> {
+@interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
     NSString *recorderFilePath;
+    AppDelegate *appDelegate;
     AVAudioRecorder *recorder;
     AVAudioPlayer *player;
     TTStyledTextLabel *timerLabel;

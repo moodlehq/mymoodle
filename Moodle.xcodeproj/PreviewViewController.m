@@ -81,7 +81,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     // Do any additional setup after loading the view from its nib.
     imageView.image = [UIImage imageWithContentsOfFile:filePath];
 }
@@ -95,7 +94,10 @@
     fileName = nil;
     filePath = nil;
 }
-
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    _appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 - (IBAction)uploadPressed: (id)sender {
     if (_appDelegate.netStatus == NotReachable) {
         NSLog(@"Network not reachable");

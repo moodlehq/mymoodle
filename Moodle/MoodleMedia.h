@@ -19,5 +19,4 @@
 
 + (void)upload:(id<MoodleUploadDelegate>)sender;
 + (void)upload:(id)data format: (NSString *)dataformat;
-+ (BOOL)test:(id)data format: (NSString *)dataformat;
 @end

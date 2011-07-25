@@ -168,8 +168,7 @@
     [super viewDidAppear:animated];
     if([Participant countWithContext:managedObjectContext course:course] == 0) {
         if (appDelegate.netStatus == NotReachable) {
-            NSLog(@"Network not reachable");
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable, do you want to put this file in queen?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable." delegate:self cancelButtonTitle:@"No" otherButtonTitles: nil];
             [alert show];
             [alert release];
         } else {

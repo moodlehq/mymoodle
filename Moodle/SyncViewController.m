@@ -34,7 +34,6 @@
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName: @"Job" inManagedObjectContext:context];
     [request setEntity:entity];
@@ -79,6 +78,7 @@
 {
     [super loadView];
     context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -119,6 +119,15 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (appDelegate.netStatus == NotReachable) {
+        [self.navigationItem.rightBarButtonItem setEnabled:NO];
+    } else {
+        [self.navigationItem.rightBarButtonItem setEnabled:YES];
+    }
 }
 
 - (void)viewDidUnload
@@ -288,7 +297,6 @@
 
 - (void)sync {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName: @"Job" inManagedObjectContext:context];
     [request setEntity:entity];
@@ -301,7 +309,6 @@
     [request setSortDescriptors:[NSArray arrayWithObject:sort]];
     NSError *error = nil;
     NSArray *jobs = [context executeFetchRequest:request error:&error];
-    NSLog(@"%@", jobs);
     for (NSManagedObject *job in jobs) {
         id target = NSClassFromString([job valueForKey:@"target"]);
         SEL method = NSSelectorFromString([NSString stringWithFormat:@"%@:format:", [job valueForKey:@"action"]]);
