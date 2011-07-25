@@ -216,13 +216,16 @@
 #pragma mark -
 #pragma mark TTLauncherViewDelegate methods
 - (void)launcherViewDidBeginEditing:(TTLauncherView*)launcher {
-	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
-	self.navigationItem.leftBarButtonItem = doneButton;
-	[doneButton release];
+//	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
+    doneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [doneButton setFrame:CGRectMake(320-100-10, 20, 100, 30)];
+    [doneButton setTitle:@"End editing" forState:UIControlStateNormal];
+    [doneButton addTarget:launcher action:@selector(endEditing) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:doneButton];
 }
 
 - (void)launcherViewDidEndEditing:(TTLauncherView*)launcher {
-	self.navigationItem.leftBarButtonItem = nil;
+    [doneButton removeFromSuperview];
 }
 
 - (void)launcherView:(TTLauncherView *)launcher didSelectItem:(TTLauncherItem *)item {
