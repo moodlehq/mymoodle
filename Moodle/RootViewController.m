@@ -28,7 +28,7 @@
 }
 
 - (void)actionSheet {
-    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self cancelButtonTitle:@"Cancel" destructiveButtonTitle: NSLocalizedString(@"Sites", "Sites") otherButtonTitles: NSLocalizedString(@"about", "About"), nil];
+    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self cancelButtonTitle:@"Cancel" destructiveButtonTitle: NSLocalizedString(@"Accounts", "accounts") otherButtonTitles: NSLocalizedString(@"About", "about"), nil];
 	popupQuery.actionSheetStyle = UIActionSheetStyleDefault;
 	[popupQuery showInView:self.view];
 	[popupQuery release];
@@ -218,7 +218,7 @@
 - (void)launcherViewDidBeginEditing:(TTLauncherView*)launcher {
 //	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
     doneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [doneButton setFrame:CGRectMake(320-100-10, 20, 100, 30)];
+    [doneButton setFrame:CGRectMake(320-80-20, 20, 100, 30)];
     [doneButton setTitle:@"End editing" forState:UIControlStateNormal];
     [doneButton addTarget:launcher action:@selector(endEditing) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:doneButton];

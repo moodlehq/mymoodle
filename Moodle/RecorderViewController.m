@@ -27,6 +27,18 @@
     }
 }
 
+- (void)cleanupFiles {
+    // delete all files
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    [fileManager removeItemAtPath: AUDIO_FOLDER error:NULL];
+    // recreate folder
+    if (![fileManager createDirectoryAtPath: AUDIO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
+        NSLog(@"Error: Create folder failed");
+    } else {
+        NSLog(@"Folder created");
+    }
+}
+
 - (void)loadView {
     [super loadView];
     
@@ -65,11 +77,13 @@
     [buttonRecord addTarget:self action:@selector(startRecording) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonRecord];
     
-    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action: @selector(replayAudio)];
+//    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action: @selector(replayAudio)];
+    buttonReplay = [[UIBarButtonItem alloc] initWithTitle:@"Replay" style:UIBarButtonItemStylePlain target:self action:@selector(replayAudio:)];
     buttonReplay.tag = 2;
     buttonReplay.enabled = NO;
     
-    buttonUpload = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button_upload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
+//    buttonUpload = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button_upload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
+    buttonUpload = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     buttonUpload.tag = 3;
     buttonUpload.enabled = NO;
 
@@ -137,6 +151,7 @@
 
 - (void) startRecording {
     if (recording == NO) {
+        [self cleanupFiles];
         timer = [NSTimer scheduledTimerWithTimeInterval:(0.1) target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         NSError *err = nil;
@@ -223,7 +238,7 @@
 }
 
 
-- (void) replayAudio {
+- (void) replayAudio: (id)sender{
     if (playing == NO) {
         playing = YES;
         player =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:recorderFilePath] error:NULL];
@@ -283,10 +298,6 @@
 	}
 }
 
-//- (void)uploadPressed {
-
-//}
-
 #pragma mark -
 #pragma mark AVAudioRecorderDelegate method
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *) aRecorder successfully:(BOOL)flag
@@ -334,8 +345,14 @@
  
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self cleanupFiles];
     recording = NO;
     playing = NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self cleanupFiles];
 }
  
  - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
