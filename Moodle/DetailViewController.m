@@ -13,6 +13,7 @@
 // temp fix for https://github.com/facebook/three20/issues/194
 #import <Three20UINavigator/UIViewController+TTNavigator.h>
 #import "Three20Core/NSStringAdditions.h"
+#import "CJSONSerializer.h"
 
 #pragma mark - view controller
 @implementation DetailViewController
@@ -47,7 +48,7 @@
         }
     }
     @catch (NSException *exception) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles: nil];
         [alert show];
         [alert release];
     }
@@ -68,7 +69,7 @@
     ABPersonSetImageData(person, (CFDataRef)dataRef, nil);
 
     ABRecordSetValue(person, kABPersonFirstNameProperty, _participant.fullname, nil);
-    ABRecordSetValue(person, kABPersonNoteProperty, @"Imported from moodle", nil);  
+    ABRecordSetValue(person, kABPersonNoteProperty, NSLocalizedString(@"importedfrommoodle", @"an extra info added to iphone contact"), nil);  
     
     // adding phone number
     ABMutableMultiValueRef phoneNumberMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
@@ -105,15 +106,24 @@
     ABAddressBookSave(addressBook, nil);
     CFRelease(person);
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Contact" message:@"Contact added" delegate: self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Contact" message: NSLocalizedString(@"contactadd", @"prompt user that contact has been added") delegate: self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles: nil];
     [alert show];
     [alert release];
 }
 
 - (UIViewController*)post: (NSDictionary *)query {
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"text", self, @"delegate", nil];
-    TTPostController* controller = [[[TTPostController alloc] initWithNavigatorURL: nil query: options] autorelease];
     UIButton *btn = [query objectForKey:@"__target__"];
+    NSString *title;
+    if (btn.tag == TAG_BUTTON_SEND) {
+        title = NSLocalizedString(@"sendmessage", @"");
+    } else if (btn.tag == TAG_BUTTON_NOTE) {
+        title = NSLocalizedString(@"addnote", @"");
+    } else {
+        title = @"";
+    }
+    
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"text", self, @"delegate", title, @"title", nil];
+    TTPostController *controller = [[[TTPostController alloc] initWithNavigatorURL: nil query: options] autorelease];
     postControllerType = btn.tag;
     
     controller.originView = btn;
@@ -140,63 +150,124 @@
     //retrieve the participant information
     WSClient *client   = [[WSClient alloc] init];
     NSArray *wsinfo;
-    if (postControllerType == 1) {
-        @try {
-            NSNumber *userid   = [self.participant valueForKey:@"userid"];
-            NSDictionary *message = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"touserid", text, @"text", nil];
-            NSArray *messages = [[NSArray alloc] initWithObjects: message, nil];
-            NSArray *paramvalues = [[NSArray alloc] initWithObjects: messages, nil];
-            NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
-            NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-            wsinfo = [client invoke: @"moodle_message_send_instantmessages" withParams: (NSArray *)params];
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Message sent" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
-            [message release];
-            [messages release];
-            [paramvalues release];
-            [paramkeys release];
-            [params release];
-        }
-        @catch (NSException *exception) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
-        }
-    } else {
+    if (postControllerType == TAG_BUTTON_SEND) {
+        NSNumber *userid   = [self.participant valueForKey:@"userid"];
+        NSDictionary *message = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"touserid", text, @"text", nil];
+        NSArray *messages = [[NSArray alloc] initWithObjects: message, nil];
+        NSArray *paramvalues = [[NSArray alloc] initWithObjects: messages, nil];
+        NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"messages", nil];
+        NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
+        [message release];
+        [messages release];
+        [paramvalues release];
+        [paramkeys release];
 
-        @try {
-            NSNumber *userid   = [self.participant valueForKey:@"userid"];
-            NSDictionary *note = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", text, @"text", @"text", @"format", [self.course valueForKey:@"id"], @"courseid", @"personal", @"publishstate", nil];
-            NSArray *notes = [[NSArray alloc] initWithObjects: note, nil];
-            NSArray *paramvalues = [[NSArray alloc] initWithObjects: notes, nil];
-            NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"notes", nil];
-            NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
-            wsinfo = [client invoke: @"moodle_notes_create_notes" withParams: (NSArray *)params];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Note added" delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        if (appDelegate.netStatus == NotReachable) {
+            NSData *jsonData = [[CJSONSerializer serializer] serializeObject:params error: nil];
+            NSString *data = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            NSLog(@"%@", data);
+
+            NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+
+            [job setValue: @"TaskHandler"    forKey: @"target"];
+            [job setValue: @"sendMessage"    forKey: @"action"];
+            [job setValue: text              forKey: @"desc"];
+            [job setValue: data              forKey: @"data"];
+            [job setValue: @"json"           forKey: @"dataformat"];
+            [job setValue: @"undone"         forKey: @"status"];
+            [job setValue: appDelegate.site  forKey: @"site"];
+            [job setValue: [NSDate date]     forKey: @"created"];
+            NSError *error;
+            if (![managedObjectContext save: &error]) {
+                NSLog(@"Error saving entity: %@", [error localizedDescription]);
+            }
+
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle: NSLocalizedString(@"networkerror", @"") message: NSLocalizedString(@"cannotsendmessage", @"") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"") otherButtonTitles: nil];
             [alert show];
             [alert release];
-            [note release];
-            [notes release];
-            [paramvalues release];
-            [paramkeys release];
-            [params release];
+        } else {
+            @try {
+                wsinfo = [client invoke: @"moodle_message_send_instantmessages" withParams: (NSArray *)params];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message: NSLocalizedString(@"messagesent", @"prompt user message has been sent") delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+            }
+            @catch (NSException *exception) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+            }
+            NSDictionary *msg = [wsinfo lastObject];
+            if ([msg valueForKey:@"errormessage"]) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: @"cancel" otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+            }
         }
-        @catch (NSException *exception) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [params release];
+    } else if (postControllerType == TAG_BUTTON_NOTE) {
+        
+        NSNumber *userid   = [self.participant valueForKey:@"userid"];
+        NSDictionary *note = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", text, @"text", @"text", @"format", [self.course valueForKey:@"id"], @"courseid", @"personal", @"publishstate", nil];
+        NSArray *notes = [[NSArray alloc] initWithObjects: note, nil];
+        NSArray *paramvalues = [[NSArray alloc] initWithObjects: notes, nil];
+        NSArray *paramkeys   = [[NSArray alloc] initWithObjects:@"notes", nil];
+        NSDictionary *params = [[NSDictionary alloc] initWithObjects: paramvalues forKeys:paramkeys];
+        
+        [note release];
+        [notes release];
+        [paramvalues release];
+        [paramkeys release];
+        if (appDelegate.netStatus == NotReachable) {
+            NSData *jsonData = [[CJSONSerializer serializer] serializeObject:params error: nil];
+            NSString *data = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            NSLog(@"%@", data);
+            
+            NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+            
+            [job setValue: @"TaskHandler"    forKey: @"target"];
+            [job setValue: @"addNote"        forKey: @"action"];
+            [job setValue: text              forKey: @"desc"];
+            [job setValue: data              forKey: @"data"];
+            [job setValue: @"json"           forKey: @"dataformat"];
+            [job setValue: @"undone"         forKey: @"status"];
+            [job setValue: appDelegate.site  forKey: @"site"];
+            [job setValue: [NSDate date]     forKey: @"created"];
+            NSError *error;
+            if (![managedObjectContext save: &error]) {
+                NSLog(@"Error saving entity: %@", [error localizedDescription]);
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle: NSLocalizedString(@"networkerror", @"") message: NSLocalizedString(@"cannotaddnote", @"") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"") otherButtonTitles: nil];
+            alert.tag = ALERT_NOTE;
             [alert show];
             [alert release];
+        } else {
+            @try {
+                wsinfo = [client invoke: @"moodle_notes_create_notes" withParams: (NSArray *)params];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Note added" delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+            }
+            @catch (NSException *exception) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+            }
+            NSDictionary *msg = [wsinfo lastObject];
+            if ([msg valueForKey:@"errormessage"]) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: @"cancel" otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+            }
         }
-    }
-    NSDictionary *msg = [wsinfo lastObject];
-    if ([msg valueForKey:@"errormessage"]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: @"cancel" otherButtonTitles: nil];
-        [alert show];
-        [alert release];
+        [params release];
+    } else {
+        // do nothing
+        return;
     }
     [client release];
 }
+
 /**
  * The controller was cancelled before posting.
  */
@@ -233,6 +304,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
+
 -(NSDictionary *)createInfo: (NSString *) key value: (NSString *)value {
     NSDictionary *dict = [[[NSDictionary alloc] initWithObjectsAndKeys:value, key, nil] autorelease];
     return dict;
@@ -294,6 +366,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    managedObjectContext = [appDelegate managedObjectContext];
+
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
@@ -339,38 +415,31 @@
     tableviewFooter.userInteractionEnabled = YES;
     
     UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonSendMsg setTitle:@"Send Message" forState: UIControlStateNormal];
-    [buttonSendMsg setFrame:CGRectMake(margin, 0, button_width, 50)];
-    buttonSendMsg.tag = 1;
-    //    [buttonSendMsg addTarget:self action:@selector(sendMessage:) forControlEvents:UIControlEventTouchUpInside];
+    [buttonSendMsg setTitle: NSLocalizedString(@"sendmessage", @"") forState: UIControlStateNormal];
+    [buttonSendMsg setFrame:CGRectMake(margin, 0, 320-margin*2, 50)];
+    buttonSendMsg.tag = TAG_BUTTON_SEND;
     [buttonSendMsg addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton *buttonAddNote = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonAddNote setTitle:@"Add Note" forState: UIControlStateNormal];
-    [buttonAddNote setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 0, button_width, 50)];
-    buttonAddNote.tag = 2;
+    [buttonAddNote setTitle: NSLocalizedString(@"addnote", @"") forState: UIControlStateNormal];
+    [buttonAddNote setFrame:CGRectMake(margin, 60, button_width, 50)];
+    buttonAddNote.tag = TAG_BUTTON_NOTE;
     [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    UIButton *buttonRefresh = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonRefresh setTitle:@"Update" forState: UIControlStateNormal];
-    [buttonRefresh addTarget:self action:@selector(updateParticipant) forControlEvents:UIControlEventTouchUpInside];
-    [buttonRefresh setFrame:CGRectMake(margin, 60, button_width, 50)];
-    buttonRefresh.tag = 3;
-    
+
     UIButton *buttonAddContact = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonAddContact setTitle:@"Add contact" forState: UIControlStateNormal];
+    [buttonAddContact setTitle: NSLocalizedString(@"addcontact", @"") forState: UIControlStateNormal];
     [buttonAddContact addTarget:self action:@selector(addContact) forControlEvents:UIControlEventTouchUpInside];
     [buttonAddContact setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 60, button_width, 50)];
-    buttonAddContact.tag = 4;
+    buttonAddContact.tag = TAG_BUTTON_CONTACT;
     
     [tableviewFooter addSubview:buttonSendMsg];
     [tableviewFooter addSubview:buttonAddNote];
-    [tableviewFooter addSubview:buttonRefresh];
     [tableviewFooter addSubview:buttonAddContact];
 
     [self.tableView setTableFooterView:tableviewFooter];
     [tableviewFooter release];
+
+    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle: NSLocalizedString( @"update", @"") style:UIBarButtonItemStyleBordered target:self action:@selector(updateParticipant)] autorelease];
 }
 
 
@@ -393,7 +462,6 @@
     else {
         location.x += 220.0;
     }
-    NSLog(@"swiped!!!");
 	
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.55];
@@ -504,13 +572,13 @@
     NSString *title = nil;
     switch (section) {
         case 0:
-            title = NSLocalizedString(@"description", @"Description");
+            title = NSLocalizedString(@"description", @"User's Description");
             break;
         case 1:
-            title = NSLocalizedString(@"Contact", @"Contact info");
+            title = NSLocalizedString(@"contact", @"User's Contact info");
             break;
         case 2:
-            title = NSLocalizedString(@"Location", @"Location");
+            title = NSLocalizedString(@"location", @"User's geo location");
             break;
         default:
             break;
@@ -521,5 +589,38 @@
 - (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
 {
     userpicture.image = image;
+}
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == [alertView cancelButtonIndex]) {
+        // do nothing
+        return;
+    }
+    if (alertView.tag == ALERT_MSG) {
+//        if (![managedObjectContext save: nil]) {
+//        }
+//        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+//        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+//        [formatter release];
+//        [job setValue: @"MoodleMedia"    forKey: @"target"];
+//        [job setValue: @"upload"         forKey: @"action"];
+//        [job setValue: @"mesage content"    forKey: @"desc"];
+//        [job setValue: @"mesage content"          forKey: @"data"];
+//        [job setValue: @"message"           forKey: @"dataformat"];
+//        [job setValue: @"undone"         forKey: @"status"];
+//        [job setValue: appDelegate.site  forKey: @"site"];
+//        [job setValue: [NSDate date]     forKey: @"created"];
+//        
+//        NSError *error;
+//        if (![managedObjectContext save: &error]) {
+//            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+//        }
+    } else if (alertView.tag == ALERT_NOTE) {
+        
+    }
+
 }
 @end

@@ -47,6 +47,7 @@
 		B51EC3E01394BBA40048C866 /* ASIInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3D61394BBA40048C866 /* ASIInputStream.m */; };
 		B51EC3E11394BBA40048C866 /* ASINetworkQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3D81394BBA40048C866 /* ASINetworkQueue.m */; };
 		B51EC3E41394BBD30048C866 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3E31394BBD30048C866 /* Reachability.m */; };
+		B520A27313DEB18A005046CF /* TaskHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = B520A27213DEB18A005046CF /* TaskHandler.m */; };
 		B52DE3D51380FA9F004F3692 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B52DE3D31380FA9F004F3692 /* PreviewViewController.m */; };
 		B53FAB401398B566008206EA /* Complete.png in Resources */ = {isa = PBXBuildFile; fileRef = B53FAB3F1398B566008206EA /* Complete.png */; };
 		B53FAB5C1398C06B008206EA /* MoodleJob.m in Sources */ = {isa = PBXBuildFile; fileRef = B53FAB5B1398C06B008206EA /* MoodleJob.m */; };
@@ -368,6 +369,8 @@
 		B51EC3D91394BBA40048C866 /* ASIProgressDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASIProgressDelegate.h; path = "asi-http-request/Classes/ASIProgressDelegate.h"; sourceTree = SOURCE_ROOT; };
 		B51EC3E21394BBD30048C866 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = "asi-http-request/External/Reachability/Reachability.h"; sourceTree = SOURCE_ROOT; };
 		B51EC3E31394BBD30048C866 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = "asi-http-request/External/Reachability/Reachability.m"; sourceTree = SOURCE_ROOT; };
+		B520A27113DEB18A005046CF /* TaskHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskHandler.h; sourceTree = "<group>"; };
+		B520A27213DEB18A005046CF /* TaskHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskHandler.m; sourceTree = "<group>"; };
 		B52DE3D21380FA9F004F3692 /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreviewViewController.h; path = Moodle.xcodeproj/PreviewViewController.h; sourceTree = SOURCE_ROOT; };
 		B52DE3D31380FA9F004F3692 /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreviewViewController.m; path = Moodle.xcodeproj/PreviewViewController.m; sourceTree = SOURCE_ROOT; };
 		B53FAB3F1398B566008206EA /* Complete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Complete.png; path = Images/Complete.png; sourceTree = SOURCE_ROOT; };
@@ -557,6 +560,8 @@
 			children = (
 				B54F75C713937B8000C95039 /* MoodleMedia.h */,
 				B54F75C813937B8000C95039 /* MoodleMedia.m */,
+				B520A27113DEB18A005046CF /* TaskHandler.h */,
+				B520A27213DEB18A005046CF /* TaskHandler.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1455,6 +1460,7 @@
 				B5902FC813B238300053E1D6 /* SDWebImageManager.m in Sources */,
 				B5902FC913B238300053E1D6 /* UIImageView+WebCache.m in Sources */,
 				B51C0F9D13B4556300276760 /* Course.m in Sources */,
+				B520A27313DEB18A005046CF /* TaskHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

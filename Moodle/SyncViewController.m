@@ -23,6 +23,7 @@
 #import "SyncViewController.h"
 #import "Constants.h"
 #import "AppDelegate.h"
+#import "TaskHandler.h"
 
 
 @implementation SyncViewController
@@ -77,6 +78,7 @@
 - (void)loadView
 {
     [super loadView];
+    self.title = NSLocalizedString(@"taskqueue", @"Task queue");
     context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
@@ -92,28 +94,12 @@
     if (![[self fetchedResultsController] performFetch: &error]) {
         NSLog(@"unresolved error %@, %@", error, [error userInfo]);
     }
-//    UIView *containerView =
-//    [[[UIView alloc]
-//      initWithFrame:CGRectMake(0, 0, 300, 60)]
-//     autorelease];
-//    UILabel *headerLabel =
-//    [[[UILabel alloc]
-//      initWithFrame:CGRectMake(10, 20, 300, 40)]
-//     autorelease];
-//    headerLabel.text = @"";
-//    headerLabel.textColor = [UIColor whiteColor];
-//    headerLabel.shadowColor = [UIColor blackColor];
-//    headerLabel.shadowOffset = CGSizeMake(0, 1);
-//    headerLabel.font = [UIFont boldSystemFontOfSize:22];
-//    headerLabel.backgroundColor = [UIColor clearColor];
-//    [containerView addSubview:headerLabel];
-//    self.tableView.tableHeaderView = containerView;
-//    self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
+
     self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
                                               initWithTitle:NSLocalizedString(@"cancel", @"Cancel") style:UIBarButtonItemStyleBordered
                                               target:self action:@selector(dismiss)] autorelease];
     self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
-                                              initWithTitle:NSLocalizedString(@"Send all", @"Send all") style:UIBarButtonItemStyleBordered
+                                              initWithTitle:NSLocalizedString(@"sendall", @"Send all") style:UIBarButtonItemStyleBordered
                                               target:self action:@selector(syncPressed)] autorelease];
 }
 - (void)viewDidAppear:(BOOL)animated
@@ -123,11 +109,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if (appDelegate.netStatus == NotReachable) {
-        [self.navigationItem.rightBarButtonItem setEnabled:NO];
-    } else {
-        [self.navigationItem.rightBarButtonItem setEnabled:YES];
-    }
+//    if (appDelegate.netStatus == NotReachable) {
+//        [self.navigationItem.rightBarButtonItem setEnabled:NO];
+//    } else {
+//        [self.navigationItem.rightBarButtonItem setEnabled:YES];
+//    }
 }
 
 - (void)viewDidUnload
@@ -149,7 +135,8 @@
 - (void)fillCell: (UITableViewCell *)cell atIndexPath: (NSIndexPath *)indexPath {
     NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
     cell.textLabel.text = [job valueForKey:@"desc"];
-    cell.detailTextLabel.text = [NSString stringWithFormat: @"%@:%@", [job valueForKey:@"target"], [job valueForKey: @"action"]];
+    NSString *detailedText = [NSString stringWithFormat:@"%@:%@", [job valueForKey:@"target"], [job valueForKey: @"action"]];
+    cell.detailTextLabel.text = NSLocalizedString(detailedText, @"user friendly task explaination");
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -159,32 +146,8 @@
         cell = [[[UITableViewCell alloc]
                  initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: CellID] autorelease];
 
-//        UIProgressView *progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(kProgressBarLeftMargin, kProgressBarTopMargin, kProgressBarWidth, kProgressBarHeight)];
-//        progressView.tag = kProgressViewTag;
-//        [cell.contentView addSubview:progressView];
-//        [progressView release];
-//        
-//        UILabel *progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(kProgressLabelLeftMargin, kProgressLabelTopMargin, kProgressBarWidth, 15.0)];
-//        progressLabel.adjustsFontSizeToFitWidth = YES;
-//        progressLabel.tag = kProgressLabelTag;
-//        progressLabel.textAlignment = UITextAlignmentCenter;
-//        progressLabel.font = [UIFont systemFontOfSize:12.0];
-//        [cell.contentView addSubview:progressLabel];
-//        [progressLabel release];
-        
-//        UIButton *removeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//        UIImage *removeImage = [UIImage imageNamed:@"remove.png"];
-//        [removeButton setBackgroundImage:removeImage forState:UIControlStateNormal];
-//        [removeButton setFrame:CGRectMake(0.0, 0.0, removeImage.size.width, removeImage.size.height)];
-//        [removeButton addTarget:self action:@selector(cancelOperation:) forControlEvents:UIControlEventTouchUpInside];
-//        cell.accessoryView  = removeButton;
     }
-//    UIProgressView *progressView = (UIProgressView *)[cell.contentView viewWithTag:kProgressViewTag];
-//    progressView.progress = 0.7;
-//    
-//    UILabel *progressLabel = (UILabel *)[cell.contentView viewWithTag: kProgressLabelTag];
-//    progressLabel.text = @"Processing";
-    cell.imageView.image = [UIImage imageNamed:@"item.png"];
+
 
     cell.accessoryView.tag = [indexPath row];
     [self fillCell: cell atIndexPath: indexPath];
@@ -192,25 +155,25 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    
-    // Get center of cell (vertically) 
-    int center = [cell frame].size.height / 2;
-    
-    // Size (width) of the text in the cell
-    CGSize size = [[[cell textLabel] text] sizeWithFont:[[cell textLabel] font]];
-    
-    // Locate spinner in the center of the cell at end of text
-    [spinner setFrame:CGRectMake(size.width + SPINNER_SIZE, center - SPINNER_SIZE / 2, SPINNER_SIZE, SPINNER_SIZE)];
-    [[cell contentView] addSubview:spinner];    
-    
-    [spinner startAnimating];
-    [spinner release];
-    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
-
-    NSLog(@"selected: %@", [job valueForKey:@"site"]);
+//    NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
+//    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+//    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    
+//    // Get center of cell (vertically) 
+//    int center = [cell frame].size.height / 2;
+//    
+//    // Size (width) of the text in the cell
+//    CGSize size = [[[cell textLabel] text] sizeWithFont:[[cell textLabel] font]];
+//    
+//    // Locate spinner in the center of the cell at end of text
+//    [spinner setFrame:CGRectMake(size.width + SPINNER_SIZE, center - SPINNER_SIZE / 2, SPINNER_SIZE, SPINNER_SIZE)];
+//    [[cell contentView] addSubview:spinner];    
+//    
+//    [spinner startAnimating];
+//    [spinner release];
+//    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+//
+//    NSLog(@"selected: %@", [job valueForKey:@"site"]);
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath 

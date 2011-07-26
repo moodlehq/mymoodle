@@ -11,8 +11,20 @@
 #import <AddressBook/AddressBook.h>
 #import "SDWebImageManager.h"
 #import "Participant.h"
+#import "AppDelegate.h"
+
+#define TAG_BUTTON_SEND 1
+#define TAG_BUTTON_NOTE 2
+#define TAG_BUTTON_UPDATE 3
+#define TAG_BUTTON_CONTACT 4
+
+
+#define ALERT_MSG 1
+#define ALERT_NOTE 2
 
 @interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate, SDWebImageManagerDelegate, UIAlertViewDelegate> {
+    AppDelegate *appDelegate;
+    NSManagedObjectContext *managedObjectContext;
     Participant *_participant;
     NSManagedObject *_course;
     NSMutableArray  *contactinfo;
