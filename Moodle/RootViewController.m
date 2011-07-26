@@ -10,6 +10,7 @@
 #import "Constants.h"
 #import "AppDelegate.h"
 #import "MoodleStyleSheet.h"
+#import "MoodleJob.h"
 #import "Course.h"
 
 
@@ -28,7 +29,7 @@
 }
 
 - (void)actionSheet {
-    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self cancelButtonTitle:@"Cancel" destructiveButtonTitle: NSLocalizedString(@"Accounts", "accounts") otherButtonTitles: NSLocalizedString(@"About", "about"), nil];
+    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle: NSLocalizedString(@"Accounts", "all accounts") otherButtonTitles: NSLocalizedString(@"about", "about this app"), nil];
 	popupQuery.actionSheetStyle = UIActionSheetStyleDefault;
 	[popupQuery showInView:self.view];
 	[popupQuery release];
@@ -127,7 +128,7 @@
     toolbar.layer.mask = maskLayer;
     toolbar.tintColor = UIColorFromRGB(ColorToolbar);
     
-    UIBarButtonItem *btnSync = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"sync.png"] style:UIBarButtonItemStylePlain target:self action:@selector(launchNotification)];
+    btnSync = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"sync.png"] style:UIBarButtonItemStylePlain target:self action:@selector(launchNotification)];
     btnSync.tag = 1;
 
     UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(actionSheet)];
@@ -152,7 +153,12 @@
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
-
+    NSInteger count = [MoodleJob countWithContext:managedObjectContext];
+    if (count < 1) {
+        [btnSync setEnabled:NO];
+    } else {
+        [btnSync setEnabled:YES];
+    }
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
     [connectedSite setText: [NSString stringWithFormat:@"Connected to: %@", [appDelegate.site valueForKey: @"url"]]];
@@ -163,8 +169,7 @@
 {
     [super viewDidAppear:animated];
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey: kSelectedSiteUrlKey];
-    NSLog(@"%@", appDelegate.site);
-    NSLog(@"%@", defaultSiteUrl);
+
     if (defaultSiteUrl == nil || appDelegate.site == nil) {
         [self displaySettingsView];
     }

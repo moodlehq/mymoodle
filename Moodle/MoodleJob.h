@@ -21,5 +21,6 @@
 @property (nonatomic, retain) NSString * created;
 @property (nonatomic, retain) NSString * desc;
 @property (nonatomic, retain) NSManagedObject * site;
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context;
 
 @end

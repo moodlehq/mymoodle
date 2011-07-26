@@ -25,6 +25,7 @@
     TTLauncherItem *webLauncherItem;
     UIButton *doneButton;
     UITextView *connectedSite;
+    UIBarButtonItem *btnSync;
     NSManagedObjectContext *managedObjectContext;
 }
 

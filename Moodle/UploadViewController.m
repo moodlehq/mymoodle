@@ -71,7 +71,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
 - (void)loadView
 {
     [super loadView];
-    self.title = NSLocalizedString(@"Upload", "Upload");
+    self.title = NSLocalizedString(@"Upload", nil);
     
     UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"screen_bg.png"]];
     appBg.frame = CGRectMake(0, 0, 320, 416);
