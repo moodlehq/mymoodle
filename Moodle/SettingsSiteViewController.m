@@ -346,7 +346,7 @@
     [super viewDidLoad];
 
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]
-                                     initWithTitle:NSLocalizedString(@"cancel", "cancel button label")
+                                     initWithTitle:NSLocalizedString(@"cancel", nil)
                                      style:UIBarButtonItemStylePlain
                                      target:self
                                      action:@selector(cancel:)];
@@ -354,7 +354,7 @@
     [cancelButton release];
 
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
-                                   initWithTitle: NSLocalizedString(@"save", "Save")
+                                   initWithTitle: NSLocalizedString(@"save", nil)
                                    style:UIBarButtonItemStyleDone
                                    target:self
                                    action:@selector(saveButtonPressed:)];
@@ -363,11 +363,11 @@
 
     if (!newEntry) {
         // case of Updating a site
-        self.title = NSLocalizedString(@"updatesite", @"Update the site");
+        self.title = NSLocalizedString(@"updatesite", nil);
 
     } else {
         //case of Adding a new site
-        self.title = NSLocalizedString(@"addasite", @"add a site");
+        self.title = NSLocalizedString(@"addsite", nil);
     }
 }
 

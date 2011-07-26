@@ -122,7 +122,13 @@ static AppDelegate *moodleApp = NULL;
         }
     }
     
-    
+    if(![NSFm fileExistsAtPath: VIDEO_FOLDER isDirectory:&isDir]) {
+        if (![NSFm createDirectoryAtPath: VIDEO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
+            NSLog(@"Error: Create folder failed");
+        } else {
+            NSLog(@"Folder created");
+        }
+    }
     //Set a method to be called when a notification is sent.
     Reachability *reachability = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];
     [reachability startNotifier];

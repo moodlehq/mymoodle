@@ -11,11 +11,18 @@
 #import "PreviewViewController.h"
 #import "RecorderViewController.h"
 #import "MoodleImagePickerController.h"
-#import "MoodleMedia.h"
 #import <TargetConditionals.h>
 
 @implementation UploadViewController
-
+-(NSString *)getFilepath {
+    return filePath;
+}
+- (void)uploadCallback: (id)data {
+//    [self.navigationController popViewControllerAnimated:YES];
+	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
+	HUD.mode = MBProgressHUDModeCustomView;
+	HUD.labelText = @"Completed";
+}
 //this is an Apple function to detect if AAC is enabled
 //Source: http://developer.apple.com/library/ios/#qa/qa1663/_index.html
 Boolean IsAACHardwareEncoderAvailable(void)
@@ -84,7 +91,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [uploadIcon release];
 
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(130, 35, 190, 55)];
-    [title setText:@"Upload"];
+    [title setText: NSLocalizedString(@"Upload", nil)];
     [title setFont: [UIFont fontWithName:@"SoulPapa" size:40]];
     [title setBackgroundColor:[UIColor clearColor]];
     [self.view addSubview:title];
@@ -94,7 +101,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     int y = 90;
     int width = 290;
     int height = 90;
-    TTButton *tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"Browse photo albums", "Browse photo albums")];
+    TTButton *tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"browsephotoalbums", "Browse photo albums")];
     [tbutton setImage:@"bundle://upload_photo_album.png" forState:UIControlStateNormal];
     [tbutton addTarget:self
                action:@selector(loadGallery:)
@@ -104,7 +111,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [self.view addSubview:tbutton];
 
 
-    tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"Take a picture or video", "Take a picture or video")];
+    tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"takepicture", "Take a picture or video")];
     [tbutton setImage:@"bundle://upload_camera.png" forState:UIControlStateNormal];
 
     [tbutton addTarget:self
@@ -115,7 +122,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [self.view addSubview:tbutton];
 
     if (IsAACHardwareEncoderAvailable()) {
-        tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"Record audio", "Record audio")];
+        tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"recordaudio", "Record audio")];
         [tbutton setImage:@"bundle://upload_audio.png" forState:UIControlStateNormal];
 
         [tbutton addTarget:self
@@ -144,7 +151,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
 -(void)loadPreview: (NSString *)filepath withFilename: (NSString *)filename {
     PreviewViewController *previewViewController = [[PreviewViewController alloc] init];
     //set the dashboard back button just before to push the settings view
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", "upload") style: UIBarButtonItemStyleBordered target: nil action: nil];
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", nil) style: UIBarButtonItemStyleBordered target: nil action: nil];
     [[self navigationItem] setBackBarButtonItem: newBackButton];
     [newBackButton release];
     previewViewController.fileName = filename;
@@ -158,30 +165,31 @@ Boolean IsAACHardwareEncoderAvailable(void)
     NSString *strtimestamp = [now description];
     //NSURL *mediaUrl;
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    NSLog(@"%@", info);
     if ([mediaType isEqualToString: @"public.image"]) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
         fileName = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
-        filePath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, fileName];
+        filePath = [NSString stringWithFormat:@"%@/%@", PHOTO_FOLDER, fileName];
         [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
-            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
             // Picked from camera, saving to photo album
+            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+            [picker dismissModalViewControllerAnimated:YES];
             // then upload
             [self uploadAction];
         } else {
+            [picker dismissModalViewControllerAnimated:YES];
             [self loadPreview: filePath withFilename: fileName];
         }
     } else if ([mediaType isEqualToString:@"public.movie"]) {
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
         NSString *filename = [NSString stringWithFormat:@"%@.mov", strtimestamp];
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
-        NSString *filepath = [NSString stringWithFormat:@"%@/%@", DOCUMENTS_FOLDER, filename];
+        NSString *filepath = [NSString stringWithFormat:@"%@/%@", VIDEO_FOLDER, filename];
         [data writeToFile:filepath atomically:YES];
+        [picker dismissModalViewControllerAnimated:YES];
         // upload now!
         [self uploadAction];
     }
-    [picker dismissModalViewControllerAnimated:YES];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -190,21 +198,22 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
-    UIAlertView *alert;
-
-    // Unable to save the image
-    if (error)
-        alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                           message:@"Unable to save image to Photo Album."
-                                          delegate:self cancelButtonTitle:@"Ok"
-                                 otherButtonTitles:nil];
-    else // All is well
-        alert = [[UIAlertView alloc] initWithTitle:@"Success"
-                                           message:@"Image saved to Photo Album."
-                                          delegate:self cancelButtonTitle:@"Ok"
-                                 otherButtonTitles:nil];
-    [alert show];
-    [alert release];
+//    UIAlertView *alert;
+//
+//    // Unable to save the image
+//    if (error) {
+//        alert = [[UIAlertView alloc] initWithTitle:@"Error"
+//                                           message:@"Unable to save image to Photo Album."
+//                                          delegate:self cancelButtonTitle:@"Ok"
+//                                 otherButtonTitles:nil];
+//    } else { // All is well
+//        alert = [[UIAlertView alloc] initWithTitle:@"Success"
+//                                           message:@"Image saved to Photo Album."
+//                                          delegate:self cancelButtonTitle:@"Ok"
+//                                 otherButtonTitles:nil];
+//    }
+//    [alert show];
+//    [alert release];
 }
 
 - (void)loadGallery:(id)sender {
@@ -245,14 +254,14 @@ Boolean IsAACHardwareEncoderAvailable(void)
 }
 
 - (void)uploadAction {
+
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
     HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
     [self.view.window addSubview:HUD];
-
     // Regiser for HUD callbacks so we can remove it from the window at the right time
     HUD.delegate = self;
     // Show the HUD while the provided method executes in a new thread
-    [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject:nil animated:YES];
+    [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject: self animated:YES];
 }
 
 #pragma mark -

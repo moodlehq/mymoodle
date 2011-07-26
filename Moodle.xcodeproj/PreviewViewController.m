@@ -22,16 +22,13 @@
 - (void)loadView
 {
     [super loadView];
-    self.title = NSLocalizedString(@"Preview", "Preview");
+    self.title = NSLocalizedString(@"Preview", nil);
     imageView = [[UIImageView alloc] init];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - TTToolbarHeight() - self.navigationController.navigationBar.frame.size.height);
     [self.view addSubview: imageView];
-    
-    
-    self.view.backgroundColor = UIColorFromRGB(ColorBackground);
 
-    UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle:@"Send to Moodle" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
+    UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle: @"Send to Moodle" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                          UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
@@ -126,12 +123,10 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
     if (buttonIndex == [alertView cancelButtonIndex]) {
-        NSLog(@"Do nothing, delete file");
         // delete file
         NSFileManager *fileManager = [NSFileManager defaultManager];
         [fileManager removeItemAtPath:filePath error:nil];
     } else {
-        NSLog(@"Put file in queen");
         NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
         NSLog(@"%@", [managedObjectContext hasChanges]);
         if (![managedObjectContext save: nil]) {
