@@ -10,8 +10,10 @@
 #import <Three20/Three20.h>
 #import "MBProgressHUD.h"
 #import "MoodleMedia.h"
+#import "AppDelegate.h"
 
 @interface UploadViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, MBProgressHUDDelegate, MoodleUploadDelegate> {
+    AppDelegate *appDelegate;
     NSString *fileName;
     NSString *filePath;
     MBProgressHUD *HUD;

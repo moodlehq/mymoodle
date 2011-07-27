@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
-#import "MoodleKit.h"
+#import "MoodleSite.h"
+#import "Reachability.h"
 
 @interface AppDelegate : NSObject <UIApplicationDelegate> {
-    MoodleSite *site;
     NetworkStatus netStatus;
+    MoodleSite *site;
 }
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;

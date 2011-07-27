@@ -18,11 +18,19 @@
 -(NSString *)getFilepath {
     return filePath;
 }
+
+- (void)uploadCallback: (id)data {
+	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
+	HUD.mode = MBProgressHUDModeCustomView;
+	HUD.labelText = NSLocalizedString(@"completed", @"Completed");
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
     [super loadView];
-    self.title = NSLocalizedString(@"Preview", nil);
+    self.title = NSLocalizedString(@"preview", nil);
     imageView = [[UIImageView alloc] init];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - TTToolbarHeight() - self.navigationController.navigationBar.frame.size.height);
@@ -49,14 +57,6 @@
     [_toolbar release];
 
 }
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)dealloc
 {
@@ -68,25 +68,18 @@
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    // Release any cached data, images, etc that aren't in use.
 }
 
 #pragma mark - View lifecycle
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    imageView.image = [UIImage imageWithContentsOfFile:filePath];
 }
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
     imageView = nil;
     fileName = nil;
     filePath = nil;
@@ -94,11 +87,34 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     _appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    imageView.image = [UIImage imageWithContentsOfFile:filePath];
 }
 - (IBAction)uploadPressed: (id)sender {
     if (_appDelegate.netStatus == NotReachable) {
-        NSLog(@"Network not reachable");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"networkerrormsg", @"Network not reachable") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", "OK") otherButtonTitles:nil];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+        NSString *offlineFile = [NSString stringWithFormat:@"%@/%@", OFFLINE_FOLDER, fileName];
+        [fileManager moveItemAtPath:filePath toPath:offlineFile error:nil];
+        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MM-dd HH:mm:ss"];
+        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+        [formatter release];
+        [job setValue: @"TaskHandler"    forKey: @"target"];
+        [job setValue: @"upload"         forKey: @"action"];
+        [job setValue: stringFromDate    forKey: @"desc"];
+        [job setValue: offlineFile       forKey: @"data"];
+        [job setValue: @"path"           forKey: @"dataformat"];
+        [job setValue: @"undone"         forKey: @"status"];
+        [job setValue: _appDelegate.site forKey: @"site"];
+        [job setValue: [NSDate date]     forKey: @"created"];
+
+        NSError *error;
+        if (![managedObjectContext save: &error]) {
+            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"addedtoqueue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
         [alert show];
         [alert release];
     } else {
@@ -107,16 +123,9 @@
         [self.view.window addSubview:HUD];
         HUD.delegate = self;
         [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject:self animated:YES];
-        
     }
 }
 
-- (void)uploadCallback: (id)data {
-    [self.navigationController popViewControllerAnimated:YES];
-	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
-	HUD.mode = MBProgressHUDModeCustomView;
-	HUD.labelText = NSLocalizedString(@"completed", @"Completed");
-}
 
 #pragma mark -
 #pragma mark UIAlertView delegate method
@@ -127,28 +136,28 @@
         NSFileManager *fileManager = [NSFileManager defaultManager];
         [fileManager removeItemAtPath:filePath error:nil];
     } else {
-        NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-        NSLog(@"%@", [managedObjectContext hasChanges]);
-        if (![managedObjectContext save: nil]) {
-        }
-        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
-        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
-        [formatter release];
-        [job setValue: @"MoodleMedia"    forKey: @"target"];
-        [job setValue: @"upload"         forKey: @"action"];
-        [job setValue: stringFromDate    forKey: @"desc"];
-        [job setValue: filePath          forKey: @"data"];
-        [job setValue: @"path"           forKey: @"dataformat"];
-        [job setValue: @"undone"         forKey: @"status"];
-        [job setValue: _appDelegate.site forKey: @"site"];
-        [job setValue: [NSDate date]     forKey: @"created"];
-
-        NSError *error;
-        if (![managedObjectContext save: &error]) {
-            NSLog(@"Error saving entity: %@", [error localizedDescription]);
-        }
+//        NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+//        NSLog(@"%@", [managedObjectContext hasChanges]);
+//        if (![managedObjectContext save: nil]) {
+//        }
+//        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+//        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+//        [formatter release];
+//        [job setValue: @"MoodleMedia"    forKey: @"target"];
+//        [job setValue: @"upload"         forKey: @"action"];
+//        [job setValue: stringFromDate    forKey: @"desc"];
+//        [job setValue: filePath          forKey: @"data"];
+//        [job setValue: @"path"           forKey: @"dataformat"];
+//        [job setValue: @"undone"         forKey: @"status"];
+//        [job setValue: _appDelegate.site forKey: @"site"];
+//        [job setValue: [NSDate date]     forKey: @"created"];
+//
+//        NSError *error;
+//        if (![managedObjectContext save: &error]) {
+//            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+//        }
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

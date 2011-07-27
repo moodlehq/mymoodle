@@ -12,6 +12,8 @@
 #define PHOTO_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Photo"]
 #define VIDEO_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Video"]
 
+#define OFFLINE_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Offline"]
+
 #define UIColorFromRGB(rgbValue) [UIColor \
 colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \

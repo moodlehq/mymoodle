@@ -17,12 +17,14 @@
 -(NSString *)getFilepath {
     return filePath;
 }
+
 - (void)uploadCallback: (id)data {
-//    [self.navigationController popViewControllerAnimated:YES];
+    // update HUD text
 	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
 	HUD.mode = MBProgressHUDModeCustomView;
 	HUD.labelText = @"Completed";
 }
+
 //this is an Apple function to detect if AAC is enabled
 //Source: http://developer.apple.com/library/ios/#qa/qa1663/_index.html
 Boolean IsAACHardwareEncoderAvailable(void)
@@ -66,10 +68,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-
-    // Release any cached data, images, etc that aren't in use.
 }
 
 #pragma mark - View lifecycle
@@ -134,17 +133,19 @@ Boolean IsAACHardwareEncoderAvailable(void)
 }
 
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-//- (void)viewDidLoad
-//{
-//   [super viewDidLoad];
-//}
+- (void)viewDidLoad
+{
+   [super viewDidLoad];
+}
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 
@@ -220,16 +221,16 @@ Boolean IsAACHardwareEncoderAvailable(void)
     MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
     imagePicker.delegate = self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    NSString *device = [[UIDevice currentDevice] model];
-    if ([device rangeOfString:@"iPad"].location == NSNotFound) {
-        [self presentModalViewController:imagePicker animated:YES];
-    } else {
-        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:imagePicker] ;
-        [popover presentPopoverFromRect:CGRectMake(0, 0, 0.0, 0.0) 
-                                 inView:self.view
-               permittedArrowDirections:UIPopoverArrowDirectionAny
-                               animated:YES];
-    }
+    [self presentModalViewController:imagePicker animated:YES];
+//    NSString *device = [[UIDevice currentDevice] model];
+//    if ([device rangeOfString:@"iPad"].location == NSNotFound) {
+//    } else {
+//        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:imagePicker] ;
+//        [popover presentPopoverFromRect:CGRectMake(0, 0, 0.0, 0.0) 
+//                                 inView:self.view
+//               permittedArrowDirections:UIPopoverArrowDirectionAny
+//                               animated:YES];
+//    }
     [imagePicker release];
 }
 
@@ -254,14 +255,44 @@ Boolean IsAACHardwareEncoderAvailable(void)
 }
 
 - (void)uploadAction {
-
-    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-    HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
-    [self.view.window addSubview:HUD];
-    // Regiser for HUD callbacks so we can remove it from the window at the right time
-    HUD.delegate = self;
-    // Show the HUD while the provided method executes in a new thread
-    [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject: self animated:YES];
+    if (appDelegate.netStatus == NotReachable) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+        
+        NSString *offlineFile = [NSString stringWithFormat:@"%@/%@", OFFLINE_FOLDER, fileName];
+        [fileManager moveItemAtPath: filePath toPath:offlineFile error:nil];
+        
+        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat: @"MM-dd HH:mm:ss"];
+        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+        [formatter release];
+        [job setValue: @"TaskHandler"    forKey: @"target"];
+        [job setValue: @"upload"         forKey: @"action"];
+        [job setValue: [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"audio", nil), stringFromDate] forKey: @"desc"];
+        [job setValue: offlineFile       forKey: @"data"];
+        [job setValue: @"path"           forKey: @"dataformat"];
+        [job setValue: @"undone"         forKey: @"status"];
+        [job setValue: appDelegate.site  forKey: @"site"];
+        [job setValue: [NSDate date]     forKey: @"created"];
+        
+        NSError *error;
+        if (![managedObjectContext save: &error]) {
+            NSLog(@"Error saving entity: %@", [error localizedDescription]);
+        }
+        NSLog(@"Network not reachable");
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"addedtoqueue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    } else {
+        // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+        HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+        [self.view.window addSubview:HUD];
+        // Regiser for HUD callbacks so we can remove it from the window at the right time
+        HUD.delegate = self;
+        // Show the HUD while the provided method executes in a new thread
+        [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject: self animated:YES];
+    }
 }
 
 #pragma mark -

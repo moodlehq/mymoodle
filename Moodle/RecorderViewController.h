@@ -18,6 +18,7 @@
 
 @interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate, UIActionSheetDelegate, UIAlertViewDelegate, MoodleUploadDelegate> {
     NSString *recorderFilePath;
+    NSString *recorderFileName;
     AppDelegate *appDelegate;
     AVAudioRecorder *recorder;
     AVAudioPlayer *player;

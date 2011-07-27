@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "MoodleKit.h"
 // view controllers
 #import "RootViewController.h"
 #import "SitesViewController.h"
@@ -36,9 +36,6 @@ static AppDelegate *moodleApp = NULL;
 
 		NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 		[[NSUserDefaults standardUserDefaults] setObject:appVersion forKey:@"moodle_app_version"];
-//        NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"moodle-ios/%@", appVersion], @"UserAgent", nil];
-//        [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
-//        [dictionary release];
     }
 
     return moodleApp;
@@ -55,14 +52,12 @@ static AppDelegate *moodleApp = NULL;
 
 
 - (void) resetSite: (id)object {
-    NSLog(@"reset site!!!!!");
+    NSLog(@"Resetting active site");
     self.site = nil;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    MLog(@"Moodle app didFinishLaunchingWithOptions");
-
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     NSManagedObjectContext *context = [self managedObjectContext];
@@ -129,8 +124,18 @@ static AppDelegate *moodleApp = NULL;
             NSLog(@"Folder created");
         }
     }
+
+    if(![NSFm fileExistsAtPath: OFFLINE_FOLDER isDirectory:&isDir]) {
+        if (![NSFm createDirectoryAtPath: OFFLINE_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
+            NSLog(@"Error: Create folder failed");
+        } else {
+            NSLog(@"Folder created");
+        }
+    } 
     //Set a method to be called when a notification is sent.
-    Reachability *reachability = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];
+    NSURL *url = [NSURL URLWithString: [self.site valueForKey: @"url"]];
+    NSLog(@"target host: %@", url.host);
+    Reachability *reachability = [[Reachability reachabilityWithHostName: url.host] retain];
     [reachability startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(resetSite:) name: kResetSite object: nil];
@@ -310,7 +315,17 @@ static AppDelegate *moodleApp = NULL;
 	Reachability* curReach = [note object];
 	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
     netStatus = [curReach currentReachabilityStatus];
-    NSLog(@"Connection status changed: %d", netStatus);
-    NSLog(@"NotReachable: %d  ReachableViaWWAN: %d  ReachableViaWiFi: %d", NotReachable, ReachableViaWWAN, ReachableViaWiFi);
+    switch (netStatus) {
+        case NotReachable:
+            NSLog(@"Network not reachable");
+        case ReachableViaWWAN:
+            NSLog(@"Network via WWAN");
+        case ReachableViaWiFi:
+            NSLog(@"Network via WiFi");
+            break;
+            
+        default:
+            break;
+    }
 }
 @end

@@ -19,6 +19,7 @@
 	HUD.mode = MBProgressHUDModeCustomView;
 	HUD.labelText = @"Completed";
 }
+
 - (void)toggleRecordButton {
     if (recording) {
         buttonReplay.enabled = NO;
@@ -76,19 +77,16 @@
 
     buttonRecord = [UIButton buttonWithType:UIButtonTypeCustom];
     [self toggleRecordButton];
-//    [buttonRecord settit
     [buttonRecord.titleLabel setFont:[UIFont boldSystemFontOfSize:28]];
     [buttonRecord.titleLabel setTextAlignment:UITextAlignmentCenter];
     [buttonRecord setFrame:CGRectMake((320-225)/2, 280, 225, 73)];
     [buttonRecord addTarget:self action:@selector(startRecording) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonRecord];
 
-//    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action: @selector(replayAudio)];
     buttonReplay = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"replay", @"Replay") style:UIBarButtonItemStylePlain target:self action:@selector(replayAudio:)];
     buttonReplay.tag = 2;
     buttonReplay.enabled = NO;
 
-//    buttonUpload = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button_upload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     buttonUpload = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"send", @"Send") style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     buttonUpload.tag = 3;
     buttonUpload.enabled = NO;
@@ -117,26 +115,6 @@
                       buttonUpload,
                       nil];
     [self.view addSubview:_toolbar];
-}
-
-
-- (void)uploadAudio
-{
-    NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
-    NSString *token = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteTokenKey];
-    NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/webservice/upload.php", host];
-
-    NSURL *url = [NSURL URLWithString:uploadurl];
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-    [request addPostValue:token forKey:@"token"];
-    [request setFile:recorderFilePath forKey:@"thefile"];
-    [request startSynchronous];
-
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSError *err;
-    [fm removeItemAtPath:recorderFilePath error:&err];
-
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)onTimer: (NSTimer *)theTimer {
@@ -185,8 +163,10 @@
         // Create a new dated file
         NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
         NSString *caldate = [now description];
-        recorderFilePath = [[NSString stringWithFormat:@"%@/%@.mp4", AUDIO_FOLDER, caldate] retain];
-        NSLog(@"saving path %@", recorderFilePath);
+        recorderFileName = [[NSString stringWithFormat: @"%@.mp4", caldate] retain];
+        recorderFilePath = [[NSString stringWithFormat:@"%@/%@", AUDIO_FOLDER, recorderFileName] retain];
+        NSLog(@"Filename: %@", recorderFileName);
+        NSLog(@"Filepath: %@", recorderFilePath);
 
         NSURL *url = [NSURL fileURLWithPath: recorderFilePath];
         err = nil;
@@ -280,9 +260,9 @@
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDictionary *fileAttributes = [fm attributesOfItemAtPath: recorderFilePath error:nil];
     NSString *filesize = [self stringFromFileSize:[[fileAttributes valueForKey:NSFileSize] intValue]];
-    NSString *title = [NSString stringWithFormat:NSLocalizedString(@"uploadthisfile", @"Are you sure to upload this file sized:"), filesize];
+    NSString *title = [NSString stringWithFormat: NSLocalizedString(@"uploadthisfile", nil), filesize];
 
-	UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: title delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") destructiveButtonTitle:NSLocalizedString(@"upload", @"Upload") otherButtonTitles: nil];
+	UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: title delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:NSLocalizedString(@"upload", nil) otherButtonTitles: nil];
 	popupQuery.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 	[popupQuery showInView:self.view];
 	[popupQuery release];
@@ -291,17 +271,21 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 0) {
         if (appDelegate.netStatus == NotReachable) {
+            NSFileManager *fileManager = [NSFileManager defaultManager];
             NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+            
+            NSString *offlineFile = [NSString stringWithFormat:@"%@/%@", OFFLINE_FOLDER, recorderFileName];
+            [fileManager moveItemAtPath: recorderFilePath toPath:offlineFile error:nil];
 
             NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+            [formatter setDateFormat: @"MM-dd HH:mm:ss"];
             NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
             [formatter release];
-            [job setValue: @"MoodleMedia"    forKey: @"target"];
+            [job setValue: @"TaskHandler"    forKey: @"target"];
             [job setValue: @"upload"         forKey: @"action"];
-            [job setValue: stringFromDate    forKey: @"desc"];
-            [job setValue: recorderFilePath  forKey: @"data"];
+            [job setValue: [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"audio", nil), stringFromDate] forKey: @"desc"];
+            [job setValue: offlineFile       forKey: @"data"];
             [job setValue: @"path"           forKey: @"dataformat"];
             [job setValue: @"undone"         forKey: @"status"];
             [job setValue: appDelegate.site  forKey: @"site"];
@@ -312,7 +296,7 @@
                 NSLog(@"Error saving entity: %@", [error localizedDescription]);
             }
             NSLog(@"Network not reachable");
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"networkerrormsg", @"Network not reachable") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"addedtoqueue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
             [alert show];
             [alert release];
         } else {
@@ -324,7 +308,7 @@
             // Regiser for HUD callbacks so we can remove it from the window at the right time
             HUD.delegate = self;
             // Show the HUD while the provided method executes in a new thread
-            [HUD showWhileExecuting:@selector(uploadAudio) onTarget:self withObject:nil animated:YES];
+            [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject:self animated:YES];
         }
 
 	} else if (buttonIndex == 1) {
