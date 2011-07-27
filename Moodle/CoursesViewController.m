@@ -130,7 +130,7 @@
     if([Course countWithContext:managedObjectContext site:appDelegate.site] == 0) {
         if (appDelegate.netStatus == NotReachable) {
             NSLog(@"Network not reachable");
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable, do you want to put this file in queen?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"networkerrormsg", @"Network not reachable") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
             [alert show];
             [alert release];
         } else {
@@ -138,7 +138,7 @@
             HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
             [self.view.window addSubview:HUD];
             HUD.delegate = self;
-            HUD.labelText = @"Loading";
+            HUD.labelText = NSLocalizedString(@"loading", @"Loading");
             [HUD showWhileExecuting:@selector(updateCourses) onTarget:self withObject:nil animated:YES];
         }
     }
@@ -234,7 +234,7 @@
 {
     NSManagedObject *selectedCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
     participantListViewController.course = selectedCourse;
-    NSString *participantListViewTitle = NSLocalizedString(@"participants", @"Participants");
+    NSString *participantListViewTitle = [selectedCourse valueForKey:@"shortname"];
     participantListViewController.title = participantListViewTitle;
     [self.navigationController pushViewController: participantListViewController animated:YES];
 }

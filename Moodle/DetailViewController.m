@@ -106,7 +106,7 @@
     ABAddressBookSave(addressBook, nil);
     CFRelease(person);
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Contact" message: NSLocalizedString(@"contactadd", @"prompt user that contact has been added") delegate: self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles: nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"contact", @"Contact") message: NSLocalizedString(@"contactadd", @"prompt user that contact has been added") delegate: self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles: nil];
     [alert show];
     [alert release];
 }
@@ -199,7 +199,7 @@
             }
             NSDictionary *msg = [wsinfo lastObject];
             if ([msg valueForKey:@"errormessage"]) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: @"cancel" otherButtonTitles: nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles: nil];
                 [alert show];
                 [alert release];
             }
@@ -244,7 +244,7 @@
         } else {
             @try {
                 wsinfo = [client invoke: @"moodle_notes_create_notes" withParams: (NSArray *)params];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Note added" delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles: nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"noteadded", @"Note added") delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles: nil];
                 [alert show];
                 [alert release];
             }
@@ -255,7 +255,7 @@
             }
             NSDictionary *msg = [wsinfo lastObject];
             if ([msg valueForKey:@"errormessage"]) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: @"cancel" otherButtonTitles: nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle: NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles: nil];
                 [alert show];
                 [alert release];
             }

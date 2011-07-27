@@ -94,7 +94,7 @@
         }
     }
     @catch (NSException *exception) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"Continue") otherButtonTitles: nil];
         [alert show];
         [alert release];
     }
@@ -168,7 +168,7 @@
     [super viewDidAppear:animated];
     if([Participant countWithContext:managedObjectContext course:course] == 0) {
         if (appDelegate.netStatus == NotReachable) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable." delegate:self cancelButtonTitle:@"No" otherButtonTitles: nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"networkerrormsg", @"Network not reachable") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles: nil];
             [alert show];
             [alert release];
         } else {
@@ -176,7 +176,7 @@
             HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
             [self.view.window addSubview:HUD];
             HUD.delegate = self;
-            HUD.labelText = @"Loading";
+            HUD.labelText = NSLocalizedString(@"loading", @"Loading");
             [HUD showWhileExecuting:@selector(updateParticipants) onTarget:self withObject:nil animated:YES];
         }
     }
@@ -232,7 +232,7 @@
     Participant *selectedParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
     detailViewController = [[DetailViewController alloc] initWithStyle:UITableViewStyleGrouped];
     detailViewController.participant = selectedParticipant;
-    detailViewController.title = [selectedParticipant valueForKey:@"fullname"];
+    detailViewController.title = NSLocalizedString(@"details", @"Details");
     detailViewController.course = course;
     [self.navigationController pushViewController:detailViewController animated:YES];
 }

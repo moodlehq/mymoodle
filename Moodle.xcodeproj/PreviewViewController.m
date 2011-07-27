@@ -28,7 +28,7 @@
     imageView.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - TTToolbarHeight() - self.navigationController.navigationBar.frame.size.height);
     [self.view addSubview: imageView];
 
-    UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle: @"Send to Moodle" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
+    UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"senttosite", @"Send to site") style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                          UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];
@@ -98,7 +98,7 @@
 - (IBAction)uploadPressed: (id)sender {
     if (_appDelegate.netStatus == NotReachable) {
         NSLog(@"Network not reachable");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable, do you want to put this file in queen?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"networkerrormsg", @"Network not reachable") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", "OK") otherButtonTitles:nil];
         [alert show];
         [alert release];
     } else {
@@ -115,7 +115,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
 	HUD.mode = MBProgressHUDModeCustomView;
-	HUD.labelText = @"Completed";
+	HUD.labelText = NSLocalizedString(@"completed", @"Completed");
 }
 
 #pragma mark -

@@ -161,7 +161,7 @@
     }
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
-    [connectedSite setText: [NSString stringWithFormat:@"Connected to: %@", [appDelegate.site valueForKey: @"url"]]];
+    [connectedSite setText: [NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey: @"name"]]];
     [super viewWillAppear:animated];
 }
 

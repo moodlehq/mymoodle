@@ -15,15 +15,15 @@
     if (recording) {
         buttonReplay.enabled = NO;
         buttonUpload.enabled = NO;
-        [buttonRecord setTitle:@"Saving..." forState:UIControlStateHighlighted];
+        [buttonRecord setTitle:NSLocalizedString(@"saving", @"Saving...") forState:UIControlStateHighlighted];
         [buttonRecord setBackgroundImage:[UIImage imageNamed:@"stop_no_icon.png"] forState:UIControlStateNormal];
-        [buttonRecord setTitle:@"Stop" forState:UIControlStateNormal];
+        [buttonRecord setTitle:NSLocalizedString(@"stop", @"Stop") forState:UIControlStateNormal];
     } else {
         buttonReplay.enabled = YES;
         buttonUpload.enabled = YES;
-        [buttonRecord setTitle:@"Initializing..." forState:UIControlStateHighlighted];
+        [buttonRecord setTitle:NSLocalizedString(@"initializing", @"Initializing...") forState:UIControlStateHighlighted];
         [buttonRecord setBackgroundImage:[UIImage imageNamed:@"record_no_icon.png"] forState:UIControlStateNormal];
-        [buttonRecord setTitle:@"Record" forState:UIControlStateNormal];
+        [buttonRecord setTitle:NSLocalizedString(@"record", @"Record") forState:UIControlStateNormal];
     }
 }
 
@@ -48,7 +48,7 @@
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 
     UILabel *title = [[UILabel alloc] initWithFrame: CGRectMake(0, 15, 320, 60)];
-    [title setText: @"Record Audio"];
+    [title setText: NSLocalizedString(@"recordaudio", @"Record Audio")];
     [title setBackgroundColor:[UIColor clearColor]];
     [title setTextAlignment:UITextAlignmentCenter];
 //    [title setFont:[UIFont boldSystemFontOfSize:28]];
@@ -76,12 +76,12 @@
     [self.view addSubview:buttonRecord];
     
 //    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action: @selector(replayAudio)];
-    buttonReplay = [[UIBarButtonItem alloc] initWithTitle:@"Replay" style:UIBarButtonItemStylePlain target:self action:@selector(replayAudio:)];
+    buttonReplay = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"replay", @"Replay") style:UIBarButtonItemStylePlain target:self action:@selector(replayAudio:)];
     buttonReplay.tag = 2;
     buttonReplay.enabled = NO;
     
 //    buttonUpload = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button_upload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
-    buttonUpload = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
+    buttonUpload = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"send", @"Send") style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     buttonUpload.tag = 3;
     buttonUpload.enabled = NO;
 
@@ -187,10 +187,10 @@
         if(!recorder){
             NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
             UIAlertView *alert =
-            [[UIAlertView alloc] initWithTitle: @"Warning"
+            [[UIAlertView alloc] initWithTitle: NSLocalizedString(@"warning", @"Warning")
                                        message: [err localizedDescription]
                                       delegate: nil
-                             cancelButtonTitle:@"OK"
+                             cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
                              otherButtonTitles:nil];
             [alert show];
             [alert release];
@@ -206,10 +206,10 @@
         BOOL audioHWAvailable = audioSession.inputIsAvailable;
         if (! audioHWAvailable) {
             UIAlertView *cantRecordAlert =
-            [[UIAlertView alloc] initWithTitle: @"Warning"
-                                       message: @"Audio input hardware not available"
+            [[UIAlertView alloc] initWithTitle: NSLocalizedString(@"warning", @"Warning")
+                                       message: NSLocalizedString(@"audionotavailable", @"Audio input hardware not available")
                                       delegate: nil
-                             cancelButtonTitle:@"OK"
+                             cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
                              otherButtonTitles:nil];
             [cantRecordAlert show];
             [cantRecordAlert release];
@@ -272,9 +272,9 @@
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDictionary *fileAttributes = [fm attributesOfItemAtPath: recorderFilePath error:nil];
     NSString *filesize = [self stringFromFileSize:[[fileAttributes valueForKey:NSFileSize] intValue]];
-    NSString *title = [NSString stringWithFormat:@"Are you sure to upload this file sized: %@", filesize];
+    NSString *title = [NSString stringWithFormat:NSLocalizedString(@"uploadthisfile", @"Are you sure to upload this file sized:"), filesize];
 
-	UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: title delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Upload" otherButtonTitles: nil];
+	UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: title delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") destructiveButtonTitle:NSLocalizedString(@"upload", @"Upload") otherButtonTitles: nil];
 	popupQuery.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 	[popupQuery showInView:self.view];
 	[popupQuery release];
@@ -284,7 +284,7 @@
 	if (buttonIndex == 0) {
         if (appDelegate.netStatus == NotReachable) {
             NSLog(@"Network not reachable");
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network not reachable" message:@"Network not reachable, do you want to put this file in queen?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"networkerrormsg", @"Network not reachable") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
             [alert show];
             [alert release];
         } else {

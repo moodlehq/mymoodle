@@ -117,7 +117,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [tbutton addTarget:self
                action:@selector(loadCamera:)
      forControlEvents:UIControlEventTouchUpInside];
-    [tbutton setTitle:@"Take a picture or video" forState:UIControlStateNormal];
+    [tbutton setTitle:NSLocalizedString(@"takepicture", @"Take a picture or video") forState:UIControlStateNormal];
     tbutton.frame = CGRectMake(x, 70+90+40, width, height);
     [self.view addSubview:tbutton];
 
@@ -243,7 +243,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
         [self presentModalViewController:imagePicker animated:YES];
         [imagePicker release];
     } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error accessing camera" message:@"Device does not support a camera" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"errorcamera", @"Error accessing camera") message:NSLocalizedString(@"errorcameramsg", @"Device does not support a camera") delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
         [alert release];
     }
