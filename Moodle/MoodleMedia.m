@@ -24,6 +24,7 @@
 
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request addPostValue: token forKey: @"token"];
+    NSLog(@"Uploading file: %@", [sender getFilepath]);
     [request setFile: [sender getFilepath] forKey: @"thefile"];
     [request startSynchronous];
     

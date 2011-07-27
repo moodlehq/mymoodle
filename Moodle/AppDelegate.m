@@ -101,33 +101,33 @@ static AppDelegate *moodleApp = NULL;
     // make all dictionary ready
     NSFileManager *NSFm= [NSFileManager defaultManager]; 
     BOOL isDir=YES;
-    
+    NSError *error;
     if(![NSFm fileExistsAtPath: AUDIO_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath:AUDIO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
-            NSLog(@"Error: Create folder failed");
+        if (![NSFm createDirectoryAtPath:AUDIO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+            NSLog(@"Error: Create folder failed %@", error);
         } else {
             NSLog(@"Folder created");
         }
     }
     if(![NSFm fileExistsAtPath: PHOTO_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath: PHOTO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
-            NSLog(@"Error: Create folder failed");
+        if (![NSFm createDirectoryAtPath: PHOTO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+            NSLog(@"Error: Create folder failed %@", error);
         } else {
             NSLog(@"Folder created");
         }
     }
     
     if(![NSFm fileExistsAtPath: VIDEO_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath: VIDEO_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
-            NSLog(@"Error: Create folder failed");
+        if (![NSFm createDirectoryAtPath: VIDEO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+            NSLog(@"Error: Create folder failed %@", error);
         } else {
             NSLog(@"Folder created");
         }
     }
 
     if(![NSFm fileExistsAtPath: OFFLINE_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath: OFFLINE_FOLDER withIntermediateDirectories:YES attributes:nil error:nil]) {
-            NSLog(@"Error: Create folder failed");
+        if (![NSFm createDirectoryAtPath: OFFLINE_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+            NSLog(@"Error: Create folder failed %@", error);
         } else {
             NSLog(@"Folder created");
         }

@@ -8,11 +8,11 @@
 
 // Handy macroes
 #define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
-#define AUDIO_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Audio"]
-#define PHOTO_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Photo"]
-#define VIDEO_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Video"]
+#define AUDIO_FOLDER [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Audio"]
+#define PHOTO_FOLDER [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Photo"]
+#define VIDEO_FOLDER [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Video"]
 
-#define OFFLINE_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Offline"]
+#define OFFLINE_FOLDER [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Offline"]
 
 #define UIColorFromRGB(rgbValue) [UIColor \
 colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \

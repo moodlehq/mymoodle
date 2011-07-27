@@ -164,18 +164,16 @@ Boolean IsAACHardwareEncoderAvailable(void)
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
     NSString *strtimestamp = [now description];
-    //NSURL *mediaUrl;
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString: @"public.image"]) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        fileName = [NSString stringWithFormat:@"%@.jpg", strtimestamp];
-        filePath = [NSString stringWithFormat:@"%@/%@", PHOTO_FOLDER, fileName];
+        fileName = [[NSString stringWithFormat:@"%@.jpg", strtimestamp] retain];
+        filePath = [[NSString stringWithFormat:@"%@/%@", PHOTO_FOLDER, fileName] retain];
         [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
             // Picked from camera, saving to photo album
-            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+//            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
             [picker dismissModalViewControllerAnimated:YES];
-            // then upload
             [self uploadAction];
         } else {
             [picker dismissModalViewControllerAnimated:YES];
@@ -197,24 +195,23 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [picker dismissModalViewControllerAnimated:YES];
 }
 
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
-{
-//    UIAlertView *alert;
-//
-//    // Unable to save the image
-//    if (error) {
-//        alert = [[UIAlertView alloc] initWithTitle:@"Error"
-//                                           message:@"Unable to save image to Photo Album."
-//                                          delegate:self cancelButtonTitle:@"Ok"
-//                                 otherButtonTitles:nil];
-//    } else { // All is well
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+    UIAlertView *alert;
+
+    // Unable to save the image
+    if (error) {
+        alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                           message:@"Unable to save image to Photo Album."
+                                          delegate:self cancelButtonTitle:@"OK"
+                                 otherButtonTitles:nil];
+    } else { // All is well
 //        alert = [[UIAlertView alloc] initWithTitle:@"Success"
 //                                           message:@"Image saved to Photo Album."
 //                                          delegate:self cancelButtonTitle:@"Ok"
 //                                 otherButtonTitles:nil];
-//    }
-//    [alert show];
-//    [alert release];
+    }
+    [alert show];
+    [alert release];
 }
 
 - (void)loadGallery:(id)sender {
@@ -280,7 +277,6 @@ Boolean IsAACHardwareEncoderAvailable(void)
         if (![managedObjectContext save: &error]) {
             NSLog(@"Error saving entity: %@", [error localizedDescription]);
         }
-        NSLog(@"Network not reachable");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"addedtoqueue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
         [alert show];
         [alert release];
