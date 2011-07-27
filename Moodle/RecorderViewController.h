@@ -14,8 +14,9 @@
 #import <Three20/Three20.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import "MoodleMedia.h"
 
-@interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
+@interface RecorderViewController : TTViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, MBProgressHUDDelegate, UIActionSheetDelegate, UIAlertViewDelegate, MoodleUploadDelegate> {
     NSString *recorderFilePath;
     AppDelegate *appDelegate;
     AVAudioRecorder *recorder;

@@ -11,6 +11,14 @@
 
 @implementation RecorderViewController
 
+-(NSString *)getFilepath {
+    return recorderFilePath;
+}
+- (void)uploadCallback: (id)data {
+	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
+	HUD.mode = MBProgressHUDModeCustomView;
+	HUD.labelText = @"Completed";
+}
 - (void)toggleRecordButton {
     if (recording) {
         buttonReplay.enabled = NO;
@@ -39,7 +47,7 @@
 
 - (void)loadView {
     [super loadView];
-    
+
     UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"screen_bg.png"]];
     appBg.frame = CGRectMake(0, 0, 320, 416);
     [self.view addSubview:appBg];
@@ -74,12 +82,12 @@
     [buttonRecord setFrame:CGRectMake((320-225)/2, 280, 225, 73)];
     [buttonRecord addTarget:self action:@selector(startRecording) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonRecord];
-    
+
 //    buttonReplay = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action: @selector(replayAudio)];
     buttonReplay = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"replay", @"Replay") style:UIBarButtonItemStylePlain target:self action:@selector(replayAudio:)];
     buttonReplay.tag = 2;
     buttonReplay.enabled = NO;
-    
+
 //    buttonUpload = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"button_upload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     buttonUpload = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"send", @"Send") style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     buttonUpload.tag = 3;
@@ -90,8 +98,8 @@
 
 
     _toolbar = [[[UIToolbar alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 40, self.view.frame.size.width-20, 33)] autorelease];
-    
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:_toolbar.bounds 
+
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:_toolbar.bounds
                                                    byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight
                                                          cornerRadii:CGSizeMake(10.0, 10.0)];
     // Create the shape layer and set its path
@@ -127,14 +135,14 @@
     NSFileManager *fm = [NSFileManager defaultManager];
     NSError *err;
     [fm removeItemAtPath:recorderFilePath error:&err];
-    
+
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)onTimer: (NSTimer *)theTimer {
 
     [recorder updateMeters];
-    
+
     float power =  [recorder peakPowerForChannel:0];
 
     int  level = (int)((power+40)/2);
@@ -264,7 +272,7 @@
 	if (floatSize<1023)
 		return([NSString stringWithFormat:@"%1.1f MB",floatSize]);
 	floatSize = floatSize / 1024;
-    
+
 	return([NSString stringWithFormat:@"%1.1f GB",floatSize]);
 }
 
@@ -283,6 +291,26 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 0) {
         if (appDelegate.netStatus == NotReachable) {
+            NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+
+            NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+            NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+            [formatter release];
+            [job setValue: @"MoodleMedia"    forKey: @"target"];
+            [job setValue: @"upload"         forKey: @"action"];
+            [job setValue: stringFromDate    forKey: @"desc"];
+            [job setValue: recorderFilePath  forKey: @"data"];
+            [job setValue: @"path"           forKey: @"dataformat"];
+            [job setValue: @"undone"         forKey: @"status"];
+            [job setValue: appDelegate.site  forKey: @"site"];
+            [job setValue: [NSDate date]     forKey: @"created"];
+
+            NSError *error;
+            if (![managedObjectContext save: &error]) {
+                NSLog(@"Error saving entity: %@", [error localizedDescription]);
+            }
             NSLog(@"Network not reachable");
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"networkerrormsg", @"Network not reachable") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
             [alert show];
@@ -292,7 +320,7 @@
             // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
             HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
             [self.view.window addSubview:HUD];
-            
+
             // Regiser for HUD callbacks so we can remove it from the window at the right time
             HUD.delegate = self;
             // Show the HUD while the provided method executes in a new thread
@@ -302,40 +330,6 @@
 	} else if (buttonIndex == 1) {
         // cancel
 	}
-}
-#pragma mark -
-#pragma mark UIAlertView delegate method
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
-    if (buttonIndex == [alertView cancelButtonIndex]) {
-        // do nothing
-        // NSFileManager *fileManager = [NSFileManager defaultManager];
-        // [fileManager removeItemAtPath:filePath error:nil];
-    } else {
-        NSLog(@"Put file in queen");
-        NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-        if (![managedObjectContext save: nil]) {
-        }
-        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
-        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
-        [formatter release];
-        [job setValue: @"MoodleMedia"    forKey: @"target"];
-        [job setValue: @"upload"         forKey: @"action"];
-        [job setValue: stringFromDate    forKey: @"desc"];
-        [job setValue: recorderFilePath  forKey: @"data"];
-        [job setValue: @"path"           forKey: @"dataformat"];
-        [job setValue: @"undone"         forKey: @"status"];
-        [job setValue: appDelegate.site  forKey: @"site"];
-        [job setValue: [NSDate date]     forKey: @"created"];
-        
-        NSError *error;
-        if (![managedObjectContext save: &error]) {
-            NSLog(@"Error saving entity: %@", [error localizedDescription]);
-        }
-    }
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -
@@ -360,13 +354,13 @@
     [HUD release];
 	HUD = nil;
 }
-         
+
 #pragma mark - View lifecycle
  - (void)viewDidLoad
 {
     [super viewDidLoad];
 }
- 
+
  - (void)viewDidUnload
 {
     buttonReplay = nil;
@@ -380,7 +374,7 @@
     [buttonUpload release];
     [super dealloc];
 }
- 
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -393,7 +387,7 @@
     [super viewWillDisappear:animated];
     [self cleanupFiles];
 }
- 
+
  - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return NO;

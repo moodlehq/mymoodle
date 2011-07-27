@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface MoodleSite : NSManagedObject {
     
 }
