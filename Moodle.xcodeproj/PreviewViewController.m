@@ -55,7 +55,13 @@
     [self.view addSubview:_toolbar];
     [buttonUpload release];
     [_toolbar release];
+    self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
+                                               initWithTitle:NSLocalizedString(@"back", nil) style:UIBarButtonItemStyleBordered
+                                               target:self action:@selector(backButtonPressed)] autorelease];
+}
 
+- (void)backButtonPressed {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)dealloc
@@ -84,11 +90,13 @@
     fileName = nil;
     filePath = nil;
 }
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     _appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     imageView.image = [UIImage imageWithContentsOfFile:filePath];
 }
+
 - (IBAction)uploadPressed: (id)sender {
     if (_appDelegate.netStatus == NotReachable) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
