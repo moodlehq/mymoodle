@@ -29,7 +29,18 @@
 }
 
 - (void)actionSheet {
-    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle: NSLocalizedString(@"Accounts", "all accounts") otherButtonTitles: NSLocalizedString(@"about", "about this app"), nil];
+    BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey: kAutoSync];
+    NSLog(@"autosync: %d", autosync);
+    NSString *autoSyncButton;
+    if (autosync == NO) {
+        autoSyncButton = NSLocalizedString(@"turnonautosync", nil);
+    } else {
+        autoSyncButton = NSLocalizedString(@"turnoffautosync", nil);
+    }
+    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self
+                                                   cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                                                   destructiveButtonTitle: NSLocalizedString(@"Accounts", "all accounts")
+                                                   otherButtonTitles: autoSyncButton, nil];
 	popupQuery.actionSheetStyle = UIActionSheetStyleDefault;
 	[popupQuery showInView:self.view];
 	[popupQuery release];
@@ -40,8 +51,15 @@
 	if (buttonIndex == 0) {
         [self displaySettingsView];
 	} else if (buttonIndex == 1) {
-        // cancel
-	}
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        BOOL autosync = [defaults boolForKey: kAutoSync];
+        if (autosync) {
+            [defaults setBool: NO forKey: kAutoSync];
+        } else {
+            [defaults setBool: YES forKey: kAutoSync];
+        }
+        [defaults synchronize];
+    }
 }
 
 - (void)viewDidLoad
@@ -68,7 +86,6 @@
     [appBg release];
 
     // Header
-//    UIImageView *header = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"header.png"]];
     UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake((appRect.size.width-240)/2, 40, 240, 34)];
     [header setText:@"Moodle"];
     [header setTextColor:UIColorFromRGB(ColorToolbar)];
@@ -131,7 +148,7 @@
     btnSync = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"sync.png"] style:UIBarButtonItemStylePlain target:self action:@selector(launchNotification)];
     btnSync.tag = 1;
 
-    UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(actionSheet)];
+    UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
     btnSettings.tag = 2;
     
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
@@ -153,12 +170,6 @@
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
-    NSInteger count = [MoodleJob countWithContext:managedObjectContext];
-    if (count < 1) {
-        [btnSync setEnabled:NO];
-    } else {
-        [btnSync setEnabled:YES];
-    }
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
     [connectedSite setText: [NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey: @"name"]]];
@@ -224,7 +235,7 @@
 //	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
     doneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [doneButton setFrame:CGRectMake(320-80-20, 20, 100, 30)];
-    [doneButton setTitle:@"End editing" forState:UIControlStateNormal];
+    [doneButton setTitle: @"End editing" forState:UIControlStateNormal];
     [doneButton addTarget:launcher action:@selector(endEditing) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:doneButton];
 }

@@ -17,6 +17,7 @@
 #import "SyncViewController.h"
 #import "RecorderViewController.h"
 #import "CoursesViewController.h"
+#import "TaskHandler.h"
 
 @implementation AppDelegate
 
@@ -135,9 +136,12 @@ static AppDelegate *moodleApp = NULL;
     //Set a method to be called when a notification is sent.
     NSURL *url = [NSURL URLWithString: [self.site valueForKey: @"url"]];
     NSLog(@"target host: %@", url.host);
-    Reachability *reachability = [[Reachability reachabilityWithHostName: url.host] retain];
+//    Reachability *reachability = [[Reachability reachabilityWithHostName: url.host] retain];
+    Reachability *reachability = [[Reachability reachabilityWithHostName: @"apple.com"] retain];
+
     [reachability startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: [TaskHandler class] selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(resetSite:) name: kResetSite object: nil];
     return YES;
 }
@@ -318,12 +322,13 @@ static AppDelegate *moodleApp = NULL;
     switch (netStatus) {
         case NotReachable:
             NSLog(@"Network not reachable");
+            break;
         case ReachableViaWWAN:
             NSLog(@"Network via WWAN");
+            break;
         case ReachableViaWiFi:
             NSLog(@"Network via WiFi");
             break;
-            
         default:
             break;
     }

@@ -13,6 +13,8 @@
     NSFetchedResultsController *_fetchedResultsController;
     NSManagedObjectContext *context;
     AppDelegate *appDelegate;
+    UIView *tableviewFooter;
+    UISwitch *switchAuto;
 }
 - (void)updateTableView: (NSManagedObject *)job;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;

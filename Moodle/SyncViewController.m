@@ -62,6 +62,7 @@
 - (void)dealloc
 {
     [self.fetchedResultsController release];
+    [switchAuto release];
     [super dealloc];
 }
 
@@ -81,6 +82,39 @@
     self.title = NSLocalizedString(@"taskqueue", @"Task queue");
     context = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    tableviewFooter = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 120)];
+    tableviewFooter.userInteractionEnabled = YES;
+    
+    UILabel *labelAuto = [[UILabel alloc] initWithFrame:CGRectMake(100, 12, 270, 20)];
+    [labelAuto setText: @"Send immediately when online"];
+    [labelAuto setFont: [UIFont systemFontOfSize: 14]];
+    
+    switchAuto = [[UISwitch alloc] init];
+    [switchAuto setFrame:CGRectMake(5, 10, 50, 10)];
+    [switchAuto setOn:YES];
+    switchAuto.transform = CGAffineTransformMakeScale(0.85, 0.85);
+    [switchAuto addTarget:self action:@selector(changeAutoSync:) forControlEvents:UIControlEventTouchUpInside];
+    
+
+    [tableviewFooter addSubview:switchAuto];
+    [tableviewFooter addSubview:labelAuto];
+    [labelAuto release];
+    [self.tableView setTableFooterView:tableviewFooter];
+    [tableviewFooter release];
+}
+
+- (void)changeAutoSync: (UISwitch *)sender {
+    NSLog(@"touched %d", sender.on);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool: sender.on forKey: kAutoSync];
+    [defaults synchronize];
+    if (sender.on) {
+        self.navigationItem.rightBarButtonItem = nil;
+    } else {
+        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
+                                                   initWithTitle:NSLocalizedString(@"sendnow", @"Send all") style:UIBarButtonItemStyleBordered
+                                                   target:self action:@selector(syncPressed)] autorelease];
+    }
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -94,13 +128,6 @@
     if (![[self fetchedResultsController] performFetch: &error]) {
         NSLog(@"unresolved error %@, %@", error, [error userInfo]);
     }
-
-    self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
-                                              initWithTitle:NSLocalizedString(@"cancel", @"Cancel") style:UIBarButtonItemStyleBordered
-                                              target:self action:@selector(dismiss)] autorelease];
-    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
-                                              initWithTitle:NSLocalizedString(@"sendall", @"Send all") style:UIBarButtonItemStyleBordered
-                                              target:self action:@selector(syncPressed)] autorelease];
 }
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -109,6 +136,18 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
+                                              initWithTitle:NSLocalizedString(@"cancel", @"Cancel") style:UIBarButtonItemStyleBordered
+                                              target:self action:@selector(dismiss)] autorelease];
+ 
+    BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey: kAutoSync];
+    [switchAuto setOn:autosync];
+    if (autosync == NO) {
+        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
+                                                   initWithTitle:NSLocalizedString(@"sendnow", @"Send all") style:UIBarButtonItemStyleBordered
+                                                   target:self action:@selector(syncPressed)] autorelease];
+    }
 //    if (appDelegate.netStatus == NotReachable) {
 //        [self.navigationItem.rightBarButtonItem setEnabled:NO];
 //    } else {
@@ -120,6 +159,7 @@
 {
     [super viewDidUnload];
     self.fetchedResultsController = nil;
+    switchAuto = nil;
 }
 
 #pragma mark -

@@ -9,6 +9,8 @@
 #import "TaskHandler.h"
 #import "WSClient.h"
 #import "MoodleKit.h"
+#import "MoodleJob.h"
+#import "AppDelegate.h"
 
 @implementation TaskHandler
 
@@ -20,6 +22,68 @@
     }
     
     return self;
+}
+
+//Called by Reachability whenever status changes.
++ (void) reachabilityChanged: (NSNotification* )note
+{
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
+    NSInteger count = [MoodleJob countWithContext: managedObjectContext];
+    if (count < 1) {
+        return;
+    }
+    BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey: kAutoSync];
+    if (!autosync) {
+        return;
+    }
+	Reachability* curReach = [note object];
+	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+    NetworkStatus netStatus = [curReach currentReachabilityStatus];
+    switch (netStatus) {
+        case NotReachable:
+            NSLog(@"Network not reachable");
+            break;
+        case ReachableViaWWAN:
+        case ReachableViaWiFi:
+            // available
+            [NSThread detachNewThreadSelector: @selector(sync) toTarget: [TaskHandler class] withObject: nil];
+            break;
+        default:
+            break;
+    }
+}
++ (void)sync {
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName: @"Job" inManagedObjectContext:managedObjectContext];
+    [request setEntity:entity];
+    [request setFetchBatchSize: 10];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+    [request setPredicate: predicate];
+    
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc] 
+                              initWithKey:@"created" ascending:NO];
+    [request setSortDescriptors:[NSArray arrayWithObject:sort]];
+    NSError *error = nil;
+    NSArray *jobs = [managedObjectContext executeFetchRequest:request error:&error];
+    for (NSManagedObject *job in jobs) {
+        NSLog(@"processing");
+        id target = NSClassFromString([job valueForKey:@"target"]);
+        SEL method = NSSelectorFromString([NSString stringWithFormat:@"%@:format:", [job valueForKey:@"action"]]);
+        @try {
+            [target performSelector: method withObject: [job valueForKey:@"data"] withObject:[job valueForKey:@"dataformat"]];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+        [managedObjectContext deleteObject:job];
+        [managedObjectContext save:nil];
+    }
+    
+    [pool drain];
 }
 
 

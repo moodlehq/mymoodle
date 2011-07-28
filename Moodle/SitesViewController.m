@@ -256,10 +256,6 @@
                                          nil];
 
             [defaults registerDefaults: appDefaults];
-            //TEST FOR USER DEFAULT
-            NSLog(@"AFTER INSERT - the default site url is: %@", [defaults objectForKey:kSelectedSiteUrlKey]);
-            NSLog(@"AFTER INSERT - the default site token is: %@", [defaults objectForKey:kSelectedSiteTokenKey]);
-            NSLog(@"AFTER INSERT - the default site user id is: %@", [defaults objectForKey:kSelectedUserIdKey]);
 
             //remove the previous checkmark
             if (lastCheckMark != nil) {

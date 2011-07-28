@@ -29,6 +29,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 // NSUserDefaults keys
 #define kSelectedOfflineModeKey  @"Offline Mode"
+#define kAutoSync                @"AutoSync"
 #define kSelectedSiteUrlKey      @"Selected Site Url"
 #define kSelectedSiteTokenKey    @"Selected Site Token"
 #define kSelectedSiteNameKey     @"Selected Site Name"
