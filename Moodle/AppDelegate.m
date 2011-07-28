@@ -60,6 +60,11 @@ static AppDelegate *moodleApp = NULL;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSNumber *autosync = [NSNumber numberWithInt: 1];
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 autosync, kAutoSync,
+                                 nil];
+    [defaults registerDefaults: appDefaults];
 
     NSManagedObjectContext *context = [self managedObjectContext];
     if (!context) {

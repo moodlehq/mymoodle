@@ -35,6 +35,7 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     [fileManager removeItemAtPath: [sender getFilepath] error:nil];
     [sender uploadCallback:nil];
+    sleep(1);
 }
 
 @end

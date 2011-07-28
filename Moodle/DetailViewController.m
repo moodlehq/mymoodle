@@ -314,28 +314,7 @@
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"details", nil);
-    contactinfo = [[NSMutableArray alloc] init];
-    if ([self.participant valueForKey: @"email"]) {
-        [contactinfo addObject:[self createInfo:@"email" value:[self.participant valueForKey: @"email"]]];
-    }
-    if ([self.participant valueForKey: @"phone1"]) {
-        [contactinfo addObject:[self createInfo:@"phone1" value:[self.participant valueForKey: @"phone1"]]];
-    }
-    if ([self.participant valueForKey: @"phone2"]) {
-        [contactinfo addObject:[self createInfo:@"phone2" value:[self.participant valueForKey: @"phone2"]]];
-    }
-    geoinfo = [[NSMutableArray alloc] init];
-    if ([self.participant valueForKey: @"country"]) {
-        [geoinfo addObject:[self createInfo:@"country" value:[self.participant valueForKey: @"country"]]];
-    }
-    if ([self.participant valueForKey: @"city"]) {
-        [geoinfo addObject:[self createInfo:@"city" value:[self.participant valueForKey: @"city"]]];
-    }
-    if ([self.participant valueForKey: @"address"]) {
-        [geoinfo addObject:[self createInfo:@"address" value:[self.participant valueForKey: @"address"]]];
-    }
-    
-    
+
     UIGestureRecognizer *recognizer;
 	
     /*
@@ -345,8 +324,6 @@
 	recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
 	[self.view addGestureRecognizer:recognizer];
 	[recognizer release];
-    
-
 }
 
 - (void)viewDidUnload
@@ -373,6 +350,28 @@
 
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
+
+    contactinfo = [[NSMutableArray alloc] init];
+    if ([self.participant valueForKey: @"email"]) {
+        [contactinfo addObject:[self createInfo:@"email" value:[self.participant valueForKey: @"email"]]];
+    }
+    if ([self.participant valueForKey: @"phone1"]) {
+        [contactinfo addObject:[self createInfo:@"phone1" value:[self.participant valueForKey: @"phone1"]]];
+    }
+    if ([self.participant valueForKey: @"phone2"]) {
+        [contactinfo addObject:[self createInfo:@"phone2" value:[self.participant valueForKey: @"phone2"]]];
+    }
+    geoinfo = [[NSMutableArray alloc] init];
+    if ([self.participant valueForKey: @"country"]) {
+        [geoinfo addObject:[self createInfo:@"country" value:[self.participant valueForKey: @"country"]]];
+    }
+    if ([self.participant valueForKey: @"city"]) {
+        [geoinfo addObject:[self createInfo:@"city" value:[self.participant valueForKey: @"city"]]];
+    }
+    if ([self.participant valueForKey: @"address"]) {
+        [geoinfo addObject:[self createInfo:@"address" value:[self.participant valueForKey: @"address"]]];
+    }
+
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
@@ -538,6 +537,7 @@
             break;
     }
     if (indexPath.section == 1 || indexPath.section == 2) {
+        // contact and location
         key = [[info allKeys] lastObject];
 
         CGRect labelFrame = CGRectMake(10, 4, 70, 32);

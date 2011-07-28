@@ -160,21 +160,18 @@
 	//  update the last update date
 	[_refreshHeaderView refreshLastUpdatedDate];
 
-
     [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
+    [super viewWillAppear:NO];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = appDelegate.managedObjectContext;
 
     self.title = NSLocalizedString(@"mycourses", @"My courses title");
 
     participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
-    [super viewWillAppear:animated];
-
 }
 
 - (void)viewWillDisappear:(BOOL)animated
