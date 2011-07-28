@@ -558,6 +558,8 @@
     } else if (indexPath.section == 0) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         NSString *desc = [self.participant valueForKey:@"desc"];
+        cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
+        cell.textLabel.numberOfLines = 0;
         cell.textLabel.text = [desc stringByRemovingHTMLTags];
     }
     return cell;
@@ -597,30 +599,5 @@
         // do nothing
         return;
     }
-    if (alertView.tag == ALERT_MSG) {
-//        if (![managedObjectContext save: nil]) {
-//        }
-//        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
-//        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
-//        [formatter release];
-//        [job setValue: @"MoodleMedia"    forKey: @"target"];
-//        [job setValue: @"upload"         forKey: @"action"];
-//        [job setValue: @"mesage content"    forKey: @"desc"];
-//        [job setValue: @"mesage content"          forKey: @"data"];
-//        [job setValue: @"message"           forKey: @"dataformat"];
-//        [job setValue: @"undone"         forKey: @"status"];
-//        [job setValue: appDelegate.site  forKey: @"site"];
-//        [job setValue: [NSDate date]     forKey: @"created"];
-//        
-//        NSError *error;
-//        if (![managedObjectContext save: &error]) {
-//            NSLog(@"Error saving entity: %@", [error localizedDescription]);
-//        }
-    } else if (alertView.tag == ALERT_NOTE) {
-        
-    }
-
 }
 @end
