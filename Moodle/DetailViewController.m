@@ -112,6 +112,7 @@
 }
 
 - (UIViewController*)post: (NSDictionary *)query {
+    NSLog(@"participant: %@", self.participant);
     UIButton *btn = [query objectForKey:@"__target__"];
     NSString *title;
     if (btn.tag == TAG_BUTTON_SEND) {
@@ -206,8 +207,7 @@
         }
         [params release];
     } else if (postControllerType == TAG_BUTTON_NOTE) {
-        
-        NSNumber *userid   = [self.participant valueForKey:@"userid"];
+        NSNumber *userid   = [_participant valueForKey:@"userid"];
         NSDictionary *note = [[NSDictionary alloc] initWithObjectsAndKeys: userid, @"userid", text, @"text", @"text", @"format", [self.course valueForKey:@"id"], @"courseid", @"personal", @"publishstate", nil];
         NSArray *notes = [[NSArray alloc] initWithObjects: note, nil];
         NSArray *paramvalues = [[NSArray alloc] initWithObjects: notes, nil];
@@ -288,8 +288,6 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-
-    // Release any cached data, images, etc that aren't in use.
 }
 
 #pragma mark - View lifecycle
@@ -303,6 +301,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [[TTNavigator navigator].URLMap from:@"tt://post" toViewController:self selector:@selector(post:)];
 }
 
 -(NSDictionary *)createInfo: (NSString *) key value: (NSString *)value {
@@ -314,6 +313,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.title = NSLocalizedString(@"details", nil);
     contactinfo = [[NSMutableArray alloc] init];
     if ([self.participant valueForKey: @"email"]) {
         [contactinfo addObject:[self createInfo:@"email" value:[self.participant valueForKey: @"email"]]];
@@ -347,7 +347,6 @@
 	[recognizer release];
     
 
-    [[TTNavigator navigator].URLMap from:@"tt://post" toViewController:self selector:@selector(post:)];
 }
 
 - (void)viewDidUnload
@@ -355,6 +354,11 @@
     [super viewDidUnload];
     self.participant = nil;
     self.course = nil;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+	[super viewDidDisappear:animated];
     [[TTNavigator navigator].URLMap removeURL:@"tt://post"];
 }
 
@@ -369,7 +373,6 @@
 
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
-
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
@@ -415,19 +418,19 @@
     tableviewFooter.userInteractionEnabled = YES;
     
     UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonSendMsg setTitle: NSLocalizedString(@"sendmessage", @"") forState: UIControlStateNormal];
+    [buttonSendMsg setTitle: NSLocalizedString(@"sendmessage", nil) forState: UIControlStateNormal];
     [buttonSendMsg setFrame:CGRectMake(margin, 0, 320-margin*2, 50)];
     buttonSendMsg.tag = TAG_BUTTON_SEND;
     [buttonSendMsg addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton *buttonAddNote = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonAddNote setTitle: NSLocalizedString(@"addnote", @"") forState: UIControlStateNormal];
+    [buttonAddNote setTitle: NSLocalizedString(@"addnote", nil) forState: UIControlStateNormal];
     [buttonAddNote setFrame:CGRectMake(margin, 60, button_width, 50)];
     buttonAddNote.tag = TAG_BUTTON_NOTE;
     [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
 
     UIButton *buttonAddContact = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonAddContact setTitle: NSLocalizedString(@"addcontact", @"") forState: UIControlStateNormal];
+    [buttonAddContact setTitle: NSLocalizedString(@"addcontact", nil) forState: UIControlStateNormal];
     [buttonAddContact addTarget:self action:@selector(addContact) forControlEvents:UIControlEventTouchUpInside];
     [buttonAddContact setFrame:CGRectMake(self.view.frame.size.width-margin-button_width, 60, button_width, 50)];
     buttonAddContact.tag = TAG_BUTTON_CONTACT;

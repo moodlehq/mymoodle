@@ -232,7 +232,6 @@
     Participant *selectedParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
     detailViewController = [[DetailViewController alloc] initWithStyle:UITableViewStyleGrouped];
     detailViewController.participant = selectedParticipant;
-    detailViewController.title = NSLocalizedString(@"details", @"Details");
     detailViewController.course = course;
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
