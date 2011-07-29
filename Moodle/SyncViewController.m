@@ -324,11 +324,9 @@
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
         }
-        if ([job respondsToSelector:@selector(updateTableView:)]) {
-            [self performSelectorOnMainThread:@selector(updateTableView:)
-                                   withObject: job
-                                waitUntilDone:YES];
-        }
+        [self performSelectorOnMainThread:@selector(updateTableView:)
+                               withObject: job
+                            waitUntilDone:YES];
     }
 
     [pool drain];
