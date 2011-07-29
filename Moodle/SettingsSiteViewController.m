@@ -372,8 +372,8 @@
         self.title = NSLocalizedString(@"addsite", nil);
     }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(dismissKeyboard)];
-    
+                                                                          action:@selector(dismissKeyboard:)];
+    tap.delegate = self;
     [self.view addGestureRecognizer:tap];
 }
 
@@ -439,8 +439,15 @@
     return YES;
 }
 
-- (IBAction)dismissKeyboard
+- (void)dismissKeyboard: (UITapGestureRecognizer *)sender
 {
+    NSLog(@"ta");
     [editingField resignFirstResponder];
 }
+ - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+     if ([touch.view isKindOfClass:[UIButton class]]){
+         return NO;
+     }
+     return YES;
+ }
 @end

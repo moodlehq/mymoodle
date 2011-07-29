@@ -18,7 +18,7 @@
 #define kLabelTag 4096
 
 
-@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate> {
+@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate> {
     AppDelegate *appDelegate;
 
     BOOL newEntry;
