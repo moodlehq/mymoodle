@@ -59,6 +59,17 @@
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
 
     [self.tableView reloadData];
+    
+//    //hide back button if nothing is selected
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    [defaults synchronize];
+//    NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
+//    NSLog(@"Selected site url:");
+//    NSLog(@"%@", defaultSiteUrl);
+//    if (defaultSiteUrl == @"deleted") {
+//        self.navigationItem.hidesBackButton = YES;
+//    }
+    
     [super viewWillAppear:animated];
 }
 

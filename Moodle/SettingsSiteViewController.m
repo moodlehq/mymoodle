@@ -51,6 +51,32 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     //there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
     if (buttonIndex != [actionSheet cancelButtonIndex]) {
+        
+        //delete the user/site default is they were matching the delete site
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
+        if (defaultSiteUrl == [appDelegate.site valueForKey:@"url"]) {
+            NSLog(@"Trying to remove userdefault");
+            [defaults removeObjectForKey:kSelectedSiteUrlKey];
+            [defaults removeObjectForKey:kSelectedSiteNameKey];
+            [defaults removeObjectForKey:kSelectedSiteTokenKey];
+            [defaults removeObjectForKey:kSelectedUserIdKey];
+            
+            NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         @"deleted", kSelectedSiteUrlKey,
+                                         nil, kSelectedSiteNameKey,
+                                         nil, kSelectedSiteTokenKey,
+                                         nil, kSelectedUserIdKey,
+                                         nil];
+            
+            [defaults registerDefaults: appDefaults];
+            [defaults synchronize];
+            
+            NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
+            NSLog(@"Selected site url after deletion:");
+            NSLog(@"%@", defaultSiteUrl);
+        }
+        
         //delete the entry
         [appDelegate.managedObjectContext deleteObject: appDelegate.site];
         NSError *error;
@@ -65,6 +91,7 @@
                 NSLog(@"  %@", [error userInfo]);
             }
         }
+        
         // send notification to appdelete to reset site
         [[NSNotificationCenter defaultCenter] postNotificationName: kResetSite
                                                             object: nil];
