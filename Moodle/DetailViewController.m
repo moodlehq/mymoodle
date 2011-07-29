@@ -113,7 +113,6 @@
 }
 
 - (UIViewController*)post: (NSDictionary *)query {
-    NSLog(@"participant: %@", self.participant);
     UIButton *btn = [query objectForKey:@"__target__"];
     NSString *title;
     if (btn.tag == TAG_BUTTON_SEND) {
@@ -123,12 +122,13 @@
     } else {
         title = @"";
     }
-    
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"text", self, @"delegate", title, @"title", nil];
+
     TTPostController *controller = [[[TTPostController alloc] initWithNavigatorURL: nil query: options] autorelease];
     postControllerType = btn.tag;
-    
+
     controller.originView = btn;
+
     return controller;
 }
 
@@ -280,6 +280,8 @@
 {
     [contactinfo release];
     [geoinfo release];
+    [self.participant release];
+    [self.course release];
     [super dealloc];
 }
 

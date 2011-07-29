@@ -119,6 +119,7 @@
 {
     [__fetchedResultsController release];
     [detailViewController release];
+    [self.course release];
     [super dealloc];
 }
 
