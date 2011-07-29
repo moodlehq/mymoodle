@@ -105,6 +105,7 @@
     ABAddressBookAddRecord(addressBook, person, nil);
     ABAddressBookSave(addressBook, nil);
     CFRelease(person);
+    CFRelease(addressBook);
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"contact", @"Contact") message: NSLocalizedString(@"contactadd", @"prompt user that contact has been added") delegate: self cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles: nil];
     [alert show];
@@ -279,8 +280,6 @@
 {
     [contactinfo release];
     [geoinfo release];
-    [self.participant release];
-    [self.course release];
     [super dealloc];
 }
 
@@ -557,6 +556,7 @@
         [textView setScrollEnabled:NO];
         [cell.contentView addSubview:textView];
         [cell.contentView addSubview:labelView];
+        [labelView release];
         [textView release];
     } else if (indexPath.section == 0) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];

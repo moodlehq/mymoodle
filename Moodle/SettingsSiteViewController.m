@@ -252,11 +252,12 @@
 - (id)initWithNew: (NSString *)new {
 
     if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
-    }
-    if ([new isEqualToString:@"no"]) {
-        newEntry = NO;
-    } else {
-        newEntry = YES;
+        
+        if ([new isEqualToString:@"no"]) {
+            newEntry = NO;
+        } else {
+            newEntry = YES;
+        }
     }
 
     return self;
@@ -339,6 +340,7 @@
         [btnDelete addTarget:self action:@selector(deleteSite) forControlEvents:UIControlEventTouchUpInside];
         [buttonView addSubview:btnDelete];
         self.tableView.tableFooterView = buttonView;
+        [buttonView release];
     }
 }
 

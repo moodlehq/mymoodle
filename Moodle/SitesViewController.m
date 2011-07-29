@@ -24,7 +24,6 @@
 
 #pragma mark - View lifecycle
 - (void)dealloc {
-    [self.fetchedResultsController release];
     [super dealloc];
 }
 

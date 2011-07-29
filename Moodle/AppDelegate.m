@@ -29,7 +29,6 @@ static AppDelegate *moodleApp = NULL;
 @synthesize managedObjectModel=__managedObjectModel;
 @synthesize persistentStoreCoordinator=__persistentStoreCoordinator;
 
-
 - (id)init {
     MLog(@"Moodle app init");
     if (!moodleApp) {
@@ -105,7 +104,7 @@ static AppDelegate *moodleApp = NULL;
     [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
 
     // make all dictionary ready
-    NSFileManager *NSFm= [NSFileManager defaultManager]; 
+    NSFileManager *NSFm= [NSFileManager defaultManager];
     BOOL isDir=YES;
     NSError *error;
     if(![NSFm fileExistsAtPath: AUDIO_FOLDER isDirectory:&isDir]) {
@@ -122,7 +121,7 @@ static AppDelegate *moodleApp = NULL;
             NSLog(@"Folder created");
         }
     }
-    
+
     if(![NSFm fileExistsAtPath: VIDEO_FOLDER isDirectory:&isDir]) {
         if (![NSFm createDirectoryAtPath: VIDEO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
             NSLog(@"Error: Create folder failed %@", error);
@@ -137,7 +136,7 @@ static AppDelegate *moodleApp = NULL;
         } else {
             NSLog(@"Folder created");
         }
-    } 
+    }
     //Set a method to be called when a notification is sent.
     NSURL *url = [NSURL URLWithString: [self.site valueForKey: @"url"]];
     NSLog(@"target host: %@", url.host);

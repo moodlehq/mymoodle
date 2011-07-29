@@ -20,7 +20,7 @@
     if (self) {
         // Initialization code here.
     }
-    
+
     return self;
 }
 
@@ -63,8 +63,8 @@
     [request setFetchBatchSize: 10];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
     [request setPredicate: predicate];
-    
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc] 
+
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
                               initWithKey:@"created" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObject:sort]];
     NSError *error = nil;
@@ -82,7 +82,7 @@
         [managedObjectContext deleteObject:job];
         [managedObjectContext save:nil];
     }
-    
+
     [pool drain];
 }
 
@@ -93,7 +93,7 @@
     NSURL *url          = [NSURL URLWithString: uploadurl];
     [uploadurl release];
     NSString *token     = [[NSUserDefaults standardUserDefaults] valueForKey: kSelectedSiteTokenKey];
-    
+
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request addPostValue: token forKey: @"token"];
     [request setFile: data   forKey: @"thefile"];
@@ -137,6 +137,6 @@
         [alert show];
         [alert release];
     }
-    [client release];    
+    [client release];
 }
 @end

@@ -47,7 +47,7 @@
     NSSortDescriptor *sort = [[NSSortDescriptor alloc] 
                               initWithKey:@"created" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObject:sort]];
-    
+    [sort release];
     NSFetchedResultsController *controller = [[NSFetchedResultsController alloc] initWithFetchRequest: request managedObjectContext:context sectionNameKeyPath: nil cacheName: nil];
     self.fetchedResultsController = controller;
     _fetchedResultsController.delegate = self;
@@ -61,7 +61,6 @@
 
 - (void)dealloc
 {
-    [self.fetchedResultsController release];
     [switchAuto release];
     [super dealloc];
 }
@@ -310,6 +309,7 @@
     NSSortDescriptor *sort = [[NSSortDescriptor alloc] 
                               initWithKey:@"created" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObject:sort]];
+    [sort release];
     NSError *error = nil;
     NSArray *jobs = [context executeFetchRequest:request error:&error];
     for (NSManagedObject *job in jobs) {

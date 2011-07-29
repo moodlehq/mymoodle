@@ -204,14 +204,15 @@ Boolean IsAACHardwareEncoderAvailable(void)
                                            message:@"Unable to save image to Photo Album."
                                           delegate:self cancelButtonTitle:@"OK"
                                  otherButtonTitles:nil];
+        
+        [alert show];
+        [alert release];
     } else { // All is well
 //        alert = [[UIAlertView alloc] initWithTitle:@"Success"
 //                                           message:@"Image saved to Photo Album."
 //                                          delegate:self cancelButtonTitle:@"Ok"
 //                                 otherButtonTitles:nil];
     }
-    [alert show];
-    [alert release];
 }
 
 - (void)loadGallery:(id)sender {
