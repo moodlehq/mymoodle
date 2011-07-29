@@ -78,39 +78,33 @@
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 
     CGRect appRect = [UIScreen mainScreen].applicationFrame;
+    NSLog(@"app frame: %@", NSStringFromCGRect(appRect));
+    NSLog(@"viewp frame: %@", NSStringFromCGRect(self.view.frame));
+
 
     // app background
-    UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"app_bg.png"]];
-    appBg.frame = CGRectMake(0, 0, appRect.size.width, appRect.size.height);
+    UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"screen_bg.png"]];
+    appBg.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    CGRect view = self.view.frame;
     [self.view addSubview:appBg];
     [appBg release];
 
     // Header
-    UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake((appRect.size.width-240)/2, 40, 240, 34)];
-    [header setText:@"Moodle"];
+    UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake((appRect.size.width-240)/2, 35, 240, 34)];
+    [header setText:@"moodle"];
     [header setTextColor:UIColorFromRGB(ColorToolbar)];
-    [header setFont:[UIFont fontWithName:@"SoulPapa" size:40]];
+    [header setFont:[UIFont fontWithName:@"SoulPapa" size:46]];
     [header setBackgroundColor:[UIColor clearColor]];
     [header setTextAlignment:UITextAlignmentCenter];
     [self.view addSubview:header];
     [header release];
-    
-    // text view
-    connectedSite = [[UITextView alloc] initWithFrame:CGRectMake(20, 69, appRect.size.width-40, 40)];
-    [connectedSite setBackgroundColor:[UIColor clearColor]];
-    [connectedSite setScrollEnabled: NO];
-    [connectedSite setEditable: NO];
-    [connectedSite setTextAlignment:UITextAlignmentCenter];
-    [connectedSite setFont: [UIFont boldSystemFontOfSize:11]];
-    [self.view addSubview:connectedSite];
-    [connectedSite release];
 
-    int headerHeight = 90;
+    int headerHeight = 65;
 
     int bgWidth = 276;
-    int bgHeight = 299;
+    int bgHeight = 280;
     UIImageView *rootBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"root_bg.png"]];
-    rootBackground.frame = CGRectMake((appRect.size.width-276)/2, appRect.origin.y+headerHeight, bgWidth, bgHeight);
+    rootBackground.frame = CGRectMake((view.size.width-276)/2, appRect.origin.y+headerHeight, bgWidth, bgHeight);
     [self.view addSubview: rootBackground];
     [rootBackground release];
 
@@ -133,7 +127,7 @@
     [self.view addSubview: launcherView];
     
     //defautl toolbar height: 44
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(10, appRect.size.height - 40, appRect.size.width-20, 33)];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(10, view.size.height - 40, view.size.width-20, 33)];
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:toolbar.bounds 
                                                 byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight
                                                         cornerRadii:CGSizeMake(10.0, 10.0)];
@@ -169,7 +163,6 @@
 {
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
-    [[self navigationController] setNavigationBarHidden:YES animated:NO];
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
     self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
     [connectedSite setText: [NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey: @"name"]]];
@@ -195,7 +188,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
-    [[self navigationController] setNavigationBarHidden:NO animated:NO];
 }
 
 - (void)didReceiveMemoryWarning
