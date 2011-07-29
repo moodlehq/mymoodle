@@ -97,6 +97,7 @@
 #pragma mark - View lifecycle
 
 - (void)loadView {
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];  
     [super loadView];
 }
 
