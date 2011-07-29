@@ -110,7 +110,7 @@
         [formatter release];
         [job setValue: @"TaskHandler"    forKey: @"target"];
         [job setValue: @"upload"         forKey: @"action"];
-        [job setValue: stringFromDate    forKey: @"desc"];
+        [job setValue: [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"imagevideo", @"Image/Video"), stringFromDate]    forKey: @"desc"];
         [job setValue: offlineFile       forKey: @"data"];
         [job setValue: @"path"           forKey: @"dataformat"];
         [job setValue: @"undone"         forKey: @"status"];
