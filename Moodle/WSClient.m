@@ -58,6 +58,10 @@
 	}
     NSLog(@"XML: %@", [http responseString]);
 	XMLRPCResponse *xmlrpcdata = [[XMLRPCResponse alloc] initWithData: [http responseData]];
+    if ([xmlrpcdata isParseError]) {
+        NSLog(@"error");
+        [NSException raise:@"XMLRPC Error" format:@"XMLRPC Parser error"];
+    }
     id object = [xmlrpcdata object];
     [xmlrpcdata release];
     [http release];
