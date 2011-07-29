@@ -22,6 +22,8 @@
     AppDelegate *appDelegate;
 
     BOOL newEntry;
+    
+    UITextField *editingField;
 
     UITableViewCell *siteurlCell;
     UITextField     *siteurlField;

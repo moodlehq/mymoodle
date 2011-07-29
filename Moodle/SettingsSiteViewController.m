@@ -66,7 +66,7 @@
             }
         }
         // send notification to appdelete to reset site
-        [[NSNotificationCenter defaultCenter] postNotificationName: kResetSite 
+        [[NSNotificationCenter defaultCenter] postNotificationName: kResetSite
                                                             object: nil];
         //return the list of sites
         NSArray *allControllers = self.navigationController.viewControllers;
@@ -78,16 +78,16 @@
 
 - (BOOL) validateUrl: (NSString *) candidate {
     NSString *urlRegEx = @"(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+";
-    NSPredicate *urlTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx]; 
+    NSPredicate *urlTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx];
     return [urlTest evaluateWithObject:candidate];
 }
 
-- (IBAction)saveButtonPressed: (id)sender
+- (void)saveButtonPressed: (id)sender
 {
     NSManagedObjectContext *context = appDelegate.managedObjectContext;
     NSString *siteurl;
     siteurl = [siteurlField text];
-    
+
 
     if (![self validateUrl:siteurl]) {
         siteurl = [NSString stringWithFormat: @"http://%@", siteurl];
@@ -96,10 +96,10 @@
     if ([siteurl hasSuffix:@"/"]) {
         siteurl = [siteurl substringToIndex:[siteurl length] - 1];
     }
-    
+
     NSString *username = [usernameField text];
     NSString *password = [passwordField text];
-    
+
     NSString *tokenURL = [NSString stringWithFormat:@"%@/login/token.php", siteurl];
     NSURL *url = [NSURL URLWithString: tokenURL];
     NSLog(@"%@", tokenURL);
@@ -119,7 +119,7 @@
             NSDictionary *siteinfo = [client invoke: @"moodle_webservice_get_siteinfo" withParams: wsparams];
             [wsparams release];
             [client release];
-            
+
             if ([siteinfo isKindOfClass: [NSDictionary class]]) {
                 //check if the site url + userid is already in data core otherwise create a new site
                 NSError *error;
@@ -130,7 +130,7 @@
                 [siteRequest setPredicate:sitePredicate];
                 NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
                 NSLog(@"Sites info %@", sites);
-                
+
                 if ([sites count] > 0) {
                     appDelegate.site = [sites lastObject];
                 } else {
@@ -166,7 +166,7 @@
                     for (NSManagedObject *info in objects) {
                         [context deleteObject: info];
                     }
-                    
+
                     [request release];
                 }
                 NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
@@ -183,11 +183,11 @@
                 [user setValue: [siteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
                 [user setValue: [siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
                 [user setValue: appDelegate.site                     forKey:@"site"];
-                
+
                 [appDelegate.site setValue: user forKey: @"mainuser"];
-                
-                
-                
+
+
+
                 // update active site info
                 sites = [context executeFetchRequest:siteRequest error:&error];
                 if ([sites count] > 0) {
@@ -220,7 +220,7 @@
             [alert show];
             [alert release];
         }
-        
+
     }];
     [request startAsynchronous];
 }
@@ -252,7 +252,7 @@
 - (id)initWithNew: (NSString *)new {
 
     if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
-        
+
         if ([new isEqualToString:@"no"]) {
             newEntry = NO;
         } else {
@@ -280,7 +280,7 @@
 
     self.navigationController.view.backgroundColor = UIColorFromRGB(LoginBackground);
     self.tableView.backgroundColor = [UIColor clearColor];
-    
+
     siteurlCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     [[siteurlCell textLabel] setText: @"Site URL"];
     siteurlField = [self _createCellTextField];
@@ -292,7 +292,7 @@
     } else {
         siteurlField.text = @"http://dongsheng.moodle.local/moodle";
     }
-    
+
     usernameCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     [[usernameCell textLabel] setText:@"Username"];
     usernameField = [self _createCellTextField];
@@ -304,7 +304,7 @@
     } else {
         usernameField.text = @"teacher";
     }
-    
+
     passwordCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     [[passwordCell textLabel] setText:@"Password"];
     passwordField = [self _createCellTextField];
@@ -316,17 +316,17 @@
         passwordField.text = @"******";
     } else {
         passwordField.text = @"cds";
-    } 
-    
+    }
+
     topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [self.view bounds].size.width, 40.0f)];
     [topLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
     [topLabel setTextAlignment:UITextAlignmentCenter];
     [topLabel setBackgroundColor:[UIColor clearColor]];
     [topLabel setShadowColor:[UIColor blackColor]];
     [topLabel setShadowOffset:CGSizeMake(0, 1.0f)];
-    [topLabel setFont:[UIFont boldSystemFontOfSize:30.0f]];
     [topLabel setTextColor: [UIColor whiteColor]];
-    [topLabel setText:@"Moodle"];
+    [topLabel setFont:[UIFont fontWithName:@"SoulPapa" size:42]];
+    [topLabel setText:@"moodle"];
 
     if (!newEntry) {
         int buttonWidth = 300;
@@ -371,6 +371,10 @@
         //case of Adding a new site
         self.title = NSLocalizedString(@"addsite", nil);
     }
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(dismissKeyboard)];
+    
+    [self.view addGestureRecognizer:tap];
 }
 
 #pragma mark - Table view data source
@@ -412,5 +416,31 @@
     } else {
         return nil;
     }
+}
+
+#pragma mark -
+#pragma mark textfield delegate method
+
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField;
+{
+    editingField = textField;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (textField == siteurlField) {
+        [usernameField becomeFirstResponder];
+    } else if (textField == usernameField) {
+        [passwordField becomeFirstResponder];
+    } else if (textField == passwordField) {
+        [self saveButtonPressed: nil];
+    }
+
+    return YES;
+}
+
+- (IBAction)dismissKeyboard
+{
+    [editingField resignFirstResponder];
 }
 @end
