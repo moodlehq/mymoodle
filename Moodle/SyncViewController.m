@@ -62,6 +62,7 @@
 - (void)dealloc
 {
     [switchAuto release];
+    [self.fetchedResultsController release];
     [super dealloc];
 }
 
@@ -93,7 +94,6 @@
     [switchAuto setOn:YES];
     switchAuto.transform = CGAffineTransformMakeScale(0.85, 0.85);
     [switchAuto addTarget:self action:@selector(changeAutoSync:) forControlEvents:UIControlEventTouchUpInside];
-    
 
     [tableviewFooter addSubview:switchAuto];
     [tableviewFooter addSubview:labelAuto];
@@ -109,6 +109,7 @@
     [defaults synchronize];
     if (sender.on) {
         self.navigationItem.rightBarButtonItem = nil;
+        [self sync];
     } else {
         self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
                                                    initWithTitle:NSLocalizedString(@"sendnow", @"Send all") style:UIBarButtonItemStyleBordered
@@ -186,7 +187,6 @@
                  initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier: CellID] autorelease];
 
     }
-
 
     cell.accessoryView.tag = [indexPath row];
     [self fillCell: cell atIndexPath: indexPath];
@@ -298,6 +298,9 @@
 }
 
 - (void)sync {
+    if (appDelegate.netStatus == NotReachable) {
+        return;
+    }
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName: @"Job" inManagedObjectContext:context];
@@ -321,13 +324,16 @@
         @catch (NSException *exception) {
             NSLog(@"%@", exception);
         }
-        [self performSelectorOnMainThread:@selector(updateTableView:)
-                               withObject: job
-                            waitUntilDone:YES];
+        if ([job respondsToSelector:@selector(updateTableView:)]) {
+            [self performSelectorOnMainThread:@selector(updateTableView:)
+                                   withObject: job
+                                waitUntilDone:YES];
+        }
     }
 
     [pool drain];
 }
+
 - (void)updateTableView: (NSManagedObject *)job {
     if (job) {
         [context deleteObject:job];
