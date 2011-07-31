@@ -28,40 +28,6 @@
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath: @"tt://sync/"] applyAnimated:YES]];
 }
 
-- (void)actionSheet {
-    BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey: kAutoSync];
-    NSLog(@"autosync: %d", autosync);
-    NSString *autoSyncButton;
-    if (autosync == NO) {
-        autoSyncButton = NSLocalizedString(@"turnonautosync", nil);
-    } else {
-        autoSyncButton = NSLocalizedString(@"turnoffautosync", nil);
-    }
-    UIActionSheet *popupQuery = [[UIActionSheet alloc] initWithTitle: @"" delegate: self
-                                                   cancelButtonTitle:NSLocalizedString(@"cancel", nil)
-                                                   destructiveButtonTitle: NSLocalizedString(@"Accounts", "all accounts")
-                                                   otherButtonTitles: autoSyncButton, nil];
-	popupQuery.actionSheetStyle = UIActionSheetStyleDefault;
-	[popupQuery showInView:self.view];
-	[popupQuery release];
-}
-
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex {
-    NSLog(@"button index: %d", buttonIndex);
-	if (buttonIndex == 0) {
-        [self displaySettingsView];
-	} else if (buttonIndex == 1) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        BOOL autosync = [defaults boolForKey: kAutoSync];
-        if (autosync) {
-            [defaults setBool: NO forKey: kAutoSync];
-        } else {
-            [defaults setBool: YES forKey: kAutoSync];
-        }
-        [defaults synchronize];
-    }
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -167,6 +133,9 @@
     self.title = [appDelegate.site valueForKey: @"name"];
     [connectedSite setText: [NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey: @"name"]]];
     [super viewWillAppear:animated];
+    
+    BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey: kAutoSync];
+    NSLog(@"autosync: %d", autosync);
 }
 
 - (void)viewDidAppear:(BOOL)animated

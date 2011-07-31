@@ -69,7 +69,7 @@
                                          @"", kSelectedSiteTokenKey,
                                          @"", kSelectedUserIdKey,
                                          nil];
-            
+
             [defaults registerDefaults: appDefaults];
             [NSUserDefaults resetStandardUserDefaults];
         }

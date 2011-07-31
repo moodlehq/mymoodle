@@ -241,7 +241,6 @@
     {
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            
             // new added site
             MoodleSite *site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];
             NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:

@@ -33,9 +33,19 @@ static AppDelegate *moodleApp = NULL;
     MLog(@"Moodle app init");
     if (!moodleApp) {
         moodleApp = [super init];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
+        NSNumber *autoSync = [NSNumber numberWithInt:1];
 		NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-		[[NSUserDefaults standardUserDefaults] setObject:appVersion forKey:@"moodle_app_version"];
+        
+        NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     autoSync, kAutoSync,
+                                     appVersion, @"moodle_app_version",
+                                     nil];
+
+        [defaults registerDefaults: appDefaults];
+
+        [NSUserDefaults resetStandardUserDefaults];
     }
 
     return moodleApp;
@@ -59,11 +69,6 @@ static AppDelegate *moodleApp = NULL;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSNumber *autosync = [NSNumber numberWithInt: 1];
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 autosync, kAutoSync,
-                                 nil];
-    [defaults registerDefaults: appDefaults];
 
     NSManagedObjectContext *context = [self managedObjectContext];
     if (!context) {
