@@ -14,7 +14,6 @@
 #define kSiteNameTag 1;
 
 @implementation SitesViewController
-@synthesize lastIndexPath;
 @synthesize fetchedResultsController=__fetchedResultsController;
 
 #pragma mark - Button actions
@@ -37,45 +36,40 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"selectsite", "Select a site");
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
+    [NSUserDefaults resetStandardUserDefaults];
 
+    //hide back button if nothing is selected
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults synchronize];
+    NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
+    NSLog(@"default siteurl %@", defaultSiteUrl);
+    if (defaultSiteUrl == nil || appDelegate.site == nil) {
+        self.navigationItem.hidesBackButton = YES;
+    }
+    
     // Set up the edit and add buttons.
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addSite)];
     self.navigationItem.rightBarButtonItem = addButton;
     [addButton release];
-
+    
     NSError *error = nil;
     if (![self.fetchedResultsController performFetch:&error])
     {
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-//    settingsSiteViewController = [[SettingsSiteViewController alloc] initWithStyle:UITableViewStyleGrouped];
-//    settingsSiteViewController.fetchedResultsController = self.fetchedResultsController;
-    [[self navigationController] setNavigationBarHidden:NO animated:NO];
-
     [self.tableView reloadData];
     
-//    //hide back button if nothing is selected
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    [defaults synchronize];
-//    NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
-//    NSLog(@"Selected site url:");
-//    NSLog(@"%@", defaultSiteUrl);
-//    if (defaultSiteUrl == @"deleted") {
-//        self.navigationItem.hidesBackButton = YES;
-//    }
-    
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
     //if there is no site available go to the add a site view
     if ([MoodleSite countWithContext: managedObjectContext] == 0) {
         [self addSite];
@@ -100,42 +94,35 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SettingsCellIdentifier] autorelease];
     }
 
-    // Cache current site
-    appDelegate.site = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSManagedObject *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    NSUInteger row = [indexPath row];
-    NSUInteger oldRow = [lastIndexPath row]; //for the checkmark image
-
-    [cell.imageView setImageWithURL:[NSURL URLWithString: [appDelegate.site valueForKey:@"userpictureurl"]] placeholderImage: [UIImage imageNamed:@"course.png"]];
+    [cell.imageView setImageWithURL:[NSURL URLWithString: [account valueForKey:@"userpictureurl"]] placeholderImage: [UIImage imageNamed:@"course.png"]];
 
     CGRect siteNameRect = CGRectMake(100, 5, 200, 18);
     UILabel *siteName = [[UILabel alloc] initWithFrame:siteNameRect];
     siteName.tag = kSiteNameTag;
-    siteName.text = [appDelegate.site valueForKey:@"name"];
+    siteName.text = [account valueForKey:@"name"];
     siteName.font = [UIFont boldSystemFontOfSize:15];
     [cell.contentView addSubview:siteName];
     [siteName release];
 
     CGRect userNameRect = CGRectMake(100, 26, 200, 12);
     UILabel *userName = [[UILabel alloc] initWithFrame:userNameRect];
-    NSString *fullname = [appDelegate.site valueForKeyPath:@"mainuser.fullname"];
+    NSString *fullname = [account valueForKeyPath:@"mainuser.fullname"];
     userName.text = fullname;
     userName.font = [UIFont italicSystemFontOfSize:12];
     [cell.contentView addSubview:userName];
     [userName release];
-    
+    // current site info
     NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
     NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
-    if ((row == oldRow && lastIndexPath != nil)
-        || ([[appDelegate.site valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[appDelegate.site valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
-
+    if (([[account valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[account valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
         UIImage *checkMarkImage = [UIImage imageNamed:@"checkmark.png"];
         CGRect checkMarkRect = CGRectMake(57, 0, 43, 45);
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:checkMarkRect];
         [imageView setImage:checkMarkImage];
         [cell.contentView addSubview:imageView];
         lastCheckMark = imageView;
-        lastIndexPath = indexPath;
         [imageView release];
     }
 
@@ -150,17 +137,19 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    appDelegate.site = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    MoodleSite *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    int newRow = [indexPath row];
-    int oldRow = (lastIndexPath != nil) ? [lastIndexPath row] : -1;
+    NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
+    NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
 
-    if (newRow != oldRow) {
+    if (([[account valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[account valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
         if (lastCheckMark != nil) {
             [lastCheckMark removeFromSuperview];
         }
 
-        UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
+        UITableViewCell *newCell = [self.tableView cellForRowAtIndexPath:indexPath];
         UIImage *checkMarkImage = [UIImage imageNamed:@"checkmark.png"];
         CGRect checkMarkRect = CGRectMake(57, 0, 43, 45);
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:checkMarkRect];
@@ -168,18 +157,17 @@
         [newCell.contentView addSubview:imageView];
         lastCheckMark = imageView;
         [imageView release];
-
-        [self.tableView cellForRowAtIndexPath:lastIndexPath];
-
-        lastIndexPath = indexPath;
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        //save the current site into user preference
-        [defaults setObject:[appDelegate.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
-        [defaults setObject:[appDelegate.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
-        [defaults setObject:[appDelegate.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
-        [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-        [defaults synchronize];
     }
+    
+    
+    //save the current site into user preference
+    [defaults setObject:[account valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+    [defaults setObject:[account valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+    [defaults setObject:[account valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+    [defaults setObject:[account valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+    NSLog(@"saving userdefaults");
+    [defaults synchronize];
+    appDelegate.site = account;
     [tableView deselectRowAtIndexPath: indexPath animated:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -189,7 +177,6 @@
 {
     if (__fetchedResultsController != nil)
     {
-        MLog(@"NSFetchedResultsController reused");
         return __fetchedResultsController;
     }
     MLog(@"Set up NSFetchedResultsController");

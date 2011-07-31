@@ -55,28 +55,14 @@
         //delete the user/site default is they were matching the delete site
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
-        if (defaultSiteUrl == [appDelegate.site valueForKey:@"url"]) {
-            NSLog(@"Trying to remove userdefault");
-            [defaults removeObjectForKey:kSelectedSiteUrlKey];
-            [defaults removeObjectForKey:kSelectedSiteNameKey];
-            [defaults removeObjectForKey:kSelectedSiteTokenKey];
-            [defaults removeObjectForKey:kSelectedUserIdKey];
-            
-            NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         @"deleted", kSelectedSiteUrlKey,
-                                         nil, kSelectedSiteNameKey,
-                                         nil, kSelectedSiteTokenKey,
-                                         nil, kSelectedUserIdKey,
-                                         nil];
-            
-            [defaults registerDefaults: appDefaults];
-            [defaults synchronize];
-            
-            NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
-            NSLog(@"Selected site url after deletion:");
-            NSLog(@"%@", defaultSiteUrl);
-        }
+        NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
         
+        // delete current site
+        if (([[appDelegate.site valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[appDelegate.site valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
+            NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+            NSLog(@"removePersistentDomainForName:%@", appDomain);
+            [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+        }
         //delete the entry
         [appDelegate.managedObjectContext deleteObject: appDelegate.site];
         NSError *error;
@@ -317,7 +303,7 @@
     if (!newEntry) {
         siteurlField.text = [appDelegate.site valueForKey:@"url"];
     } else {
-        siteurlField.text = @"http://dongsheng.moodle.local/moodle";
+        siteurlField.text = @"http://qa.moodle.net";
     }
 
     usernameCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
@@ -342,7 +328,7 @@
     if (!newEntry) {
         passwordField.text = @"******";
     } else {
-        passwordField.text = @"cds";
+        passwordField.text = @"test";
     }
 
     topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [self.view bounds].size.width, 40.0f)];
@@ -468,7 +454,6 @@
 
 - (void)dismissKeyboard: (UITapGestureRecognizer *)sender
 {
-    NSLog(@"ta");
     [editingField resignFirstResponder];
 }
  - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

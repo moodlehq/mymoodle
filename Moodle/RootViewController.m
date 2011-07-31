@@ -164,7 +164,7 @@
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
-    self.title = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteNameKey];
+    self.title = [appDelegate.site valueForKey: @"name"];
     [connectedSite setText: [NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey: @"name"]]];
     [super viewWillAppear:animated];
 }
@@ -173,7 +173,8 @@
 {
     [super viewDidAppear:animated];
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey: kSelectedSiteUrlKey];
-
+    NSLog(@"root site url %@", defaultSiteUrl);
+    NSLog(@"root site obj %@", appDelegate.site);
     if (defaultSiteUrl == nil || appDelegate.site == nil) {
         [self displaySettingsView];
     }
@@ -224,16 +225,12 @@
 #pragma mark -
 #pragma mark TTLauncherViewDelegate methods
 - (void)launcherViewDidBeginEditing:(TTLauncherView*)launcher {
-//	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
-    doneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [doneButton setFrame:CGRectMake(320-80-20, 20, 100, 30)];
-    [doneButton setTitle: @"End editing" forState:UIControlStateNormal];
-    [doneButton addTarget:launcher action:@selector(endEditing) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:doneButton];
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
+    self.navigationItem.rightBarButtonItem = doneButton;
 }
 
 - (void)launcherViewDidEndEditing:(TTLauncherView*)launcher {
-    [doneButton removeFromSuperview];
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 - (void)launcherView:(TTLauncherView *)launcher didSelectItem:(TTLauncherItem *)item {

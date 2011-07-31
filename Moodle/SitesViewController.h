@@ -15,10 +15,8 @@
     NSManagedObjectContext *managedObjectContext;
     NSFetchedResultsController *__fetchedResultsController;
     AppDelegate *appDelegate;
-    NSIndexPath *lastIndexPath;
     UIImageView *lastCheckMark;
 }
 
-@property (nonatomic, retain) NSIndexPath *lastIndexPath;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @end
