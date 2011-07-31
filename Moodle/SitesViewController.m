@@ -43,12 +43,9 @@
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
     [NSUserDefaults resetStandardUserDefaults];
-
-    //hide back button if nothing is selected
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults synchronize];
     NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
-    NSLog(@"default siteurl %@", defaultSiteUrl);
+    NSLog(@"SitesViewController %@", defaultSiteUrl);
     if (defaultSiteUrl == nil || appDelegate.site == nil) {
         self.navigationItem.hidesBackButton = YES;
     }
@@ -244,8 +241,9 @@
     {
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            
+            // new added site
             MoodleSite *site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];
-            //save the current site into user preference
             NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [site valueForKey:@"url"], kSelectedSiteUrlKey,
                                          [site valueForKey:@"name"], kSelectedSiteNameKey,

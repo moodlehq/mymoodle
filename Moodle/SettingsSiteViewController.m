@@ -59,9 +59,19 @@
         
         // delete current site
         if (([[appDelegate.site valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[appDelegate.site valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
-            NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
-            NSLog(@"removePersistentDomainForName:%@", appDomain);
-            [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+            [defaults removeObjectForKey:kSelectedSiteUrlKey];
+            [defaults removeObjectForKey:kSelectedSiteTokenKey];
+            [defaults removeObjectForKey:kSelectedSiteNameKey];
+            [defaults removeObjectForKey:kSelectedUserIdKey];
+            NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         @"", kSelectedSiteUrlKey,
+                                         @"", kSelectedSiteNameKey,
+                                         @"", kSelectedSiteTokenKey,
+                                         @"", kSelectedUserIdKey,
+                                         nil];
+            
+            [defaults registerDefaults: appDefaults];
+            [NSUserDefaults resetStandardUserDefaults];
         }
         //delete the entry
         [appDelegate.managedObjectContext deleteObject: appDelegate.site];
