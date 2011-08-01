@@ -16,6 +16,10 @@
 
 @implementation SettingsSiteViewController
 
+- (void)backToRoot {
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
 # pragma mark - private method
 - (UITextField *)_createCellTextField {
     UITextField *field = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -105,24 +109,22 @@
     return [urlTest evaluateWithObject:candidate];
 }
 
-- (void)saveButtonPressed: (id)sender
-{
+- (void)login {
     NSManagedObjectContext *context = appDelegate.managedObjectContext;
     NSString *siteurl;
     siteurl = [siteurlField text];
-
-
+    
     if (![self validateUrl:siteurl]) {
         siteurl = [NSString stringWithFormat: @"http://%@", siteurl];
     }
-
+    
     if ([siteurl hasSuffix:@"/"]) {
         siteurl = [siteurl substringToIndex:[siteurl length] - 1];
     }
-
+    
     NSString *username = [usernameField text];
     NSString *password = [passwordField text];
-
+    
     NSString *tokenURL = [NSString stringWithFormat:@"%@/login/token.php", siteurl];
     NSURL *url = [NSURL URLWithString: tokenURL];
     NSLog(@"%@", tokenURL);
@@ -130,122 +132,131 @@
     [request setPostValue: username forKey: @"username"];
     [request setPostValue: password forKey: @"password"];
     [request setPostValue: @"moodle_mobile_app" forKey: @"service"];
-    [request setCompletionBlock: ^{
-        NSLog(@"Token info: %@", [request responseString]);
-        NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary: [request responseData] error: nil];
-        NSLog(@"Token: %@", token);
-        NSString *sitetoken = [token valueForKey: @"token"];
-        @try {
-            //retrieve the site name
-            WSClient *client = [[WSClient alloc] initWithToken: sitetoken withHost: siteurl];
-            NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
-            NSDictionary *siteinfo = [client invoke: @"moodle_webservice_get_siteinfo" withParams: wsparams];
-            [wsparams release];
-            [client release];
-
-            if ([siteinfo isKindOfClass: [NSDictionary class]]) {
-                //check if the site url + userid is already in data core otherwise create a new site
-                NSError *error;
-                NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
-                NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:context];
-                [siteRequest setEntity: siteEntity];
-                NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
-                [siteRequest setPredicate:sitePredicate];
-                NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
-                NSLog(@"Sites info %@", sites);
-
-                if ([sites count] > 0) {
-                    appDelegate.site = [sites lastObject];
-                } else {
-                    appDelegate.site = [NSEntityDescription insertNewObjectForEntityForName: [siteEntity name] inManagedObjectContext:context];
+//    [request setCompletionBlock: ^{    }];
+    [request startSynchronous];
+    
+    NSLog(@"Token info: %@", [request responseString]);
+    NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary: [request responseData] error: nil];
+    NSString *sitetoken = [token valueForKey: @"token"];
+    @try {
+        //retrieve the site name
+        WSClient *client = [[WSClient alloc] initWithToken: sitetoken withHost: siteurl];
+        NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
+        NSDictionary *siteinfo = [client invoke: @"moodle_webservice_get_siteinfo" withParams: wsparams];
+        [wsparams release];
+        [client release];
+        
+        if ([siteinfo isKindOfClass: [NSDictionary class]]) {
+            //check if the site url + userid is already in data core otherwise create a new site
+            NSError *error;
+            NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
+            NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:context];
+            [siteRequest setEntity: siteEntity];
+            NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
+            [siteRequest setPredicate:sitePredicate];
+            NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
+            NSLog(@"Sites info %@", sites);
+            
+            if ([sites count] > 0) {
+                appDelegate.site = [sites lastObject];
+            } else {
+                appDelegate.site = [NSEntityDescription insertNewObjectForEntityForName: [siteEntity name] inManagedObjectContext:context];
+            }
+            // profile pictre
+            NSString  *userpictureurl = [siteinfo objectForKey: @"userpictureurl"];
+            NSString *sitename = [siteinfo objectForKey: @"sitename"];
+            //create/update the site
+            [appDelegate.site setValue: sitename       forKey: @"name"];
+            [appDelegate.site setValue: userpictureurl forKey: @"userpictureurl"];
+            [appDelegate.site setValue: sitetoken      forKey: @"token"];
+            [appDelegate.site setValue: siteurl        forKey: @"url"];
+            
+            NSManagedObject *user;
+            NSManagedObject *webservice;
+            NSArray *webservices = [siteinfo objectForKey:@"functions"];
+            //retrieve participant main user
+            if (newEntry) {
+                NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
+                user = [NSEntityDescription insertNewObjectForEntityForName: [mainUserDesc name]
+                                                     inManagedObjectContext: context];
+            } else {
+                user = [appDelegate.site valueForKey:@"mainuser"];
+                
+                // delete old records
+                NSFetchRequest *request = [[NSFetchRequest alloc] init];
+                NSEntityDescription *entity = [NSEntityDescription entityForName: @"WebService" inManagedObjectContext: context];
+                [request setEntity: entity];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+                [request setPredicate: predicate];
+                NSArray *objects = [context executeFetchRequest: request error: nil];
+                for (NSManagedObject *info in objects) {
+                    [context deleteObject: info];
                 }
-                // profile pictre
-                NSString  *userpictureurl = [siteinfo objectForKey: @"userpictureurl"];
-                NSString *sitename = [siteinfo objectForKey: @"sitename"];
-                //create/update the site
-                [appDelegate.site setValue: sitename       forKey: @"name"];
-                [appDelegate.site setValue: userpictureurl forKey: @"userpictureurl"];
-                [appDelegate.site setValue: sitetoken      forKey: @"token"];
-                [appDelegate.site setValue: siteurl        forKey: @"url"];
+                
+                [request release];
+            }
+            NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
+            for (NSDictionary *ws in webservices) {
+                webservice = [NSEntityDescription insertNewObjectForEntityForName: [wsDesc name] inManagedObjectContext:context];
+                [webservice setValue:[ws valueForKey:@"name"] forKey:@"name"];
+                [webservice setValue:appDelegate.site forKey:@"site"];
+                int version = [[ws valueForKey:@"version"] intValue];
+                [webservice setValue: [NSNumber numberWithInt: version] forKey:@"version"];
+            }
+            [user setValue: [siteinfo objectForKey:@"userid"]    forKey:@"userid"];
+            [user setValue: [siteinfo objectForKey:@"username"]  forKey:@"username"];
+            [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
+            [user setValue: [siteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
+            [user setValue: [siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
+            [user setValue: appDelegate.site                     forKey:@"site"];
 
-                NSManagedObject *user;
-                NSManagedObject *webservice;
-                NSArray *webservices = [siteinfo objectForKey:@"functions"];
-                //retrieve participant main user
-                if (newEntry) {
-                    NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
-                    user = [NSEntityDescription insertNewObjectForEntityForName: [mainUserDesc name]
-                                                         inManagedObjectContext: context];
-                } else {
-                    user = [appDelegate.site valueForKey:@"mainuser"];
+            [appDelegate.site setValue: user forKey: @"mainuser"];
 
-                    // delete old records
-                    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-                    NSEntityDescription *entity = [NSEntityDescription entityForName: @"WebService" inManagedObjectContext: context];
-                    [request setEntity: entity];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-                    [request setPredicate: predicate];
-                    NSArray *objects = [context executeFetchRequest: request error: nil];
-                    for (NSManagedObject *info in objects) {
-                        [context deleteObject: info];
+            // update active site info
+            sites = [context executeFetchRequest:siteRequest error:&error];
+            if ([sites count] > 0) {
+                appDelegate.site = [sites lastObject];
+            }
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            //save the current site into user preference
+            [defaults setObject:[appDelegate.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+            [defaults setObject:[appDelegate.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+            [defaults setObject:[appDelegate.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+            [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+            [defaults synchronize];
+            //save the modification
+            if (![context save: &error]) {
+                NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+                NSArray *detailedErrors = [[error userInfo] objectForKey: NSDetailedErrorsKey];
+                if(detailedErrors != nil && [detailedErrors count] > 0) {
+                    for(NSError* detailedError in detailedErrors) {
+                        NSLog(@"Detailed Error: %@", [detailedError userInfo]);
                     }
-
-                    [request release];
+                } else {
+                    NSLog(@"  %@", [error userInfo]);
                 }
-                NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
-                for (NSDictionary *ws in webservices) {
-                    webservice = [NSEntityDescription insertNewObjectForEntityForName: [wsDesc name] inManagedObjectContext:context];
-                    [webservice setValue:[ws valueForKey:@"name"] forKey:@"name"];
-                    [webservice setValue:appDelegate.site forKey:@"site"];
-                    int version = [[ws valueForKey:@"version"] intValue];
-                    [webservice setValue: [NSNumber numberWithInt: version] forKey:@"version"];
-                }
-                [user setValue: [siteinfo objectForKey:@"userid"]    forKey:@"userid"];
-                [user setValue: [siteinfo objectForKey:@"username"]  forKey:@"username"];
-                [user setValue: [siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
-                [user setValue: [siteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
-                [user setValue: [siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
-                [user setValue: appDelegate.site                     forKey:@"site"];
-
-                [appDelegate.site setValue: user forKey: @"mainuser"];
-
-
-
-                // update active site info
-                sites = [context executeFetchRequest:siteRequest error:&error];
-                if ([sites count] > 0) {
-                    appDelegate.site = [sites lastObject];
-                }
-                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                //save the current site into user preference
-                [defaults setObject:[appDelegate.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
-                [defaults setObject:[appDelegate.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
-                [defaults setObject:[appDelegate.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
-                [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-                [defaults synchronize];
-                //save the modification
-                if (![context save: &error]) {
-                    NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
-                    NSArray *detailedErrors = [[error userInfo] objectForKey: NSDetailedErrorsKey];
-                    if(detailedErrors != nil && [detailedErrors count] > 0) {
-                        for(NSError* detailedError in detailedErrors) {
-                            NSLog(@"Detailed Error: %@", [detailedError userInfo]);
-                        }
-                    } else {
-                        NSLog(@"  %@", [error userInfo]);
-                    }
-                }
-                [self.navigationController popToRootViewControllerAnimated:YES];
             }
         }
-        @catch (NSException *exception) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
-            [alert show];
-            [alert release];
-        }
+    }
+    @catch (NSException *exception) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles: nil];
+        [alert show];
+        [alert release];
+    }
+    [self performSelectorOnMainThread:@selector(backToRoot)
+                           withObject: nil
+                        waitUntilDone:YES];
+}
 
-    }];
-    [request startAsynchronous];
+
+- (void)saveButtonPressed: (id)sender
+{
+    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+    HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+    [self.view.window addSubview:HUD];
+    HUD.delegate = self;
+    HUD.labelText = NSLocalizedString(@"loading", @"Loading");
+    [HUD showWhileExecuting:@selector(login) onTarget:self withObject:nil animated:YES];
 }
 
 -(IBAction)textFieldDone:(id)sender {
@@ -466,10 +477,20 @@
 {
     [editingField resignFirstResponder];
 }
- - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-     if ([touch.view isKindOfClass:[UIButton class]]){
-         return NO;
-     }
-     return YES;
- }
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isKindOfClass:[UIButton class]]){
+        return NO;
+    }
+    return YES;
+}
+
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+- (void)hudWasHidden {
+    [HUD removeFromSuperview];
+    [HUD release];
+	HUD = nil;
+}
+
 @end
