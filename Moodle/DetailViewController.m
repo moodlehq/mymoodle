@@ -556,6 +556,14 @@
         [textView setFont:[UIFont fontWithName:@"Helvetica" size:16]];
         [textView setDataDetectorTypes: UIDataDetectorTypeAll];
         [textView setScrollEnabled:NO];
+        
+        //for address field resize automatically the field
+        if (indexPath.section == 2 && indexPath.row ==2 ) {
+            CGSize constraint = CGSizeMake(200, 20000.0f);
+            CGSize size = [[cellText stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+            [textView setFrame:CGRectMake(90, 2, 200, MAX(size.height + 12, 44.0f))]; //12 => inside cell margin * 2
+        }
+             
         [cell.contentView addSubview:textView];
         [cell.contentView addSubview:labelView];
         [labelView release];
@@ -590,7 +598,7 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    if (indexPath.section == 0) {
+    if (indexPath.section == 0) { // description field
         NSString *text = [[self.participant valueForKey:@"desc"] stringByRemovingHTMLTags];
 
         CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
@@ -598,9 +606,22 @@
         CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
         
         CGFloat height = MAX(size.height, 44.0f);
-        
+         NSLog(@"HEIGHT: %f", size.height);
         return height + (CELL_CONTENT_MARGIN * 2);
-    } else {
+    } else if (indexPath.section == 2 && indexPath.row ==2 ) { //address field
+        NSString *text = [[self.participant valueForKey:@"address"] stringByRemovingHTMLTags];
+       NSLog(@"address: %@", text);
+        CGSize constraint = CGSizeMake(200, 20000.0f);
+        
+        CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        
+        CGFloat height = MAX(size.height + (CELL_CONTENT_MARGIN * 2) + 12, 48.0f); //48 should be 44, a bit hacky ;)
+        NSLog(@"height: %f", size.height);
+        NSLog(@"System font size: %f", [UIFont systemFontSize]);
+        
+        return height;
+
+    } else { // all other fields
         return 44.0f;
     }
 }
