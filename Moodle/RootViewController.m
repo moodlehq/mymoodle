@@ -55,15 +55,6 @@
     [self.view addSubview:appBg];
     [appBg release];
 
-    // Header
-    UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake((appRect.size.width-240)/2, 35, 240, 34)];
-    [header setText:@"moodle"];
-    [header setTextColor:UIColorFromRGB(ColorToolbar)];
-    [header setFont:[UIFont fontWithName:@"SoulPapa" size:46]];
-    [header setBackgroundColor:[UIColor clearColor]];
-    [header setTextAlignment:UITextAlignmentCenter];
-    [self.view addSubview:header];
-    [header release];
 
     int headerHeight = 65;
 
@@ -123,6 +114,17 @@
     [btnSettings release];
     [self.view addSubview: toolbar];
     [toolbar release];
+
+    // Header
+    header = [[UITextView alloc] initWithFrame:CGRectMake(90, 10, 310-90, 70)];
+    [header setTextColor:UIColorFromRGB(ColorToolbar)];
+    [header setFont:[UIFont fontWithName:@"SoulPapa" size:32]];
+    [header setBackgroundColor:[UIColor clearColor]];
+    [header setTextAlignment:UITextAlignmentRight];
+    header.userInteractionEnabled = NO;
+    [header setEditable:NO];
+    [self.view addSubview:header];
+    [header release];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -130,10 +132,11 @@
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
     [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
-    self.title = [appDelegate.site valueForKey: @"name"];
     [connectedSite setText: [NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey: @"name"]]];
     [super viewWillAppear:animated];
     
+    [header setText:[appDelegate.site valueForKey:@"name"]];
+
     BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey: kAutoSync];
     NSLog(@"autosync: %d", autosync);
 }

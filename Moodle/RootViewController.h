@@ -26,6 +26,7 @@
     UITextView *connectedSite;
     UIBarButtonItem *btnSync;
     NSManagedObjectContext *managedObjectContext;
+    UITextView *header;
 }
 
 - (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url;
