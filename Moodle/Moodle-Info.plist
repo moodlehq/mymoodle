@@ -19,6 +19,8 @@
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.moodle.Moodle</string>
+	<key>UIApplicationExitsOnSuspend</key>
+	<true/>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

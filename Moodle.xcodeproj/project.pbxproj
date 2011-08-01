@@ -423,7 +423,6 @@
 		B56983CB13896648003FECD2 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		B577155C138102DD007582EF /* RecorderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecorderViewController.h; sourceTree = "<group>"; };
 		B577155D138102DD007582EF /* RecorderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecorderViewController.m; sourceTree = "<group>"; };
-		B57CD152133C785D00CCB81A /* libz.1.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.3.dylib; path = usr/lib/libz.1.2.3.dylib; sourceTree = SDKROOT; };
 		B57CD155133C787F00CCB81A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		B57CD157133C788900CCB81A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		B57CD159133C78BE00CCB81A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -620,7 +619,6 @@
 				B57CD159133C78BE00CCB81A /* SystemConfiguration.framework */,
 				B57CD157133C788900CCB81A /* MobileCoreServices.framework */,
 				B57CD155133C787F00CCB81A /* CFNetwork.framework */,
-				B57CD152133C785D00CCB81A /* libz.1.2.3.dylib */,
 				02618A111331A581008D3037 /* UIKit.framework */,
 				02618A131331A581008D3037 /* Foundation.framework */,
 				02618A151331A581008D3037 /* CoreGraphics.framework */,
