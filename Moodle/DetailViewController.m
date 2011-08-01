@@ -561,15 +561,49 @@
         [labelView release];
         [textView release];
     } else if (indexPath.section == 0) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero] autorelease];
         NSString *desc = [self.participant valueForKey:@"desc"];
-        cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
-        cell.textLabel.numberOfLines = 0;
-        cell.textLabel.text = [desc stringByRemovingHTMLTags];
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        [label setLineBreakMode:UILineBreakModeWordWrap];
+        [label setMinimumFontSize:FONT_SIZE];
+        [label setNumberOfLines:0];
+        [label setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+        [label setTag:1];
+//        [cell.contentView.layer setBorderWidth:1.0f];
+//        [[label layer] setBorderWidth:2.0f];
+        
+        [[cell contentView] addSubview:label];
+
+        CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
+        
+        CGSize size = [[desc stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        
+        if (!label) {
+            label = (UILabel*)[cell viewWithTag:1];
+        }
+        
+        [label setText:[desc stringByRemovingHTMLTags]];
+        [label setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(size.height, 44.0f))];
     }
     return cell;
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+    if (indexPath.section == 0) {
+        NSString *text = [[self.participant valueForKey:@"desc"] stringByRemovingHTMLTags];
 
+        CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
+        
+        CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        
+        CGFloat height = MAX(size.height, 44.0f);
+        
+        return height + (CELL_CONTENT_MARGIN * 2);
+    } else {
+        return 44.0f;
+    }
+}
 
 #pragma mark -
 #pragma mark Section header titles

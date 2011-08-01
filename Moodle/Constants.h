@@ -48,3 +48,8 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define URL_MOODLE_HELP @"http://docs.moodle.org/"
 
 
+#define FONT_SIZE 14.0f
+#define CELL_CONTENT_WIDTH 300.0f
+#define CELL_CONTENT_MARGIN 5.0f
+
+
