@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MoodleSite.h"
 #import "AppDelegate.h"
+#import "MBProgressHUD.h"
 
 #define kNumberOfEditableRows 3
 #define kUrlIndex 0
@@ -18,10 +19,12 @@
 #define kLabelTag 4096
 
 
-@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate> {
+@interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, MBProgressHUDDelegate> {
     AppDelegate *appDelegate;
 
     BOOL newEntry;
+    
+    MBProgressHUD *HUD;
     
     UITextField *editingField;
 
