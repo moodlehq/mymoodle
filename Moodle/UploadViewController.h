@@ -18,5 +18,5 @@
     NSString *filePath;
     MBProgressHUD *HUD;
 }
--(void)uploadAction;
+- (void)uploadAction;
 @end

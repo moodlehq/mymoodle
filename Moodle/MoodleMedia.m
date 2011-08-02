@@ -13,7 +13,7 @@
 #import "CJSONDeserializer.h"
 
 @implementation MoodleMedia
-+(void)upload:(id<MoodleUploadDelegate>)sender;
++ (void)upload:(id<MoodleUploadDelegate>)sender;
 {
     MLog(@"MoodleMedia:upload is handling file uploading");
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];

@@ -22,7 +22,7 @@
 
 
 #pragma mark - web service
--(void)updateParticipants
+- (void)updateParticipants
 {
     _reloading = YES;
 
@@ -117,7 +117,7 @@
     [retainedParticipants release];
 }
 
--(id)initWithStyle:(UITableViewStyle)style
+- (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self)
@@ -126,7 +126,7 @@
     return self;
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [__fetchedResultsController release];
     [detailViewController release];
@@ -134,14 +134,14 @@
     [super dealloc];
 }
 
--(void)didReceiveMemoryWarning
+- (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
 
 #pragma mark - View lifecycle
 
--(void)loadView
+- (void)loadView
 {
     [super loadView];
 
@@ -149,7 +149,7 @@
     managedObjectContext = [appDelegate managedObjectContext];
 }
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 
@@ -166,18 +166,18 @@
     [_refreshHeaderView refreshLastUpdatedDate];
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     [super viewDidUnload];
     detailViewController = nil;
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 }
 
--(void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     if ([Participant countWithContext:managedObjectContext course:course] == 0)
@@ -200,25 +200,25 @@
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 }
 
--(void)viewDidDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
 }
 
 #pragma mark - Table view data source
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     return 1;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
@@ -226,7 +226,7 @@
 
 #pragma mark - Table view delegate
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"ParticipantCellIdentifier";
 
@@ -247,7 +247,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Participant *selectedParticipant = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
@@ -259,7 +259,7 @@
 
 #pragma mark - Fetched results controller
 
--(NSFetchedResultsController *)fetchedResultsController
+- (NSFetchedResultsController *)fetchedResultsController
 {
     if (__fetchedResultsController != nil)
     {
@@ -308,12 +308,12 @@
 
 #pragma mark - Fetched results controller delegate
 
--(void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
    atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 {
     switch (type)
@@ -328,7 +328,7 @@
     }
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
    atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
    newIndexPath:(NSIndexPath *)newIndexPath
 {
@@ -354,14 +354,14 @@
     }
 }
 
--(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
 }
 
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
--(void)doneLoadingTableViewData
+- (void)doneLoadingTableViewData
 {
     //  model should call this when its done loading
     _reloading = NO;
@@ -371,18 +371,18 @@
 #pragma mark -
 #pragma mark EGORefreshTableHeaderDelegate Methods
 
--(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView *)view
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView *)view
 {
     [self updateParticipants];
     [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.5];
 }
 
--(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView *)view
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView *)view
 {
     return _reloading;             // should return if data source model is reloading
 }
 
--(NSDate *)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView *)view
+- (NSDate *)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView *)view
 {
     return [NSDate date];          // should return date data source was last changed
 }
@@ -390,19 +390,19 @@
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
 }
 
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
 #pragma mark -
 #pragma mark MBProgressHUDDelegate methods
--(void)hudWasHidden
+- (void)hudWasHidden
 {
     // reset loading flag
     _reloading = NO;

@@ -19,7 +19,7 @@
 @dynamic desc;
 @dynamic site;
 
-+(NSInteger)countWithContext:(NSManagedObjectContext *)context
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
 

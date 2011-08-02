@@ -9,12 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @protocol MoodleUploadDelegate
--(void)uploadCallback:(id)data;
--(NSString *)getFilepath;
+- (void)uploadCallback:(id)data;
+- (NSString *)getFilepath;
 @end
 
 @interface MoodleMedia : NSObject {
 }
 
-+(void)upload:(id<MoodleUploadDelegate>)sender;
++ (void)upload:(id<MoodleUploadDelegate>)sender;
 @end

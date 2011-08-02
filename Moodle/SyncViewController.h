@@ -16,8 +16,8 @@
     UIView *tableviewFooter;
     UISwitch *switchAuto;
 }
--(void)updateTableView:(NSManagedObject *)job;
--(void)sync;
+- (void)updateTableView:(NSManagedObject *)job;
+- (void)sync;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 @end

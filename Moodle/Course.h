@@ -19,6 +19,6 @@
 @property (nonatomic, retain) NSString *fullname;
 @property (nonatomic, retain) NSSet *participants;
 @property (nonatomic, retain) NSManagedObject *site;
-+(NSInteger)countWithContext:(NSManagedObjectContext *)context site:(NSManagedObject *)site;
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context site:(NSManagedObject *)site;
 
 @end

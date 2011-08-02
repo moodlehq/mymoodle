@@ -10,7 +10,7 @@
 #import "Constants.h"
 
 @implementation MoodleStyleSheet
--(TTStyle *)notificationButton:(UIControlState)state
+- (TTStyle *)notificationButton:(UIControlState)state
 {
     if (state == UIControlStateNormal)
     {
@@ -34,7 +34,7 @@
     }
 }
 
--(TTStyle *)MoodleLauncherButton:(UIControlState)state
+- (TTStyle *)MoodleLauncherButton:(UIControlState)state
 {
     return
         [TTPartStyle styleWithName:@"image" style:TTSTYLESTATE(launcherButtonImage:, state) next:
@@ -43,12 +43,12 @@
                        shadowOffset:CGSizeZero next:nil]];
 }
 
--(UIColor *)toolbarTintColor
+- (UIColor *)toolbarTintColor
 {
     return UIColorFromRGB(ColorNavigationBar);
 }
 
--(TTStyle *)fatButton:(UIControlState)state
+- (TTStyle *)fatButton:(UIControlState)state
 {
     return
         [TTShapeStyle styleWithShape:[TTRoundedRectangleShape shapeWithRadius:4.5] next:

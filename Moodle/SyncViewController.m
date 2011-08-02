@@ -31,7 +31,7 @@
 #pragma mark - NSFetchedResultsController
 
 
--(NSFetchedResultsController *)fetchedResultsController
+- (NSFetchedResultsController *)fetchedResultsController
 {
     if (_fetchedResultsController != nil)
     {
@@ -61,7 +61,7 @@
 
 #pragma mark - delloc
 
--(void)dealloc
+- (void)dealloc
 {
     [switchAuto release];
     [self.fetchedResultsController release];
@@ -71,14 +71,14 @@
 
 #pragma mark - View lifecycle
 
--(void)didReceiveMemoryWarning
+- (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
 
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
--(void)loadView
+- (void)loadView
 {
     [super loadView];
     self.title = NSLocalizedString(@"taskqueue", @"Task queue");
@@ -104,7 +104,7 @@
     [tableviewFooter release];
 }
 
--(void)changeAutoSync:(UISwitch *)sender
+- (void)changeAutoSync:(UISwitch *)sender
 {
     NSLog(@"touched %d", sender.on);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -124,7 +124,7 @@
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 
@@ -136,12 +136,12 @@
         NSLog(@"unresolved error %@, %@", error, [error userInfo]);
     }
 }
--(void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 
@@ -164,7 +164,7 @@
 //    }
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     [super viewDidUnload];
     self.fetchedResultsController = nil;
@@ -173,17 +173,17 @@
 
 #pragma mark -
 #pragma mark Table view data source methods
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[_fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
--(void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)fillCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *job = [_fetchedResultsController objectAtIndexPath:indexPath];
 
@@ -192,7 +192,7 @@
     cell.detailTextLabel.text = NSLocalizedString(detailedText, @"user friendly task explaination");
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellID = @"OperationQueueCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellID];
@@ -208,7 +208,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    NSManagedObject *job = [_fetchedResultsController objectAtIndexPath: indexPath];
 //    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
@@ -231,12 +231,12 @@
 //    NSLog(@"selected: %@", [job valueForKey:@"site"]);
 }
 
--(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
 }
 
--(void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
@@ -254,18 +254,18 @@
     [self.tableView reloadData];
 }
 #pragma mark - fetchedresult controller delegate
--(void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tableView beginUpdates];
 }
 
--(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
 {
     UITableView *tableView = self.tableView;
 
@@ -293,7 +293,7 @@
 }
 
 
--(void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 {
     switch (type)
     {
@@ -309,17 +309,17 @@
 
 
 #pragma mark - actions
--(void)dismiss
+- (void)dismiss
 {
     [self dismissModalViewControllerAnimated:YES];
 }
 
--(void)syncPressed
+- (void)syncPressed
 {
     [NSThread detachNewThreadSelector:@selector(sync) toTarget:self withObject:nil];
 }
 
--(void)sync
+- (void)sync
 {
     if (appDelegate.netStatus == NotReachable)
     {
@@ -357,7 +357,7 @@
     [pool drain];
 }
 
--(void)updateTableView:(NSManagedObject *)job
+- (void)updateTableView:(NSManagedObject *)job
 {
     if (job)
     {

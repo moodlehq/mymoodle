@@ -14,12 +14,12 @@
 #import <TargetConditionals.h>
 
 @implementation UploadViewController
--(NSString *)getFilepath
+- (NSString *)getFilepath
 {
     return filePath;
 }
 
--(void)uploadCallback:(id)data
+- (void)uploadCallback:(id)data
 {
     // update HUD text
     HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
@@ -70,12 +70,12 @@ Boolean IsAACHardwareEncoderAvailable(void)
     return isAvailable;
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [super dealloc];
 }
 
--(void)didReceiveMemoryWarning
+- (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
@@ -83,7 +83,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
 #pragma mark - View lifecycle
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
--(void)loadView
+- (void)loadView
 {
     [super loadView];
     self.title = NSLocalizedString(@"Upload", nil);
@@ -143,24 +143,24 @@ Boolean IsAACHardwareEncoderAvailable(void)
 }
 
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     [super viewDidUnload];
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 
--(void)loadPreview:(NSString *)filepath withFilename:(NSString *)filename
+- (void)loadPreview:(NSString *)filepath withFilename:(NSString *)filename
 {
     PreviewViewController *previewViewController = [[PreviewViewController alloc] init];
     // set the dashboard back button just before to push the settings view
@@ -174,7 +174,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [previewViewController release];
 }
 
--(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
     NSString *strtimestamp = [now description];
@@ -214,12 +214,12 @@ Boolean IsAACHardwareEncoderAvailable(void)
     }
 }
 
--(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
     [picker dismissModalViewControllerAnimated:YES];
 }
 
--(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
     UIAlertView *alert;
 
@@ -242,7 +242,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     }
 }
 
--(void)loadGallery:(id)sender
+- (void)loadGallery:(id)sender
 {
     MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
 
@@ -261,7 +261,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [imagePicker release];
 }
 
--(void)loadCamera:(id)sender
+- (void)loadCamera:(id)sender
 {
     if ([MoodleImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
     {
@@ -281,12 +281,12 @@ Boolean IsAACHardwareEncoderAvailable(void)
     }
 }
 
--(void)loadRecorder:(id)sender
+- (void)loadRecorder:(id)sender
 {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]];
 }
 
--(void)uploadAction
+- (void)uploadAction
 {
     if (appDelegate.netStatus == NotReachable)
     {
@@ -333,7 +333,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
 #pragma mark -
 #pragma mark MBProgressHUDDelegate methods
--(void)hudWasHidden
+- (void)hudWasHidden
 {
     // Remove HUD from screen when the HUD was hidded
     [HUD removeFromSuperview];

@@ -17,32 +17,32 @@
 @synthesize fetchedResultsController = __fetchedResultsController;
 
 #pragma mark - Button actions
--(void)addSite
+- (void)addSite
 {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://settings/yes"] applyAnimated:YES]];
 }
 
 #pragma mark - View lifecycle
--(void)dealloc
+- (void)dealloc
 {
     [self.fetchedResultsController release];
     [super dealloc];
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     self.fetchedResultsController = nil;
     [super viewDidUnload];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"selectsite", "Select a site");
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -70,7 +70,7 @@
     [self.tableView reloadData];
 }
 
--(void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     // if there is no site available go to the add a site view
@@ -83,13 +83,13 @@
 
 #pragma mark -
 #pragma mark Table Data Source Methods
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     static NSString *SettingsCellIdentifier = @"SettingsCellIdentifier";
@@ -139,13 +139,13 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     appDelegate.site = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://settings/no"] applyAnimated:YES]];
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MoodleSite *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
@@ -185,7 +185,7 @@
 }
 
 #pragma mark - Fetched results controller
--(NSFetchedResultsController *)fetchedResultsController
+- (NSFetchedResultsController *)fetchedResultsController
 {
     if (__fetchedResultsController != nil)
     {
@@ -224,13 +224,13 @@
 
 #pragma mark - Fetched results controller delegate
 
--(void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     NSLog(@"Begin update SiteViewController");
     [self.tableView beginUpdates];
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
    atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 {
     switch (type)
@@ -245,7 +245,7 @@
     }
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
    atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
    newIndexPath:(NSIndexPath *)newIndexPath
 {
@@ -295,7 +295,7 @@
     }
 }
 
--(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
 }

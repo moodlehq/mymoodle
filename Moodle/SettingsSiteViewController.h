@@ -39,8 +39,8 @@
 
     UILabel *topLabel;
 }
--(IBAction)cancel:(id)sender;
--(IBAction)saveButtonPressed:(id)sender;
--(IBAction)textFieldDone:(id)sender;
--(void)deleteSite;
+- (IBAction)cancel:(id)sender;
+- (IBAction)saveButtonPressed:(id)sender;
+- (IBAction)textFieldDone:(id)sender;
+- (void)deleteSite;
 @end

@@ -12,7 +12,7 @@
 @implementation MoodleSite
 
 
-+(BOOL)siteExistsForURL:(NSString *)theURL withContext:(NSManagedObjectContext *)moc andUsername:(NSString *)username
++ (BOOL)siteExistsForURL:(NSString *)theURL withContext:(NSManagedObjectContext *)moc andUsername:(NSString *)username
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
@@ -26,7 +26,7 @@
 
     return results.count > 0;
 }
-+(NSInteger)countWithContext:(NSManagedObjectContext *)context
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
 

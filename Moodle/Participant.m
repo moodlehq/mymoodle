@@ -43,7 +43,7 @@
 @dynamic courses;
 
 
--(void)addCoursesObject:(NSManagedObject *)value
+- (void)addCoursesObject:(NSManagedObject *)value
 {
     NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
 
@@ -53,7 +53,7 @@
     [changedObjects release];
 }
 
--(void)removeCoursesObject:(NSManagedObject *)value
+- (void)removeCoursesObject:(NSManagedObject *)value
 {
     NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
 
@@ -63,21 +63,21 @@
     [changedObjects release];
 }
 
--(void)addCourses:(NSSet *)value
+- (void)addCourses:(NSSet *)value
 {
     [self willChangeValueForKey:@"courses" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
     [[self primitiveValueForKey:@"courses"] unionSet:value];
     [self didChangeValueForKey:@"courses" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
 }
 
--(void)removeCourses:(NSSet *)value
+- (void)removeCourses:(NSSet *)value
 {
     [self willChangeValueForKey:@"courses" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
     [[self primitiveValueForKey:@"courses"] minusSet:value];
     [self didChangeValueForKey:@"courses" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
 
-+(NSInteger)countWithContext:(NSManagedObjectContext *)context course:(NSManagedObject *)course
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context course:(NSManagedObject *)course
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
 
@@ -94,7 +94,7 @@
     return count;
 }
 
-+(void)update:(Participant *)db dict:(NSDictionary *)dict course:(NSManagedObject *)course
++ (void)update:(Participant *)db dict:(NSDictionary *)dict course:(NSManagedObject *)course
 {
     [db setValue:[dict objectForKey:@"id"]    forKey:@"userid"];
     [db setValue:[dict objectForKey:@"firstname"] forKey:@"firstname"];

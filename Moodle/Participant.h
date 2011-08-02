@@ -44,8 +44,8 @@
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSManagedObject *site;
 @property (nonatomic, retain) NSSet *courses;
--(void)addCoursesObject:(NSManagedObject *)value;
--(void)removeCoursesObject:(NSManagedObject *)value;
-+(NSInteger)countWithContext:(NSManagedObjectContext *)context course:(NSManagedObject *)course;
-+(void)update:(Participant *)db dict:(NSDictionary *)dict course:(NSManagedObject *)course;
+- (void)addCoursesObject:(NSManagedObject *)value;
+- (void)removeCoursesObject:(NSManagedObject *)value;
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context course:(NSManagedObject *)course;
++ (void)update:(Participant *)db dict:(NSDictionary *)dict course:(NSManagedObject *)course;
 @end

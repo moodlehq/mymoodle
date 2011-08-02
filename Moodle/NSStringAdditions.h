@@ -11,6 +11,6 @@
 
 @interface NSString (NSStringAdditions)
 
-+(NSString *)base64StringFromData:(NSData *)data length:(int)length;
++ (NSString *)base64StringFromData:(NSData *)data length:(int)length;
 
 @end

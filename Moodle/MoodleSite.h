@@ -13,7 +13,7 @@
 
 #pragma mark -
 #pragma mark Class methods
-+(BOOL)siteExistsForURL:(NSString *)theURL withContext:(NSManagedObjectContext *)moc andUsername:(NSString *)username;
-+(NSInteger)countWithContext:(NSManagedObjectContext *)context;
++ (BOOL)siteExistsForURL:(NSString *)theURL withContext:(NSManagedObjectContext *)moc andUsername:(NSString *)username;
++ (NSInteger)countWithContext:(NSManagedObjectContext *)context;
 
 @end

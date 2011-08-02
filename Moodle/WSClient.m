@@ -17,7 +17,7 @@
 
 @synthesize url;
 
--(id)initWithToken:(NSString *)token withHost:(NSString *)host
+- (id)initWithToken:(NSString *)token withHost:(NSString *)host
 {
     // Note: [NSString stringWithFormat] => autorelease, I changed it for alloc, note I could also have choosen to comment [wsurl release] line instead to do alloc manually
     NSString *wsurl = [[NSString alloc] initWithFormat:@"%@/webservice/xmlrpc/server.php?wstoken=%@", host, token];
@@ -27,7 +27,7 @@
     return self;
 }
 
--(id)invoke:(NSString *)method withParams:(NSArray *)params
+- (id)invoke:(NSString *)method withParams:(NSArray *)params
 {
     if (self.url == nil)
     {
@@ -81,7 +81,7 @@
 }
 
 
--(void)dealloc
+- (void)dealloc
 {
     [super dealloc];
 }

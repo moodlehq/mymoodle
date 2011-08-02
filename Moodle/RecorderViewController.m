@@ -11,18 +11,18 @@
 
 @implementation RecorderViewController
 
--(NSString *)getFilepath
+- (NSString *)getFilepath
 {
     return recorderFilePath;
 }
--(void)uploadCallback:(id)data
+- (void)uploadCallback:(id)data
 {
     HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
     HUD.mode = MBProgressHUDModeCustomView;
     HUD.labelText = @"Completed";
 }
 
--(void)toggleRecordButton
+- (void)toggleRecordButton
 {
     if (recording)
     {
@@ -42,7 +42,7 @@
     }
 }
 
--(void)cleanupFiles
+- (void)cleanupFiles
 {
     // delete all files
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -55,7 +55,7 @@
     }
 }
 
--(void)loadView
+- (void)loadView
 {
     [super loadView];
 
@@ -127,7 +127,7 @@
     [self.view addSubview:_toolbar];
 }
 
--(void)onTimer:(NSTimer *)theTimer
+- (void)onTimer:(NSTimer *)theTimer
 {
     [recorder updateMeters];
 
@@ -145,7 +145,7 @@
     [uv setImage:[UIImage imageNamed:[NSString stringWithFormat:@"level_%d.png", level]]];
 }
 
--(void)startRecording
+- (void)startRecording
 {
     if (recording == NO)
     {
@@ -245,7 +245,7 @@
 }
 
 
--(void)replayAudio:(id)sender
+- (void)replayAudio:(id)sender
 {
     if (playing == NO)
     {
@@ -266,7 +266,7 @@
     }
 }
 
--(NSString *)stringFromFileSize:(int)theSize
+- (NSString *)stringFromFileSize:(int)theSize
 {
     float floatSize = theSize;
 
@@ -289,7 +289,7 @@
     return [NSString stringWithFormat:@"%1.1f GB", floatSize];
 }
 
--(IBAction)uploadPressed:(id)sender
+- (IBAction)uploadPressed:(id)sender
 {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDictionary *fileAttributes = [fm attributesOfItemAtPath:recorderFilePath error:nil];
@@ -303,7 +303,7 @@
     [popupQuery release];
 }
 
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0)
     {
@@ -360,14 +360,14 @@
 
 #pragma mark -
 #pragma mark AVAudioRecorderDelegate method
--(void)audioRecorderDidFinishRecording:(AVAudioRecorder *)aRecorder successfully:(BOOL)flag
+- (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)aRecorder successfully:(BOOL)flag
 {
     [aRecorder release];
 }
 
 #pragma mark -
 #pragma mark AVAudioPlayerDelegate method
--(void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)theplayer successfully:(BOOL)flag
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)theplayer successfully:(BOOL)flag
 {
     playing = NO;
     [theplayer release];
@@ -375,7 +375,7 @@
 
 #pragma mark -
 #pragma mark MBProgressHUDDelegate methods
--(void)hudWasHidden
+- (void)hudWasHidden
 {
     // Remove HUD from screen when the HUD was hidded
     [HUD removeFromSuperview];
@@ -384,26 +384,26 @@
 }
 
 #pragma mark - View lifecycle
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     buttonReplay = nil;
     buttonUpload = nil;
     [super viewDidUnload];
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [buttonReplay release];
     [buttonUpload release];
     [super dealloc];
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -412,18 +412,18 @@
     playing = NO;
 }
 
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     [self cleanupFiles];
 }
 
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return NO;
 }
 
--(void)didReceiveMemoryWarning
+- (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }

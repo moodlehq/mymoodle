@@ -29,7 +29,7 @@ static AppDelegate *moodleApp = NULL;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 
--(id)init
+- (id)init
 {
     MLog(@"Moodle app init");
     if (!moodleApp)
@@ -54,7 +54,7 @@ static AppDelegate *moodleApp = NULL;
 }
 
 
-+(AppDelegate *)sharedMoodleApp
++ (AppDelegate *)sharedMoodleApp
 {
     if (!moodleApp)
     {
@@ -65,13 +65,13 @@ static AppDelegate *moodleApp = NULL;
 }
 
 
--(void)resetSite:(id)object
+- (void)resetSite:(id)object
 {
     NSLog(@"Resetting active site");
     self.site = nil;
 }
 
--(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
@@ -179,7 +179,7 @@ static AppDelegate *moodleApp = NULL;
     return YES;
 }
 
--(void)applicationWillResignActive:(UIApplication *)application
+- (void)applicationWillResignActive:(UIApplication *)application
 {
     /*
      * Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -187,7 +187,7 @@ static AppDelegate *moodleApp = NULL;
      */
 }
 
--(void)applicationDidEnterBackground:(UIApplication *)application
+- (void)applicationDidEnterBackground:(UIApplication *)application
 {
     /*
      * Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
@@ -195,7 +195,7 @@ static AppDelegate *moodleApp = NULL;
      */
 }
 
--(void)applicationWillEnterForeground:(UIApplication *)application
+- (void)applicationWillEnterForeground:(UIApplication *)application
 {
     /*
      * Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
@@ -203,20 +203,20 @@ static AppDelegate *moodleApp = NULL;
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
--(void)applicationDidBecomeActive:(UIApplication *)application
+- (void)applicationDidBecomeActive:(UIApplication *)application
 {
     /*
      * Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
 }
 
--(void)applicationWillTerminate:(UIApplication *)application
+- (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [__managedObjectContext release];
     [__managedObjectModel release];
@@ -224,7 +224,7 @@ static AppDelegate *moodleApp = NULL;
     [super dealloc];
 }
 
--(void)saveContext
+- (void)saveContext
 {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
@@ -250,7 +250,7 @@ static AppDelegate *moodleApp = NULL;
  * Returns the managed object context for the application.
  * If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
  */
--(NSManagedObjectContext *)managedObjectContext
+- (NSManagedObjectContext *)managedObjectContext
 {
     if (__managedObjectContext != nil)
     {
@@ -270,7 +270,7 @@ static AppDelegate *moodleApp = NULL;
  * Returns the managed object model for the application.
  * If the model doesn't already exist, it is created from the application's model.
  */
--(NSManagedObjectModel *)managedObjectModel
+- (NSManagedObjectModel *)managedObjectModel
 {
     if (__managedObjectModel != nil)
     {
@@ -285,7 +285,7 @@ static AppDelegate *moodleApp = NULL;
  * Returns the persistent store coordinator for the application.
  * If the coordinator doesn't already exist, it is created and the application's store added to it.
  */
--(NSPersistentStoreCoordinator *)persistentStoreCoordinator
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
     if (__persistentStoreCoordinator != nil)
     {
@@ -333,24 +333,24 @@ static AppDelegate *moodleApp = NULL;
 /**
  * Returns the URL to the application's Documents directory.
  */
--(NSURL *)applicationDocumentsDirectory
+- (NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 // /////////////////////////////////////////////////////////////////////////////////////////////////
--(BOOL)navigator:(TTNavigator *)navigator shouldOpenURL:(NSURL *)URL
+- (BOOL)navigator:(TTNavigator *)navigator shouldOpenURL:(NSURL *)URL
 {
     return YES;
 }
 
--(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)URL
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)URL
 {
     TTOpenURL([URL absoluteString]);
     return YES;
 }
 
 // Called by Reachability whenever status changes.
--(void)reachabilityChanged:(NSNotification *)note
+- (void)reachabilityChanged:(NSNotification *)note
 {
     Reachability *curReach = [note object];
 

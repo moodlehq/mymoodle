@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface TaskHandler : NSObject
-+(void)sendMessage:(id)data format:(NSString *)dataformat;
-+(void)addNote:(id)data format:(NSString *)dataformat;
-+(void)upload:(id)data format:(NSString *)dataformat;
++ (void)sendMessage:(id)data format:(NSString *)dataformat;
++ (void)addNote:(id)data format:(NSString *)dataformat;
++ (void)upload:(id)data format:(NSString *)dataformat;
 @end

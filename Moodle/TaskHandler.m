@@ -14,7 +14,7 @@
 
 @implementation TaskHandler
 
--(id)init
+- (id)init
 {
     self = [super init];
     if (self)
@@ -26,7 +26,7 @@
 }
 
 // Called by Reachability whenever status changes.
-+(void)reachabilityChanged:(NSNotification *)note
++ (void)reachabilityChanged:(NSNotification *)note
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
@@ -60,7 +60,7 @@
             break;
     }
 }
-+(void)sync
++ (void)sync
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
@@ -97,7 +97,7 @@
 }
 
 
-+(void)upload:(id)data format:(NSString *)dataformat
++ (void)upload:(id)data format:(NSString *)dataformat
 {
     NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
     NSString *uploadurl = [[NSString alloc] initWithFormat:@"%@/webservice/upload.php", host];
@@ -120,7 +120,7 @@
 }
 
 
-+(void)sendMessage:(id)json format:(NSString *)dataformat
++ (void)sendMessage:(id)json format:(NSString *)dataformat
 {
     NSData *data = [json dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *params = [[CJSONDeserializer deserializer] deserializeAsDictionary:data error:nil];
@@ -138,7 +138,7 @@
     [client release];
 }
 
-+(void)addNote:(id)json format:(NSString *)dataformat
++ (void)addNote:(id)json format:(NSString *)dataformat
 {
     NSData *data = [json dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *params = [[CJSONDeserializer deserializer] deserializeAsDictionary:data error:nil];

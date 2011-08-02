@@ -20,17 +20,17 @@
  * "Sites" button action
  *
  */
--(void)displaySettingsView
+- (void)displaySettingsView
 {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sites/"] applyAnimated:YES]];
 }
 
--(void)launchNotification
+- (void)launchNotification
 {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sync/"] applyAnimated:YES]];
 }
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 }
@@ -39,7 +39,7 @@
  * Set up dashboard
  *
  */
--(void)loadView
+- (void)loadView
 {
     [super loadView];
 
@@ -129,7 +129,7 @@
     [header release];
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
@@ -143,7 +143,7 @@
     NSLog(@"autosync: %d", autosync);
 }
 
--(void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
@@ -155,22 +155,22 @@
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 }
 
--(void)viewDidDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
 }
 
--(void)didReceiveMemoryWarning
+- (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     settingsViewController = nil;
     launcherView = nil;
@@ -178,7 +178,7 @@
     [super viewDidUnload];
 }
 
--(void)dealloc
+- (void)dealloc
 {
     // release view controllers
     [settingsViewController release];
@@ -189,7 +189,7 @@
 
 #pragma mark -
 #pragma mark Private methods
--(TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url
+- (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url
 {
     TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle
                                                                    image:image
@@ -200,19 +200,19 @@
 }
 #pragma mark -
 #pragma mark TTLauncherViewDelegate methods
--(void)launcherViewDidBeginEditing:(TTLauncherView *)launcher
+- (void)launcherViewDidBeginEditing:(TTLauncherView *)launcher
 {
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
 
     self.navigationItem.rightBarButtonItem = doneButton;
 }
 
--(void)launcherViewDidEndEditing:(TTLauncherView *)launcher
+- (void)launcherViewDidEndEditing:(TTLauncherView *)launcher
 {
     self.navigationItem.rightBarButtonItem = nil;
 }
 
--(void)launcherView:(TTLauncherView *)launcher didSelectItem:(TTLauncherItem *)item
+- (void)launcherView:(TTLauncherView *)launcher didSelectItem:(TTLauncherItem *)item
 {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:item.URL] applyAnimated:YES]];
 }

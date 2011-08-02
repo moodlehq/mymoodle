@@ -16,13 +16,13 @@
 
 @implementation SettingsSiteViewController
 
--(void)backToRoot
+- (void)backToRoot
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 # pragma mark - private method
--(UITextField *)_createCellTextField
+- (UITextField *)_createCellTextField
 {
     UITextField *field = [[UITextField alloc] initWithFrame:CGRectZero];
 
@@ -39,12 +39,12 @@
 }
 
 # pragma mark - Button actions
--(IBAction)cancel:(id)sender
+- (IBAction)cancel:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void)deleteSite
+- (void)deleteSite
 {
     UIActionSheet *deleteActionSheet = [[UIActionSheet alloc]
                                                  initWithTitle:NSLocalizedString(@"deletesite", nil)
@@ -58,7 +58,7 @@
 }
 
 # pragma mark - action sheet delegate
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     // there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
     if (buttonIndex != [actionSheet cancelButtonIndex])
@@ -195,7 +195,7 @@
     }
 }
 
--(BOOL)validateUrl:(NSString *)candidate
+- (BOOL)validateUrl:(NSString *)candidate
 {
     NSString *urlRegEx = @"(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+";
     NSPredicate *urlTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx];
@@ -203,7 +203,7 @@
     return [urlTest evaluateWithObject:candidate];
 }
 
--(void)login
+- (void)login
 {
     NSManagedObjectContext *context = appDelegate.managedObjectContext;
     NSString *siteurl;
@@ -388,7 +388,7 @@
 }
 
 
--(void)saveButtonPressed:(id)sender
+- (void)saveButtonPressed:(id)sender
 {
     [editingField resignFirstResponder];
     if ([[passwordField text] isEqualToString:@""])
@@ -406,7 +406,7 @@
     [HUD showWhileExecuting:@selector(login) onTarget:self withObject:nil animated:YES];
 }
 
--(IBAction)textFieldDone:(id)sender
+- (IBAction)textFieldDone:(id)sender
 {
     UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
     UITableView *table = (UITableView *)[cell superview];
@@ -435,7 +435,7 @@
 
 #pragma mark - View lifecycle
 
--(id)initWithNew:(NSString *)new
+- (id)initWithNew:(NSString *)new
 {
     if ((self = [self initWithStyle:UITableViewStyleGrouped]))
     {
@@ -452,17 +452,17 @@
     return self;
 }
 
--(void)loadView
+- (void)loadView
 {
     [super loadView];
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [super dealloc];
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [super viewWillAppear:animated];
@@ -545,7 +545,7 @@
     }
 }
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
 
@@ -583,12 +583,12 @@
 
 #pragma mark - Table view data source
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return kNumberOfEditableRows;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([indexPath row] == 0)
     {
@@ -609,12 +609,12 @@
 }
 #pragma mark -
 #pragma mark Table Delegate Methods
--(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return nil;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 0)
     {
@@ -626,7 +626,7 @@
     }
 }
 
--(UIView *)tableView:(UITableView *)table viewForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)table viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0)
     {
@@ -642,12 +642,12 @@
 #pragma mark textfield delegate method
 
 
--(void)textFieldDidBeginEditing:(UITextField *)textField;
+- (void)textFieldDidBeginEditing:(UITextField *)textField;
 {
     editingField = textField;
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     if (textField == siteurlField)
     {
@@ -665,12 +665,12 @@
     return YES;
 }
 
--(void)dismissKeyboard:(UITapGestureRecognizer *)sender
+- (void)dismissKeyboard:(UITapGestureRecognizer *)sender
 {
     [editingField resignFirstResponder];
 }
 
--(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([touch.view isKindOfClass:[UIButton class]])
     {
@@ -681,7 +681,7 @@
 
 #pragma mark -
 #pragma mark MBProgressHUDDelegate methods
--(void)hudWasHidden
+- (void)hudWasHidden
 {
     [HUD removeFromSuperview];
     [HUD release];

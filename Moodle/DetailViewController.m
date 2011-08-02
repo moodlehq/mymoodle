@@ -22,7 +22,7 @@
 @synthesize course = _course;
 
 // load user
--(void)updateParticipant
+- (void)updateParticipant
 {
     WSClient *client = [[WSClient alloc] init];
 
@@ -64,7 +64,7 @@
     [client release];
 }
 
--(void)addContact
+- (void)addContact
 {
     ABAddressBookRef addressBook = ABAddressBookCreate();
     ABRecordRef person = ABPersonCreate();
@@ -127,7 +127,7 @@
     [alert release];
 }
 
--(UIViewController *)post:(NSDictionary *)query
+- (UIViewController *)post:(NSDictionary *)query
 {
     UIButton *btn = [query objectForKey:@"__target__"];
     NSString *title;
@@ -160,7 +160,7 @@
  *
  * @return whether to dismiss the controller or wait for the user to call dismiss.
  */
--(BOOL)postController:(TTPostController *)postController willPostText:(NSString *)text
+- (BOOL)postController:(TTPostController *)postController willPostText:(NSString *)text
 {
     return YES;
 }
@@ -168,7 +168,7 @@
 /**
  * The text has been posted.
  */
--(void)postController:(TTPostController *)postController
+- (void)postController:(TTPostController *)postController
    didPostText:(NSString *)text
    withResult:(id)result
 {
@@ -311,11 +311,11 @@
 /**
  * The controller was cancelled before posting.
  */
--(void)postControllerDidCancel:(TTPostController *)postController
+- (void)postControllerDidCancel:(TTPostController *)postController
 {
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [contactinfo release];
     [geoinfo release];
@@ -324,7 +324,7 @@
     [super dealloc];
 }
 
--(void)didReceiveMemoryWarning
+- (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -333,7 +333,7 @@
 #pragma mark - View lifecycle
 
 
--(id)initWithNew:(NSString *)new
+- (id)initWithNew:(NSString *)new
 {
     if ((self = [self initWithStyle:UITableViewStyleGrouped]))
     {
@@ -341,13 +341,13 @@
     return self;
 }
 
--(void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [[TTNavigator navigator].URLMap from:@"tt://post" toViewController:self selector:@selector(post:)];
 }
 
--(NSDictionary *)createInfo:(NSString *)key value:(NSString *)value
+- (NSDictionary *)createInfo:(NSString *)key value:(NSString *)value
 {
     NSDictionary *dict = [[[NSDictionary alloc] initWithObjectsAndKeys:value, key, nil] autorelease];
 
@@ -355,7 +355,7 @@
 }
 
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"details", nil);
@@ -371,26 +371,26 @@
     [recognizer release];
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     [super viewDidUnload];
     self.participant = nil;
     self.course = nil;
 }
 
--(void)viewDidDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     [[TTNavigator navigator].URLMap removeURL:@"tt://post"];
 }
 
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
     return interfaceOrientation == UIInterfaceOrientationPortrait;
 }
 
--(void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 
@@ -500,7 +500,7 @@
 
 
 
--(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     return YES;
 }
@@ -508,7 +508,7 @@
 /*
  * In response to a swipe gesture, show the image view appropriately then move the image view in the direction of the swipe as it fades out.
  */
--(void)handleSwipeFrom:(UISwipeGestureRecognizer *)recognizer
+- (void)handleSwipeFrom:(UISwipeGestureRecognizer *)recognizer
 {
     CGPoint location = [recognizer locationInView:self.view];
 
@@ -528,14 +528,14 @@
 #pragma mark -
 #pragma mark Table view data source
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // There are three sections, for date, genre, and characters, in that order.
     return 3;
 }
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     /*
      * The number of rows varies by section.
@@ -562,11 +562,11 @@
     return rows;
 }
 
--(void)configureCell
+- (void)configureCell
 {
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -670,7 +670,7 @@
     }
     return cell;
 }
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
     if (indexPath.section == 0)               // description field
     {
@@ -707,7 +707,7 @@
 #pragma mark -
 #pragma mark Section header titles
 
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString *title = nil;
 
@@ -731,13 +731,13 @@
     return title;
 }
 
--(void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
+- (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
 {
     userpicture.image = image;
 }
 
 
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == [alertView cancelButtonIndex])
     {

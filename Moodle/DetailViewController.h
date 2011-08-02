@@ -36,6 +36,6 @@
 }
 @property (nonatomic, retain) Participant *participant;
 @property (nonatomic, retain) NSManagedObject *course;
--(void)updateParticipant;
--(NSDictionary *)createInfo:(NSString *)key value:(NSString *)value;
+- (void)updateParticipant;
+- (NSDictionary *)createInfo:(NSString *)key value:(NSString *)value;
 @end
