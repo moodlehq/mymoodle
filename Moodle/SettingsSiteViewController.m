@@ -42,10 +42,10 @@
 
 -(void)deleteSite {
     UIActionSheet *deleteActionSheet = [[UIActionSheet alloc]
-                                            initWithTitle:NSLocalizedString(@"deletesite", "Delete the site")
+                                            initWithTitle:NSLocalizedString(@"deletesite", nil)
                                             delegate:self
-                                            cancelButtonTitle: NSLocalizedString(@"donotdeletesite", "Do not delete the site")
-                                            destructiveButtonTitle: NSLocalizedString(@"dodeletesite", "Do delete the site")
+                                            cancelButtonTitle: NSLocalizedString(@"cancel", nil)
+                                            destructiveButtonTitle: NSLocalizedString(@"delete", nil)
                                             otherButtonTitles:nil];
     [deleteActionSheet showInView: self.view];
     [deleteActionSheet release];
@@ -60,7 +60,8 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *defaultSiteUrl = [defaults objectForKey: kSelectedSiteUrlKey];
         NSNumber *defaultUserId  = [defaults objectForKey: kSelectedUserIdKey];
-        
+
+        BOOL resetCurrentSite = NO;
         // delete current site
         if (([[appDelegate.site valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[appDelegate.site valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId])) {
             [defaults removeObjectForKey:kSelectedSiteUrlKey];
@@ -73,12 +74,81 @@
                                          @"", kSelectedSiteTokenKey,
                                          @"", kSelectedUserIdKey,
                                          nil];
-
+            
             [defaults registerDefaults: appDefaults];
             [NSUserDefaults resetStandardUserDefaults];
+            resetCurrentSite = YES;
         }
-        //delete the entry
+
+        // delete main user
+        NSFetchRequest *mainuserRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *mainuserDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:appDelegate.managedObjectContext];
+        [mainuserRequest setEntity:mainuserDescription];
+        NSPredicate *mainuserPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+        [mainuserRequest setPredicate: mainuserPredicate];
+        NSArray *mainusers = [appDelegate.managedObjectContext executeFetchRequest: mainuserRequest error: nil];
+        for (NSManagedObject *mainuser in mainusers) {
+            [appDelegate.managedObjectContext deleteObject: mainuser];
+        }
+        [mainuserRequest release];
+        NSLog(@"Deleted mainuser");
+
+        // delete web services
+        NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *wsDescription = [NSEntityDescription entityForName:@"Job" inManagedObjectContext:appDelegate.managedObjectContext];
+        [wsRequest setEntity:wsDescription];
+        NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+        [wsRequest setPredicate: wsPredicate];
+        NSArray *webservices = [appDelegate.managedObjectContext executeFetchRequest: wsRequest error: nil];
+        for (NSManagedObject *ws in webservices) {
+            [appDelegate.managedObjectContext deleteObject: ws];
+        }
+        [wsRequest release];
+        NSLog(@"Deleted web services");
+    
+        // delete all jobs
+        NSFetchRequest *taskRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *taskDescription = [NSEntityDescription entityForName:@"Job" inManagedObjectContext:appDelegate.managedObjectContext];
+        [taskRequest setEntity:taskDescription];
+        NSPredicate *taskPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+        [taskRequest setPredicate: taskPredicate];
+        NSArray *tasks = [appDelegate.managedObjectContext executeFetchRequest: taskRequest error: nil];
+        for (NSManagedObject *task in tasks) {
+            [appDelegate.managedObjectContext deleteObject: task];
+        }
+        [taskRequest release];
+        NSLog(@"Deleted tasks");
+
+        // delete all courses
+        NSFetchRequest *courseRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *courseDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:appDelegate.managedObjectContext];
+        [courseRequest setEntity:courseDescription];
+        NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+        [courseRequest setPredicate: coursePredicate];
+        NSArray *allCourses = [appDelegate.managedObjectContext executeFetchRequest: courseRequest error: nil];
+        for (NSManagedObject *course in allCourses) {
+            [appDelegate.managedObjectContext deleteObject: course];
+        }
+        [courseRequest release];
+        NSLog(@"Deleted courses");
+
+        // delete all participants
+        NSFetchRequest *userRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *userDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:appDelegate.managedObjectContext];
+        [userRequest setEntity:userDescription];
+        NSPredicate *userPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+        [userRequest setPredicate:userPredicate];
+        NSArray *users = [appDelegate.managedObjectContext executeFetchRequest: userRequest error: nil];
+        for (NSManagedObject *user in users) {
+            [appDelegate.managedObjectContext deleteObject: user];
+        } 
+        [userRequest release];
+        NSLog(@"Deleted users");
+
+        // delete site entry
         [appDelegate.managedObjectContext deleteObject: appDelegate.site];
+        NSLog(@"Deleted site");
+
         NSError *error;
         if (![appDelegate.managedObjectContext save:&error]) {
             NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
@@ -91,10 +161,13 @@
                 NSLog(@"  %@", [error userInfo]);
             }
         }
-        
-        // send notification to appdelete to reset site
-        [[NSNotificationCenter defaultCenter] postNotificationName: kResetSite
-                                                            object: nil];
+
+        if (resetCurrentSite) {
+            // send notification to appdelete to reset site
+            [[NSNotificationCenter defaultCenter] postNotificationName: kResetSite
+                                                                object: nil];
+        }
+
         //return the list of sites
         NSArray *allControllers = self.navigationController.viewControllers;
         UITableViewController *parent = [allControllers lastObject];
@@ -135,8 +208,17 @@
 //    [request setCompletionBlock: ^{    }];
     [request startSynchronous];
     
-    NSLog(@"Token info: %@", [request responseString]);
     NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary: [request responseData] error: nil];
+
+    NSLog(@"Token info: %@", [request responseString]);
+    
+    if ([token valueForKey: @"error"]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle: NSLocalizedString(@"error", nil) message: NSLocalizedString(@"invalidaccount", nil) delegate: self cancelButtonTitle: NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+        [alert show];
+        [alert release];
+        return;
+    }
+    
     NSString *sitetoken = [token valueForKey: @"token"];
     @try {
         //retrieve the site name
@@ -157,7 +239,10 @@
             NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
             NSLog(@"Sites info %@", sites);
             
+            BOOL updateExistingAccount = NO;
             if ([sites count] > 0) {
+                NSLog(@"updating existing site");
+                updateExistingAccount = YES;
                 appDelegate.site = [sites lastObject];
             } else {
                 appDelegate.site = [NSEntityDescription insertNewObjectForEntityForName: [siteEntity name] inManagedObjectContext:context];
@@ -175,7 +260,7 @@
             NSManagedObject *webservice;
             NSArray *webservices = [siteinfo objectForKey:@"functions"];
             //retrieve participant main user
-            if (newEntry) {
+            if (newEntry && !updateExistingAccount) {
                 NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
                 user = [NSEntityDescription insertNewObjectForEntityForName: [mainUserDesc name]
                                                      inManagedObjectContext: context];
@@ -197,11 +282,21 @@
             }
             NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
             for (NSDictionary *ws in webservices) {
-                webservice = [NSEntityDescription insertNewObjectForEntityForName: [wsDesc name] inManagedObjectContext:context];
-                [webservice setValue:[ws valueForKey:@"name"] forKey:@"name"];
-                [webservice setValue:appDelegate.site forKey:@"site"];
-                int version = [[ws valueForKey:@"version"] intValue];
-                [webservice setValue: [NSNumber numberWithInt: version] forKey:@"version"];
+                NSFetchRequest *wsRequest = [[[NSFetchRequest alloc] init] autorelease];
+                NSEntityDescription *wsEntity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
+                [wsRequest setEntity: wsEntity];
+                NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"name = %@", [ws valueForKey:@"name"]];
+                [wsRequest setPredicate:wsPredicate];
+                NSArray *ws = [context executeFetchRequest:wsRequest error:&error];
+                if ([ws count] > 0) {
+                    NSLog(@"ws already added before");
+                } else {
+                    webservice = [NSEntityDescription insertNewObjectForEntityForName: [wsDesc name] inManagedObjectContext:context];
+                    [webservice setValue:[ws valueForKey:@"name"] forKey:@"name"];
+                    [webservice setValue:appDelegate.site forKey:@"site"];
+                    int version = [[ws valueForKey:@"version"] intValue];
+                    [webservice setValue: [NSNumber numberWithInt: version] forKey:@"version"];
+                }
             }
             [user setValue: [siteinfo objectForKey:@"userid"]    forKey:@"userid"];
             [user setValue: [siteinfo objectForKey:@"username"]  forKey:@"username"];
@@ -251,6 +346,13 @@
 
 - (void)saveButtonPressed: (id)sender
 {
+    [editingField resignFirstResponder];
+    if ([[passwordField text] isEqualToString:@""]) {
+        UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle: NSLocalizedString(@"error", nil) message: NSLocalizedString(@"passwordnotnull", nil) delegate:self cancelButtonTitle: NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+        [passwordAlert show];
+        [passwordAlert release];
+        return;
+    }
     // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
     HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
     [self.view.window addSubview:HUD];
@@ -286,7 +388,6 @@
 - (id)initWithNew: (NSString *)new {
 
     if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
-
         if ([new isEqualToString:@"no"]) {
             newEntry = NO;
         } else {
@@ -307,9 +408,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-
-    [[self navigationController] setNavigationBarHidden:NO animated:NO];
-
     [super viewWillAppear:animated];
 
     self.navigationController.view.backgroundColor = UIColorFromRGB(LoginBackground);
@@ -363,6 +461,8 @@
     [topLabel setText:@"moodle"];
 
     if (!newEntry) {
+        [self.navigationItem.rightBarButtonItem setTitle: NSLocalizedString(@"update", nil)];
+        [passwordField setText:@""];
         int buttonWidth = 300;
         int buttonHeight = 45;
         UIView *buttonView = [[UIView alloc] initWithFrame:CGRectMake(10, 0, buttonWidth, buttonHeight)];
