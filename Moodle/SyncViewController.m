@@ -138,7 +138,7 @@
     [super viewWillAppear:animated];
 
     self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc]
-                                              initWithTitle:NSLocalizedString(@"cancel", @"Cancel") style:UIBarButtonItemStyleBordered
+                                              initWithTitle:NSLocalizedString(@"back", nil) style:UIBarButtonItemStyleBordered
                                               target:self action:@selector(dismiss)] autorelease];
  
     BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey: kAutoSync];

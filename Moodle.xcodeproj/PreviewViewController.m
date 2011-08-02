@@ -36,7 +36,7 @@
     imageView.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - TTToolbarHeight() - self.navigationController.navigationBar.frame.size.height);
     [self.view addSubview: imageView];
 
-    UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"sendtosite", @"Send to site") style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
+    UIBarButtonItem *buttonUpload = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", nil) style:UIBarButtonItemStylePlain target:self action:@selector(uploadPressed:)];
     
     UIBarItem* space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
                          UIBarButtonSystemItemFlexibleSpace target:nil action:nil] autorelease];

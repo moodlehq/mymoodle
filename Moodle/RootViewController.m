@@ -118,7 +118,7 @@
     // Header
     header = [[UITextView alloc] initWithFrame:CGRectMake(90, 10, 310-90, 70)];
     [header setTextColor:UIColorFromRGB(ColorToolbar)];
-    [header setFont:[UIFont fontWithName:@"SoulPapa" size:32]];
+    [header setFont:[UIFont systemFontOfSize: 24.0f]];
     [header setBackgroundColor:[UIColor clearColor]];
     [header setTextAlignment:UITextAlignmentRight];
     header.userInteractionEnabled = NO;
