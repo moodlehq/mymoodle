@@ -14,46 +14,55 @@
 #import <TargetConditionals.h>
 
 @implementation UploadViewController
--(NSString *)getFilepath {
+-(NSString *)getFilepath
+{
     return filePath;
 }
 
-- (void)uploadCallback: (id)data {
+-(void)uploadCallback:(id)data
+{
     // update HUD text
-	HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
-	HUD.mode = MBProgressHUDModeCustomView;
-	HUD.labelText = @"Completed";
+    HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
+    HUD.mode = MBProgressHUDModeCustomView;
+    HUD.labelText = @"Completed";
 }
 
-//this is an Apple function to detect if AAC is enabled
-//Source: http://developer.apple.com/library/ios/#qa/qa1663/_index.html
+// this is an Apple function to detect if AAC is enabled
+// Source: http://developer.apple.com/library/ios/#qa/qa1663/_index.html
 Boolean IsAACHardwareEncoderAvailable(void)
 {
-    if (TARGET_IPHONE_SIMULATOR) {
+    if (TARGET_IPHONE_SIMULATOR)
+    {
         return true;
     }
 
     Boolean isAvailable = false;
     OSStatus error;
 
-    // get an array of AudioClassDescriptions for all installed encoders for the given format 
+    // get an array of AudioClassDescriptions for all installed encoders for the given format
     // the specifier is the format that we are interested in - this is 'aac ' in our case
     UInt32 encoderSpecifier = kAudioFormatMPEG4AAC;
     UInt32 size;
 
     error = AudioFormatGetPropertyInfo(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size);
-    if (error) { 
-        printf("AudioFormatGetPropertyInfo kAudioFormatProperty_Encoders error %lu %4.4s\n", error, (char*)&error); return false; 
+    if (error)
+    {
+        printf("AudioFormatGetPropertyInfo kAudioFormatProperty_Encoders error %lu %4.4s\n", error, (char *)&error); return false;
     }
 
     UInt32 numEncoders = size / sizeof(AudioClassDescription);
     AudioClassDescription encoderDescriptions[numEncoders];
 
     error = AudioFormatGetProperty(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size, encoderDescriptions);
-    if (error) { printf("AudioFormatGetProperty kAudioFormatProperty_Encoders error %lu %4.4s\n", error, (char*)&error); return false; }
+    if (error)
+    {
+        printf("AudioFormatGetProperty kAudioFormatProperty_Encoders error %lu %4.4s\n", error, (char *)&error); return false;
+    }
 
-    for (UInt32 i=0; i < numEncoders; ++i) {
-        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleHardwareAudioCodecManufacturer) {
+    for (UInt32 i = 0; i < numEncoders; ++i)
+    {
+        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleHardwareAudioCodecManufacturer)
+        {
             isAvailable = true;
         }
     }
@@ -61,12 +70,12 @@ Boolean IsAACHardwareEncoderAvailable(void)
     return isAvailable;
 }
 
-- (void)dealloc
+-(void)dealloc
 {
     [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning
+-(void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
@@ -74,24 +83,24 @@ Boolean IsAACHardwareEncoderAvailable(void)
 #pragma mark - View lifecycle
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
+-(void)loadView
 {
     [super loadView];
     self.title = NSLocalizedString(@"Upload", nil);
-    
-    UIImageView *appBg = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"screen_bg.png"]];
+
+    UIImageView *appBg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"screen_bg.png"]];
     appBg.frame = CGRectMake(0, 0, 320, 416);
     [self.view addSubview:appBg];
     [appBg release];
 
-    UIImageView *uploadIcon = [[UIImageView alloc] initWithFrame:CGRectMake(120-57, 25, 57, 57)];
+    UIImageView *uploadIcon = [[UIImageView alloc] initWithFrame:CGRectMake(120 - 57, 25, 57, 57)];
     [uploadIcon setImage:[UIImage imageNamed:@"upload_title.png"]];
-    [self.view  addSubview:uploadIcon];
+    [self.view addSubview:uploadIcon];
     [uploadIcon release];
 
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(130, 35, 190, 55)];
-    [title setText: NSLocalizedString(@"Upload", nil)];
-    [title setFont: [UIFont fontWithName:@"SoulPapa" size:40]];
+    [title setText:NSLocalizedString(@"Upload", nil)];
+    [title setFont:[UIFont fontWithName:@"SoulPapa" size:40]];
     [title setBackgroundColor:[UIColor clearColor]];
     [self.view addSubview:title];
     [title release];
@@ -100,60 +109,64 @@ Boolean IsAACHardwareEncoderAvailable(void)
     int y = 90;
     int width = 290;
     int height = 90;
-    TTButton *tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"browsephotoalbums", "Browse photo albums")];
+    TTButton *tbutton = [TTButton buttonWithStyle:@"fatButton:" title:NSLocalizedString(@"browsephotoalbums", "Browse photo albums")];
     [tbutton setImage:@"bundle://upload_photo_album.png" forState:UIControlStateNormal];
     [tbutton addTarget:self
-               action:@selector(loadGallery:)
-                forControlEvents:UIControlEventTouchUpInside];
+                action:@selector(loadGallery:)
+      forControlEvents:UIControlEventTouchUpInside];
     [tbutton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
     tbutton.frame = CGRectMake(x, y, width, height);
     [self.view addSubview:tbutton];
 
 
-    tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"takepicture", "Take a picture or video")];
+    tbutton = [TTButton buttonWithStyle:@"fatButton:" title:NSLocalizedString(@"takepicture", "Take a picture or video")];
     [tbutton setImage:@"bundle://upload_camera.png" forState:UIControlStateNormal];
 
     [tbutton addTarget:self
-               action:@selector(loadCamera:)
-     forControlEvents:UIControlEventTouchUpInside];
+                action:@selector(loadCamera:)
+      forControlEvents:UIControlEventTouchUpInside];
     [tbutton setTitle:NSLocalizedString(@"takepicture", @"Take a picture or video") forState:UIControlStateNormal];
-    tbutton.frame = CGRectMake(x, 70+90+40, width, height);
+    tbutton.frame = CGRectMake(x, 70 + 90 + 40, width, height);
     [self.view addSubview:tbutton];
 
-    if (IsAACHardwareEncoderAvailable()) {
-        tbutton = [TTButton buttonWithStyle:@"fatButton:" title: NSLocalizedString(@"recordaudio", "Record audio")];
+    if (IsAACHardwareEncoderAvailable())
+    {
+        tbutton = [TTButton buttonWithStyle:@"fatButton:" title:NSLocalizedString(@"recordaudio", "Record audio")];
         [tbutton setImage:@"bundle://upload_audio.png" forState:UIControlStateNormal];
 
         [tbutton addTarget:self
-               action:@selector(loadRecorder:)
-         forControlEvents:UIControlEventTouchUpInside];
-        tbutton.frame = CGRectMake(x, 70+90*2+60, width, height);
+                    action:@selector(loadRecorder:)
+          forControlEvents:UIControlEventTouchUpInside];
+        tbutton.frame = CGRectMake(x, 70 + 90 * 2 + 60, width, height);
         [self.view addSubview:tbutton];
     }
 }
 
 
-- (void)viewDidLoad
+-(void)viewDidLoad
 {
-   [super viewDidLoad];
+    [super viewDidLoad];
 }
 
-- (void)viewDidUnload
+-(void)viewDidUnload
 {
     [super viewDidUnload];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+-(void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:animated];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 
--(void)loadPreview: (NSString *)filepath withFilename: (NSString *)filename {
+-(void)loadPreview:(NSString *)filepath withFilename:(NSString *)filename
+{
     PreviewViewController *previewViewController = [[PreviewViewController alloc] init];
-    //set the dashboard back button just before to push the settings view
-    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle: NSLocalizedString(@"upload", nil) style: UIBarButtonItemStyleBordered target: nil action: nil];
-    [[self navigationItem] setBackBarButtonItem: newBackButton];
+    // set the dashboard back button just before to push the settings view
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"upload", nil) style:UIBarButtonItemStyleBordered target:nil action:nil];
+
+    [[self navigationItem] setBackBarButtonItem:newBackButton];
     [newBackButton release];
     previewViewController.fileName = filename;
     previewViewController.filePath = filepath;
@@ -161,26 +174,34 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [previewViewController release];
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
     NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
     NSString *strtimestamp = [now description];
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    if ([mediaType isEqualToString: @"public.image"]) {
+
+    if ([mediaType isEqualToString:@"public.image"])
+    {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
         fileName = [[NSString stringWithFormat:@"%@.jpg", strtimestamp] retain];
         filePath = [[NSString stringWithFormat:@"%@/%@", PHOTO_FOLDER, fileName] retain];
-        [UIImageJPEGRepresentation(image, 1.0f) writeToFile: filePath atomically:YES];
-        if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
+        [UIImageJPEGRepresentation (image, 1.0f) writeToFile:filePath atomically:YES];
+        if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"])
+        {
             // Picked from camera, saving to photo album
 //            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
             picker.view.hidden = YES;
             [picker.parentViewController dismissModalViewControllerAnimated:YES];
             [self uploadAction];
-        } else {
-            [picker.parentViewController dismissModalViewControllerAnimated:YES];
-            [self loadPreview: filePath withFilename: fileName];
         }
-    } else if ([mediaType isEqualToString:@"public.movie"]) {
+        else
+        {
+            [picker.parentViewController dismissModalViewControllerAnimated:YES];
+            [self loadPreview:filePath withFilename:fileName];
+        }
+    }
+    else if ([mediaType isEqualToString:@"public.movie"])
+    {
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
         NSString *filename = [NSString stringWithFormat:@"%@.mov", strtimestamp];
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
@@ -193,32 +214,38 @@ Boolean IsAACHardwareEncoderAvailable(void)
     }
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
     [picker dismissModalViewControllerAnimated:YES];
 }
 
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+-(void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
     UIAlertView *alert;
 
     // Unable to save the image
-    if (error) {
+    if (error)
+    {
         alert = [[UIAlertView alloc] initWithTitle:@"Error"
                                            message:@"Unable to save image to Photo Album."
                                           delegate:self cancelButtonTitle:@"OK"
                                  otherButtonTitles:nil];
-        
+
         [alert show];
         [alert release];
-    } else { // All is well
-//        alert = [[UIAlertView alloc] initWithTitle:@"Success"
+    }
+    else                 // All is well
+    {   //        alert = [[UIAlertView alloc] initWithTitle:@"Success"
 //                                           message:@"Image saved to Photo Album."
 //                                          delegate:self cancelButtonTitle:@"Ok"
 //                                 otherButtonTitles:nil];
     }
 }
 
-- (void)loadGallery:(id)sender {
+-(void)loadGallery:(id)sender
+{
     MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
+
     imagePicker.delegate = self;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     [self presentModalViewController:imagePicker animated:YES];
@@ -226,7 +253,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
 //    if ([device rangeOfString:@"iPad"].location == NSNotFound) {
 //    } else {
 //        UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:imagePicker] ;
-//        [popover presentPopoverFromRect:CGRectMake(0, 0, 0.0, 0.0) 
+//        [popover presentPopoverFromRect:CGRectMake(0, 0, 0.0, 0.0)
 //                                 inView:self.view
 //               permittedArrowDirections:UIPopoverArrowDirectionAny
 //                               animated:YES];
@@ -234,72 +261,83 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [imagePicker release];
 }
 
-- (void)loadCamera:(id)sender {
-    if ([MoodleImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+-(void)loadCamera:(id)sender
+{
+    if ([MoodleImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
         MoodleImagePickerController *imagePicker = [[MoodleImagePickerController alloc] init];
-        [[[UIApplication sharedApplication] keyWindow] setRootViewController: imagePicker];
+        [[[UIApplication sharedApplication] keyWindow] setRootViewController:imagePicker];
         imagePicker.delegate = self;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType: imagePicker.sourceType];
+        imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:imagePicker.sourceType];
         [self presentModalViewController:imagePicker animated:YES];
         [imagePicker release];
-    } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"errorcamera", @"Error accessing camera") message:NSLocalizedString(@"errorcameramsg", @"Device does not support a camera") delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"errorcamera", @"Error accessing camera") message:NSLocalizedString(@"errorcameramsg", @"Device does not support a camera") delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         [alert release];
     }
 }
 
-- (void)loadRecorder:(id)sender {
+-(void)loadRecorder:(id)sender
+{
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://recorder/"] applyAnimated:YES]];
 }
 
-- (void)uploadAction {
-    if (appDelegate.netStatus == NotReachable) {
+-(void)uploadAction
+{
+    if (appDelegate.netStatus == NotReachable)
+    {
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-        
+
         NSString *offlineFile = [NSString stringWithFormat:@"%@/%@", OFFLINE_FOLDER, fileName];
-        [fileManager moveItemAtPath: filePath toPath:offlineFile error:nil];
-        
-        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
+        [fileManager moveItemAtPath:filePath toPath:offlineFile error:nil];
+
+        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName:@"Job" inManagedObjectContext:managedObjectContext] retain] autorelease];
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat: @"MM-dd HH:mm:ss"];
+        [formatter setDateFormat:@"MM-dd HH:mm:ss"];
         NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
         [formatter release];
-        [job setValue: @"TaskHandler"    forKey: @"target"];
-        [job setValue: @"upload"         forKey: @"action"];
-        [job setValue: [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"albumpicture", nil), stringFromDate] forKey: @"desc"];
-        [job setValue: offlineFile       forKey: @"data"];
-        [job setValue: @"path"           forKey: @"dataformat"];
-        [job setValue: @"undone"         forKey: @"status"];
-        [job setValue: appDelegate.site  forKey: @"site"];
-        [job setValue: [NSDate date]     forKey: @"created"];
-        
+        [job setValue:@"TaskHandler"    forKey:@"target"];
+        [job setValue:@"upload"         forKey:@"action"];
+        [job setValue:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"albumpicture", nil), stringFromDate] forKey:@"desc"];
+        [job setValue:offlineFile forKey:@"data"];
+        [job setValue:@"path"           forKey:@"dataformat"];
+        [job setValue:@"undone"         forKey:@"status"];
+        [job setValue:appDelegate.site forKey:@"site"];
+        [job setValue:[NSDate date]     forKey:@"created"];
+
         NSError *error;
-        if (![managedObjectContext save: &error]) {
+        if (![managedObjectContext save:&error])
+        {
             NSLog(@"Error saving entity: %@", [error localizedDescription]);
         }
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"networkerror", @"Network not reachable") message:NSLocalizedString(@"addedtoqueue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil];
         [alert show];
         [alert release];
-    } else {
+    }
+    else
+    {
         // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
         HUD = [[MBProgressHUD alloc] initWithView:self.view];
         [self.view addSubview:HUD];
         // Regiser for HUD callbacks so we can remove it from the window at the right time
         HUD.delegate = self;
         // Show the HUD while the provided method executes in a new thread
-        [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject: self animated:YES];
+        [HUD showWhileExecuting:@selector(upload:) onTarget:[MoodleMedia class] withObject:self animated:YES];
     }
 }
 
 #pragma mark -
 #pragma mark MBProgressHUDDelegate methods
-- (void)hudWasHidden {
+-(void)hudWasHidden
+{
     // Remove HUD from screen when the HUD was hidded
     [HUD removeFromSuperview];
     [HUD release];
-	HUD = nil;
+    HUD = nil;
 }
 @end

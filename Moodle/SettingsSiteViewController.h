@@ -12,35 +12,35 @@
 #import "MBProgressHUD.h"
 
 #define kNumberOfEditableRows 3
-#define kUrlIndex 0
-#define kUsernameIndex 1
-#define kPasswordIndex 2
+#define kUrlIndex             0
+#define kUsernameIndex        1
+#define kPasswordIndex        2
 
-#define kLabelTag 4096
+#define kLabelTag             4096
 
 
 @interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, MBProgressHUDDelegate> {
     AppDelegate *appDelegate;
 
     BOOL newEntry;
-    
+
     MBProgressHUD *HUD;
-    
+
     UITextField *editingField;
 
     UITableViewCell *siteurlCell;
-    UITextField     *siteurlField;
-   
+    UITextField *siteurlField;
+
     UITableViewCell *usernameCell;
-    UITextField     *usernameField;
-    
+    UITextField *usernameField;
+
     UITableViewCell *passwordCell;
-    UITextField     *passwordField;
+    UITextField *passwordField;
 
     UILabel *topLabel;
 }
-- (IBAction)cancel:(id)sender;
-- (IBAction)saveButtonPressed:(id)sender;
-- (IBAction)textFieldDone:(id)sender;
-- (void)deleteSite;
+-(IBAction)cancel:(id)sender;
+-(IBAction)saveButtonPressed:(id)sender;
+-(IBAction)textFieldDone:(id)sender;
+-(void)deleteSite;
 @end

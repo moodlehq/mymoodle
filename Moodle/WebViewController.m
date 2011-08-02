@@ -11,11 +11,12 @@
 
 @implementation WebViewController
 
-- (void)loadView {
+-(void)loadView
+{
     [super loadView];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
     [super viewWillAppear:animated];

@@ -11,16 +11,16 @@
 
 
 @interface MoodleJob : NSManagedObject {
-@private
+    @private
 }
-@property (nonatomic, retain) NSString * status;
-@property (nonatomic, retain) NSString * target;
-@property (nonatomic, retain) NSString * action;
-@property (nonatomic, retain) NSString * data;
-@property (nonatomic, retain) NSString * dataformat;
-@property (nonatomic, retain) NSString * created;
-@property (nonatomic, retain) NSString * desc;
-@property (nonatomic, retain) NSManagedObject * site;
-+ (NSInteger)countWithContext:(NSManagedObjectContext *)context;
+@property (nonatomic, retain) NSString *status;
+@property (nonatomic, retain) NSString *target;
+@property (nonatomic, retain) NSString *action;
+@property (nonatomic, retain) NSString *data;
+@property (nonatomic, retain) NSString *dataformat;
+@property (nonatomic, retain) NSString *created;
+@property (nonatomic, retain) NSString *desc;
+@property (nonatomic, retain) NSManagedObject *site;
++(NSInteger)countWithContext:(NSManagedObjectContext *)context;
 
 @end

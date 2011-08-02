@@ -25,25 +25,27 @@
 
 static AppDelegate *moodleApp = NULL;
 
-@synthesize managedObjectContext=__managedObjectContext;
-@synthesize managedObjectModel=__managedObjectModel;
-@synthesize persistentStoreCoordinator=__persistentStoreCoordinator;
+@synthesize managedObjectContext = __managedObjectContext;
+@synthesize managedObjectModel = __managedObjectModel;
+@synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 
-- (id)init {
+-(id)init
+{
     MLog(@"Moodle app init");
-    if (!moodleApp) {
+    if (!moodleApp)
+    {
         moodleApp = [super init];
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
         NSNumber *autoSync = [NSNumber numberWithInt:1];
-		NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-        
+        NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+
         NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
                                      autoSync, kAutoSync,
                                      appVersion, @"moodle_app_version",
                                      nil];
 
-        [defaults registerDefaults: appDefaults];
+        [defaults registerDefaults:appDefaults];
 
         [NSUserDefaults resetStandardUserDefaults];
     }
@@ -52,8 +54,10 @@ static AppDelegate *moodleApp = NULL;
 }
 
 
-+ (AppDelegate *)sharedMoodleApp {
-    if (!moodleApp) {
++(AppDelegate *)sharedMoodleApp
+{
+    if (!moodleApp)
+    {
         moodleApp = [[AppDelegate alloc] init];
     }
 
@@ -61,31 +65,35 @@ static AppDelegate *moodleApp = NULL;
 }
 
 
-- (void) resetSite: (id)object {
+-(void)resetSite:(id)object
+{
     NSLog(@"Resetting active site");
     self.site = nil;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     NSManagedObjectContext *context = [self managedObjectContext];
-    if (!context) {
+
+    if (!context)
+    {
         MLog(@"Cannot create NSManagedObjectContext");
     }
     NSInteger count = [MoodleSite countWithContext:context];
 
     MLog(@"We got %d sites configured", count);
-    if (count > 0) {
+    if (count > 0)
+    {
         // restore active site info
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext: self.managedObjectContext];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:self.managedObjectContext];
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
         [request setEntity:entity];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(url = %@ AND token = %@)",
                                   [defaults stringForKey:kSelectedSiteUrlKey],
                                   [defaults stringForKey:kSelectedSiteTokenKey]];
-        [request setPredicate: predicate];
+        [request setPredicate:predicate];
         NSError *error = nil;
         NSArray *sites = [self.managedObjectContext executeFetchRequest:request error:&error];
         self.site = [sites lastObject];
@@ -96,103 +104,119 @@ static AppDelegate *moodleApp = NULL;
     TTNavigator *navigator = [TTNavigator navigator];
     navigator.persistenceMode = TTNavigatorPersistenceModeNone;
     // register component
-    [navigator.URLMap from: @"*"                   toViewController: [WebViewController class]];
-    [navigator.URLMap from: @"tt://dashboard/"     toViewController: [RootViewController class]];
-    [navigator.URLMap from: @"tt://upload/"        toViewController: [UploadViewController class]];
-    [navigator.URLMap from: @"tt://participants/"  toViewController: [CoursesViewController class]];
-    [navigator.URLMap from: @"tt://recorder/"      toViewController: [RecorderViewController class]];
-    [navigator.URLMap from: @"tt://sites/"         toViewController: [SitesViewController class]];
-    [navigator.URLMap from: @"tt://settings/"      toViewController: [SettingsSiteViewController class]];
-    [navigator.URLMap from: @"tt://settings/(initWithNew:)" toViewController: [SettingsSiteViewController class]];
-    [navigator.URLMap from: @"tt://sync/"  toModalViewController: [SyncViewController class]];
+    [navigator.URLMap from:@"*"                   toViewController:[WebViewController class]];
+    [navigator.URLMap from:@"tt://dashboard/"     toViewController:[RootViewController class]];
+    [navigator.URLMap from:@"tt://upload/"        toViewController:[UploadViewController class]];
+    [navigator.URLMap from:@"tt://participants/"  toViewController:[CoursesViewController class]];
+    [navigator.URLMap from:@"tt://recorder/"      toViewController:[RecorderViewController class]];
+    [navigator.URLMap from:@"tt://sites/"         toViewController:[SitesViewController class]];
+    [navigator.URLMap from:@"tt://settings/"      toViewController:[SettingsSiteViewController class]];
+    [navigator.URLMap from:@"tt://settings/(initWithNew:)" toViewController:[SettingsSiteViewController class]];
+    [navigator.URLMap from:@"tt://sync/"  toModalViewController:[SyncViewController class]];
 
     [navigator openURLAction:[TTURLAction actionWithURLPath:@"tt://dashboard/"]];
 
     // make all dictionary ready
-    NSFileManager *NSFm= [NSFileManager defaultManager];
-    BOOL isDir=YES;
+    NSFileManager *NSFm = [NSFileManager defaultManager];
+    BOOL isDir = YES;
     NSError *error;
-    if(![NSFm fileExistsAtPath: AUDIO_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath:AUDIO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+    if (![NSFm fileExistsAtPath:AUDIO_FOLDER isDirectory:&isDir])
+    {
+        if (![NSFm createDirectoryAtPath:AUDIO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error])
+        {
             NSLog(@"Error: Create folder failed %@", error);
-        } else {
+        }
+        else
+        {
             NSLog(@"Folder created");
         }
     }
-    if(![NSFm fileExistsAtPath: PHOTO_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath: PHOTO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+    if (![NSFm fileExistsAtPath:PHOTO_FOLDER isDirectory:&isDir])
+    {
+        if (![NSFm createDirectoryAtPath:PHOTO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error])
+        {
             NSLog(@"Error: Create folder failed %@", error);
-        } else {
+        }
+        else
+        {
             NSLog(@"Folder created");
         }
     }
 
-    if(![NSFm fileExistsAtPath: VIDEO_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath: VIDEO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+    if (![NSFm fileExistsAtPath:VIDEO_FOLDER isDirectory:&isDir])
+    {
+        if (![NSFm createDirectoryAtPath:VIDEO_FOLDER withIntermediateDirectories:YES attributes:nil error:&error])
+        {
             NSLog(@"Error: Create folder failed %@", error);
-        } else {
+        }
+        else
+        {
             NSLog(@"Folder created");
         }
     }
 
-    if(![NSFm fileExistsAtPath: OFFLINE_FOLDER isDirectory:&isDir]) {
-        if (![NSFm createDirectoryAtPath: OFFLINE_FOLDER withIntermediateDirectories:YES attributes:nil error:&error]) {
+    if (![NSFm fileExistsAtPath:OFFLINE_FOLDER isDirectory:&isDir])
+    {
+        if (![NSFm createDirectoryAtPath:OFFLINE_FOLDER withIntermediateDirectories:YES attributes:nil error:&error])
+        {
             NSLog(@"Error: Create folder failed %@", error);
-        } else {
+        }
+        else
+        {
             NSLog(@"Folder created");
         }
     }
-    //Set a method to be called when a notification is sent.
-    NSURL *url = [NSURL URLWithString: [self.site valueForKey: @"url"]];
+    // Set a method to be called when a notification is sent.
+    NSURL *url = [NSURL URLWithString:[self.site valueForKey:@"url"]];
     NSLog(@"target host: %@", url.host);
 //    Reachability *reachability = [[Reachability reachabilityWithHostName: url.host] retain];
-    Reachability *reachability = [[Reachability reachabilityWithHostName: @"apple.com"] retain];
+    Reachability *reachability = [[Reachability reachabilityWithHostName:@"apple.com"] retain];
 
     [reachability startNotifier];
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver: [TaskHandler class] selector: @selector(reachabilityChanged:) name: @"NetworkReachabilityChangedNotification" object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(resetSite:) name: kResetSite object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:@"NetworkReachabilityChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:[TaskHandler class] selector:@selector(reachabilityChanged:) name:@"NetworkReachabilityChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetSite:) name:kResetSite object:nil];
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
+-(void)applicationWillResignActive:(UIApplication *)application
 {
     /*
-     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+     * Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+     * Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
+-(void)applicationDidEnterBackground:(UIApplication *)application
 {
     /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-     If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+     * Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+     * If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
+-(void)applicationWillEnterForeground:(UIApplication *)application
 {
     /*
-     Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+     * Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
      */
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
+-(void)applicationDidBecomeActive:(UIApplication *)application
 {
     /*
-     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     * Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application
+-(void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
 
-- (void)dealloc
+-(void)dealloc
 {
     [__managedObjectContext release];
     [__managedObjectModel release];
@@ -200,18 +224,19 @@ static AppDelegate *moodleApp = NULL;
     [super dealloc];
 }
 
-- (void)saveContext
+-(void)saveContext
 {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+
     if (managedObjectContext != nil)
     {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error])
         {
             /*
-             Replace this implementation with code to handle the error appropriately.
-
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+             * Replace this implementation with code to handle the error appropriately.
+             *
+             * abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
              */
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
@@ -222,10 +247,10 @@ static AppDelegate *moodleApp = NULL;
 #pragma mark - Core Data stack
 
 /**
- Returns the managed object context for the application.
- If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
+ * Returns the managed object context for the application.
+ * If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
  */
-- (NSManagedObjectContext *)managedObjectContext
+-(NSManagedObjectContext *)managedObjectContext
 {
     if (__managedObjectContext != nil)
     {
@@ -242,10 +267,10 @@ static AppDelegate *moodleApp = NULL;
 }
 
 /**
- Returns the managed object model for the application.
- If the model doesn't already exist, it is created from the application's model.
+ * Returns the managed object model for the application.
+ * If the model doesn't already exist, it is created from the application's model.
  */
-- (NSManagedObjectModel *)managedObjectModel
+-(NSManagedObjectModel *)managedObjectModel
 {
     if (__managedObjectModel != nil)
     {
@@ -257,10 +282,10 @@ static AppDelegate *moodleApp = NULL;
 }
 
 /**
- Returns the persistent store coordinator for the application.
- If the coordinator doesn't already exist, it is created and the application's store added to it.
+ * Returns the persistent store coordinator for the application.
+ * If the coordinator doesn't already exist, it is created and the application's store added to it.
  */
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
+-(NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
     if (__persistentStoreCoordinator != nil)
     {
@@ -274,27 +299,27 @@ static AppDelegate *moodleApp = NULL;
     if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
     {
         /*
-         Replace this implementation with code to handle the error appropriately.
-
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-
-         Typical reasons for an error here include:
+         * Replace this implementation with code to handle the error appropriately.
+         *
+         * abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+         *
+         * Typical reasons for an error here include:
          * The persistent store is not accessible;
          * The schema for the persistent store is incompatible with current managed object model.
-         Check the error message to determine what the actual problem was.
-
-
-         If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
-
-         If you encounter schema incompatibility errors during development, you can reduce their frequency by:
+         * Check the error message to determine what the actual problem was.
+         *
+         *
+         * If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
+         *
+         * If you encounter schema incompatibility errors during development, you can reduce their frequency by:
          * Simply deleting the existing store:
-         [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
-
+         * [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
+         *
          * Performing automatic lightweight migration by passing the following dictionary as the options parameter:
-         [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-
-         Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
-
+         * [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+         *
+         * Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
+         *
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
@@ -306,38 +331,45 @@ static AppDelegate *moodleApp = NULL;
 #pragma mark - Application's Documents directory
 
 /**
- Returns the URL to the application's Documents directory.
+ * Returns the URL to the application's Documents directory.
  */
-- (NSURL *)applicationDocumentsDirectory
+-(NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (BOOL)navigator:(TTNavigator*)navigator shouldOpenURL:(NSURL*)URL {
+// /////////////////////////////////////////////////////////////////////////////////////////////////
+-(BOOL)navigator:(TTNavigator *)navigator shouldOpenURL:(NSURL *)URL
+{
     return YES;
 }
 
-- (BOOL)application:(UIApplication*)application handleOpenURL:(NSURL*)URL {
-	TTOpenURL([URL absoluteString]);
-	return YES;
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)URL
+{
+    TTOpenURL([URL absoluteString]);
+    return YES;
 }
 
-//Called by Reachability whenever status changes.
-- (void) reachabilityChanged: (NSNotification* )note
+// Called by Reachability whenever status changes.
+-(void)reachabilityChanged:(NSNotification *)note
 {
-	Reachability* curReach = [note object];
-	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+    Reachability *curReach = [note object];
+
+    NSParameterAssert([curReach isKindOfClass:[Reachability class]]);
     netStatus = [curReach currentReachabilityStatus];
-    switch (netStatus) {
+    switch (netStatus)
+    {
         case NotReachable:
             NSLog(@"Network not reachable");
             break;
+
         case ReachableViaWWAN:
             NSLog(@"Network via WWAN");
             break;
+
         case ReachableViaWiFi:
             NSLog(@"Network via WiFi");
             break;
+
         default:
             break;
     }

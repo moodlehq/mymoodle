@@ -11,14 +11,14 @@
 
 
 @interface Course : NSManagedObject {
-@private
+    @private
 }
-@property (nonatomic, retain) NSNumber * id;
-@property (nonatomic, retain) NSString * idnumber;
-@property (nonatomic, retain) NSString * shortname;
-@property (nonatomic, retain) NSString * fullname;
-@property (nonatomic, retain) NSSet* participants;
-@property (nonatomic, retain) NSManagedObject * site;
-+ (NSInteger)countWithContext:(NSManagedObjectContext *)context site: (NSManagedObject *)site;
+@property (nonatomic, retain) NSNumber *id;
+@property (nonatomic, retain) NSString *idnumber;
+@property (nonatomic, retain) NSString *shortname;
+@property (nonatomic, retain) NSString *fullname;
+@property (nonatomic, retain) NSSet *participants;
+@property (nonatomic, retain) NSManagedObject *site;
++(NSInteger)countWithContext:(NSManagedObjectContext *)context site:(NSManagedObject *)site;
 
 @end

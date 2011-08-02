@@ -18,14 +18,14 @@
     NSManagedObjectContext *managedObjectContext;
 
     NSManagedObject *course;
-    
+
     EGORefreshTableHeaderView *_refreshHeaderView;
     MBProgressHUD *HUD;
-    
+
     DetailViewController *participantViewController;
-	BOOL _reloading;
+    BOOL _reloading;
 }
-- (void) updateParticipants;
+-(void)updateParticipants;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObject *course;
 @property (nonatomic, retain) DetailViewController *detailViewController;

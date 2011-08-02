@@ -16,7 +16,7 @@
 
 @property (nonatomic, copy) NSURL *url;
 
--(id)invoke:(NSString *)method withParams: (NSArray *)params;
+-(id)invoke:(NSString *)method withParams:(NSArray *)params;
 
--(id)initWithToken: (NSString *)host withHost: (NSString *)host;
+-(id)initWithToken:(NSString *)host withHost:(NSString *)host;
 @end

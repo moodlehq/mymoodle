@@ -10,7 +10,6 @@
 
 
 @interface MoodleImagePickerController : UIImagePickerController {
-    
 }
 
 @end

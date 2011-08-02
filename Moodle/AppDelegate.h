@@ -24,12 +24,12 @@
 @property (nonatomic, retain) MoodleSite *site;
 
 
-- (void)saveContext;
+-(void)saveContext;
 
-+ (AppDelegate *)sharedMoodleApp;
++(AppDelegate *)sharedMoodleApp;
 
-- (void) reachabilityChanged: (NSNotification* )note;
+-(void)reachabilityChanged:(NSNotification *)note;
 
-- (NSURL *)applicationDocumentsDirectory;
+-(NSURL *)applicationDocumentsDirectory;
 
 @end
