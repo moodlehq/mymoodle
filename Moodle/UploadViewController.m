@@ -173,10 +173,11 @@ Boolean IsAACHardwareEncoderAvailable(void)
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"]) {
             // Picked from camera, saving to photo album
 //            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-            [picker dismissModalViewControllerAnimated:YES];
+            picker.view.hidden = YES;
+            [picker.parentViewController dismissModalViewControllerAnimated:YES];
             [self uploadAction];
         } else {
-            [picker dismissModalViewControllerAnimated:YES];
+            [picker.parentViewController dismissModalViewControllerAnimated:YES];
             [self loadPreview: filePath withFilename: fileName];
         }
     } else if ([mediaType isEqualToString:@"public.movie"]) {
@@ -185,8 +186,9 @@ Boolean IsAACHardwareEncoderAvailable(void)
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
         NSString *filepath = [NSString stringWithFormat:@"%@/%@", VIDEO_FOLDER, filename];
         [data writeToFile:filepath atomically:YES];
-        [picker dismissModalViewControllerAnimated:YES];
         // upload now!
+        picker.view.hidden = YES;
+        [picker.parentViewController dismissModalViewControllerAnimated:YES];
         [self uploadAction];
     }
 }
@@ -283,8 +285,8 @@ Boolean IsAACHardwareEncoderAvailable(void)
         [alert release];
     } else {
         // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-        HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
-        [self.view.window addSubview:HUD];
+        HUD = [[MBProgressHUD alloc] initWithView:self.view];
+        [self.view addSubview:HUD];
         // Regiser for HUD callbacks so we can remove it from the window at the right time
         HUD.delegate = self;
         // Show the HUD while the provided method executes in a new thread
