@@ -69,19 +69,22 @@
 
     CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x + 10, rootBackground.frame.origin.y + 30, bgWidth - 20, bgHeight + 40);
     launcherView = [[TTLauncherView alloc] initWithFrame:launcherFrame];
+    launcherView.persistenceMode = TTLauncherPersistenceModeAll;
     launcherView.columnCount = 2;
     webLauncherItem = [[TTLauncherItem alloc] initWithTitle:NSLocalizedString(@"Web", "Web")
                                                       image:@"bundle://Web.png"
                                                         URL:@"" canDelete:NO];
     webLauncherItem.style = @"MoodleLauncherButton:";
-    launcherView.pages = [NSArray arrayWithObjects:
-                          [NSArray arrayWithObjects:
-                           [self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image:@"bundle://Upload.png" URL:@"tt://upload/"],
-                           [self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image:@"bundle://Participants.png" URL:@"tt://participants/"],
-                           webLauncherItem,
-                           [self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image:@"bundle://MoodleHelp.png" URL:URL_MOODLE_HELP],
-                           nil]
-                          , nil];
+    if (![launcherView restoreLauncherItems]) {
+        launcherView.pages = [NSArray arrayWithObjects:
+                              [NSArray arrayWithObjects:
+                               [self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image:@"bundle://Upload.png" URL:@"tt://upload/"],
+                               [self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image:@"bundle://Participants.png" URL:@"tt://participants/"],
+                               webLauncherItem,
+                               [self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image:@"bundle://MoodleHelp.png" URL:URL_MOODLE_HELP],
+                               nil]
+                              , nil];
+    }
     launcherView.delegate = self;
     [self.view addSubview:launcherView];
 
