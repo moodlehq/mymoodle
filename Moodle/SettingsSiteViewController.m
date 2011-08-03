@@ -264,7 +264,6 @@
             NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
             [siteRequest setPredicate:sitePredicate];
             NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
-            NSLog(@"Sites info %@", sites);
 
             BOOL updateExistingAccount = NO;
             if ([sites count] > 0)
@@ -314,28 +313,7 @@
 
                 [request release];
             }
-            NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
-            for (NSDictionary *ws in webservices)
-            {
-                NSFetchRequest *wsRequest = [[[NSFetchRequest alloc] init] autorelease];
-                NSEntityDescription *wsEntity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
-                [wsRequest setEntity:wsEntity];
-                NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"name = %@", [ws valueForKey:@"name"]];
-                [wsRequest setPredicate:wsPredicate];
-                NSArray *ws = [context executeFetchRequest:wsRequest error:&error];
-                if ([ws count] > 0)
-                {
-                    NSLog(@"ws already added before");
-                }
-                else
-                {
-                    webservice = [NSEntityDescription insertNewObjectForEntityForName:[wsDesc name] inManagedObjectContext:context];
-                    [webservice setValue:[ws valueForKey:@"name"] forKey:@"name"];
-                    [webservice setValue:appDelegate.site forKey:@"site"];
-                    int version = [[ws valueForKey:@"version"] intValue];
-                    [webservice setValue:[NSNumber numberWithInt:version] forKey:@"version"];
-                }
-            }
+
             [user setValue:[siteinfo objectForKey:@"userid"]    forKey:@"userid"];
             [user setValue:[siteinfo objectForKey:@"username"]  forKey:@"username"];
             [user setValue:[siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
@@ -344,6 +322,29 @@
             [user setValue:appDelegate.site forKey:@"site"];
 
             [appDelegate.site setValue:user forKey:@"mainuser"];
+
+            NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
+            for (NSDictionary *function in webservices)
+            {
+                NSFetchRequest *wsRequest = [[[NSFetchRequest alloc] init] autorelease];
+                NSEntityDescription *wsEntity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
+                [wsRequest setEntity:wsEntity];
+                NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"name = %@ AND site = %@", [function valueForKey:@"name"], appDelegate.site];
+                [wsRequest setPredicate:wsPredicate];
+                NSArray *wsResult = [context executeFetchRequest:wsRequest error:&error];
+                if ([wsResult count] > 0)
+                {
+                    NSLog(@"ws already added before");
+                }
+                else
+                {
+                    webservice = [NSEntityDescription insertNewObjectForEntityForName:[wsDesc name] inManagedObjectContext:context];
+                    [webservice setValue:[function valueForKey:@"name"] forKey:@"name"];
+                    [webservice setValue:appDelegate.site forKey:@"site"];
+                    int version = [[function valueForKey:@"version"] intValue];
+                    [webservice setValue:[NSNumber numberWithInt:version] forKey:@"version"];
+                }
+            }
 
             // update active site info
             sites = [context executeFetchRequest:siteRequest error:&error];
@@ -358,6 +359,7 @@
             [defaults setObject:[appDelegate.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
             [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
             [defaults synchronize];
+
             // save the modification
             if (![context save:&error])
             {
@@ -378,7 +380,7 @@
         }
     }
     @catch (NSException *exception) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:@"Continue" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", nil) otherButtonTitles:nil];
         [alert show];
         [alert release];
     }
