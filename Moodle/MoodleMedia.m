@@ -27,6 +27,7 @@
     NSLog(@"Uploading file: %@", [sender getFilepath]);
     [request setFile:[sender getFilepath] forKey:@"thefile"];
     [request startSynchronous];
+    NSLog(@"Server Response: %@", [request responseString]);
 
     NSError *error;
     NSDictionary *result = [[CJSONDeserializer deserializer] deserializeAsArray:[request responseData] error:&error];

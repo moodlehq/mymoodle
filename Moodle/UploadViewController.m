@@ -185,11 +185,12 @@ Boolean IsAACHardwareEncoderAvailable(void)
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
         fileName = [[NSString stringWithFormat:@"%@.jpg", strtimestamp] retain];
         filePath = [[NSString stringWithFormat:@"%@/%@", PHOTO_FOLDER, fileName] retain];
-        [UIImageJPEGRepresentation (image, 1.0f) writeToFile:filePath atomically:YES];
+        [UIImageJPEGRepresentation (image, 0.8f) writeToFile:filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"])
         {
             // Picked from camera, saving to photo album
-//            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+
             picker.view.hidden = YES;
             [picker.parentViewController dismissModalViewControllerAnimated:YES];
             [self uploadAction];
@@ -203,10 +204,11 @@ Boolean IsAACHardwareEncoderAvailable(void)
     else if ([mediaType isEqualToString:@"public.movie"])
     {
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
-        NSString *filename = [NSString stringWithFormat:@"%@.mov", strtimestamp];
+        fileName = [[NSString stringWithFormat:@"%@.mov", strtimestamp] retain];
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
-        NSString *filepath = [NSString stringWithFormat:@"%@/%@", VIDEO_FOLDER, filename];
-        [data writeToFile:filepath atomically:YES];
+        filePath = [[NSString stringWithFormat:@"%@/%@", VIDEO_FOLDER, fileName] retain];
+        NSLog(@"video path: %@", filePath);
+        [data writeToFile:filePath atomically:YES];
         // upload now!
         picker.view.hidden = YES;
         [picker.parentViewController dismissModalViewControllerAnimated:YES];
@@ -233,12 +235,6 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
         [alert show];
         [alert release];
-    }
-    else                 // All is well
-    {   //        alert = [[UIAlertView alloc] initWithTitle:@"Success"
-//                                           message:@"Image saved to Photo Album."
-//                                          delegate:self cancelButtonTitle:@"Ok"
-//                                 otherButtonTitles:nil];
     }
 }
 
