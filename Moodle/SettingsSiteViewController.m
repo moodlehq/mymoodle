@@ -392,10 +392,11 @@
 
 - (void)saveButtonPressed:(id)sender
 {
+    NSLog(@"pass: %@", [passwordField text]);
     [editingField resignFirstResponder];
-    if ([[passwordField text] isEqualToString:@""])
+    if ([passwordField text] == nil || [[passwordField text] isEqualToString:@""] || [usernameField text] == nil || [[usernameField text] isEqualToString:@""] || [siteurlField text] == nil || [[siteurlField text] isEqualToString:@""])
     {
-        UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"passwordnotnull", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
+        UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"requiredfields", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
         [passwordAlert show];
         [passwordAlert release];
         return;
@@ -478,13 +479,10 @@
     siteurlField.frame = CGRectMake(115, 12, siteurlCell.bounds.size.width - 125, 30);
     [siteurlField setReturnKeyType:UIReturnKeyNext];
     [siteurlCell addSubview:siteurlField];
+    [siteurlField setPlaceholder: NSLocalizedString(@"yoursiteurl", nil)];
     if (!newEntry)
     {
         siteurlField.text = [appDelegate.site valueForKey:@"url"];
-    }
-    else
-    {
-        siteurlField.text = @"http://qa.moodle.net";
     }
 
     usernameCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
@@ -493,13 +491,10 @@
     usernameField.frame = CGRectMake(115, 12, usernameCell.bounds.size.width - 125, 30);
     [usernameField setReturnKeyType:UIReturnKeyNext];
     [usernameCell addSubview:usernameField];
+    [usernameField setPlaceholder: NSLocalizedString(@"yourusername", nil)];
     if (!newEntry)
     {
         usernameField.text = [appDelegate.site valueForKeyPath:@"mainuser.username"];
-    }
-    else
-    {
-        usernameField.text = @"teacher";
     }
 
     passwordCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
@@ -509,14 +504,7 @@
     [passwordField setSecureTextEntry:YES];
     [passwordField setReturnKeyType:UIReturnKeyDone];
     [passwordCell addSubview:passwordField];
-    if (!newEntry)
-    {
-        passwordField.text = @"******";
-    }
-    else
-    {
-        passwordField.text = @"test";
-    }
+    [passwordField setPlaceholder: NSLocalizedString(@"yourpassword", nil)];
 
     topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [self.view bounds].size.width, 40.0f)];
     [topLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
