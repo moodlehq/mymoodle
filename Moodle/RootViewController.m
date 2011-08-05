@@ -46,9 +46,8 @@
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 
     CGRect appRect = [UIScreen mainScreen].applicationFrame;
-    NSLog(@"app frame: %@", NSStringFromCGRect(appRect));
-    NSLog(@"viewp frame: %@", NSStringFromCGRect(self.view.frame));
-
+    NSLog(@"app  frame: %@", NSStringFromCGRect(appRect));
+    NSLog(@"view frame: %@", NSStringFromCGRect(self.view.frame));
 
     // app background
     UIImageView *appBg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"screen_bg.png"]];
@@ -151,8 +150,6 @@
 {
     [super viewDidAppear:animated];
     NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
-    NSLog(@"root site url %@", defaultSiteUrl);
-    NSLog(@"root site obj %@", appDelegate.site);
     if (defaultSiteUrl == nil || appDelegate.site == nil)
     {
         [self displaySettingsView];

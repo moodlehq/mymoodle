@@ -83,7 +83,7 @@ static AppDelegate *moodleApp = NULL;
     }
     NSInteger count = [MoodleSite countWithContext:context];
 
-    MLog(@"We got %d sites configured", count);
+    MLog(@"%d sites in core data", count);
     if (count > 0)
     {
         // restore active site info
@@ -97,6 +97,7 @@ static AppDelegate *moodleApp = NULL;
         NSError *error = nil;
         NSArray *sites = [self.managedObjectContext executeFetchRequest:request error:&error];
         self.site = [sites lastObject];
+        self.site = (MoodleSite *)self.site;
         NSLog(@"Active site: %@", self.site);
     }
 

@@ -59,13 +59,32 @@
     [deleteActionSheet release];
 }
 
+
+
+- (IBAction)saveButtonPressed:(id)sender
+{
+    [editingField resignFirstResponder];
+    if ([passwordField text] == nil || [[passwordField text] isEqualToString:@""] || [usernameField text] == nil || [[usernameField text] isEqualToString:@""] || [siteurlField text] == nil || [[siteurlField text] isEqualToString:@""])
+    {
+        UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"requiredfields", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
+        [passwordAlert show];
+        [passwordAlert release];
+        return;
+    }
+    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+    HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+    [self.view.window addSubview:HUD];
+    HUD.delegate = self;
+    HUD.labelText = NSLocalizedString(@"loading", @"Loading");
+    [HUD showWhileExecuting:@selector(login) onTarget:self withObject:nil animated:YES];
+}
+
 # pragma mark - action sheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     // there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
     if (buttonIndex != [actionSheet cancelButtonIndex])
     {
-
         [MoodleSite deleteSite:appDelegate.managedObjectContext withSite:self.editingSite];
         // return the list of sites
         NSArray *allControllers = self.navigationController.viewControllers;
@@ -239,19 +258,16 @@
             }
             else
             {
+                // insert new site
                 self.editingSite = [NSEntityDescription insertNewObjectForEntityForName:[siteEntity name] inManagedObjectContext:context];
             }
-            // profile pictre
-            NSString *userpictureurl = [siteinfo objectForKey:@"userpictureurl"];
-            NSString *sitename = [siteinfo objectForKey:@"sitename"];
             // create/update the site
-            [self.editingSite setValue:sitename forKey:@"name"];
-            [self.editingSite setValue:userpictureurl forKey:@"userpictureurl"];
+            [self.editingSite setValue:[siteinfo objectForKey:@"sitename"] forKey:@"name"];
+            [self.editingSite setValue:[siteinfo objectForKey:@"userpictureurl"] forKey:@"userpictureurl"];
             [self.editingSite setValue:sitetoken forKey:@"token"];
             [self.editingSite setValue:hostURL forKey:@"url"];
 
             NSManagedObject *user;
-            NSArray *webservices = [siteinfo objectForKey:@"functions"];
             // retrieve participant main user
             if (newEntry && !updateExistingAccount)
             {
@@ -264,19 +280,20 @@
                 user = [self.editingSite valueForKey:@"mainuser"];
 
                 // delete old web service records
-                NSFetchRequest *request = [[NSFetchRequest alloc] init];
-                NSEntityDescription *entity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
-                [request setEntity:entity];
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", self.editingSite];
-                [request setPredicate:predicate];
-                NSArray *objects = [context executeFetchRequest:request error:nil];
-                for (NSManagedObject *info in objects)
+                NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
+                NSEntityDescription *wsEntity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
+                [wsRequest setEntity:wsEntity];
+                NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", self.editingSite];
+                [wsRequest setPredicate:wsPredicate];
+                NSArray *wsObjects = [context executeFetchRequest:wsRequest error:nil];
+                for (NSManagedObject *wsObject in wsObjects)
                 {
-                    [context deleteObject:info];
+                    [context deleteObject:wsObject];
                 }
 
-                [request release];
+                [wsRequest release];
             }
+
             // set user values
             [user setValue:[siteinfo objectForKey:@"userid"]    forKey:@"userid"];
             [user setValue:[siteinfo objectForKey:@"username"]  forKey:@"username"];
@@ -286,8 +303,9 @@
             [user setValue:self.editingSite forKey:@"site"];
             [self.editingSite setValue:user forKey:@"mainuser"];
 
-            // create web services
+            // Insert new web services
             NSManagedObject *webservice;
+            NSArray *webservices = [siteinfo objectForKey:@"functions"];
             NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
             for (NSDictionary *function in webservices)
             {
@@ -305,6 +323,7 @@
             {
                 self.editingSite = [sites lastObject];
             }
+            // if this is a new site, use it as active site
             if (newEntry)
             {
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -314,6 +333,7 @@
                 [defaults setObject:[self.editingSite valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
                 [defaults setObject:[self.editingSite valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
                 [defaults synchronize];
+                appDelegate.site = self.editingSite;
             }
 
             // save the modification
@@ -346,24 +366,6 @@
 }
 
 
-- (IBAction)saveButtonPressed:(id)sender
-{
-    [editingField resignFirstResponder];
-    if ([passwordField text] == nil || [[passwordField text] isEqualToString:@""] || [usernameField text] == nil || [[usernameField text] isEqualToString:@""] || [siteurlField text] == nil || [[siteurlField text] isEqualToString:@""])
-    {
-        UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"requiredfields", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
-        [passwordAlert show];
-        [passwordAlert release];
-        return;
-    }
-    // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
-    HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
-    [self.view.window addSubview:HUD];
-    HUD.delegate = self;
-    HUD.labelText = NSLocalizedString(@"loading", @"Loading");
-    [HUD showWhileExecuting:@selector(login) onTarget:self withObject:nil animated:YES];
-}
-
 #pragma mark - View lifecycle
 
 - (id)initWithNew:(NSString *)new
@@ -394,55 +396,14 @@
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [super viewWillAppear:animated];
 
-    self.navigationController.view.backgroundColor = UIColorFromRGB(LoginBackground);
-    self.tableView.backgroundColor = [UIColor clearColor];
-
-    siteurlCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    [[siteurlCell textLabel] setText:NSLocalizedString(@"siteurllabel", nil)];
-    siteurlField = [self _createCellTextField];
-    siteurlField.frame = CGRectMake(115, 12, siteurlCell.bounds.size.width - 125, 30);
-    [siteurlField setReturnKeyType:UIReturnKeyNext];
-    [siteurlCell addSubview:siteurlField];
-    [siteurlField setPlaceholder:NSLocalizedString(@"yoursiteurl", nil)];
-    if (!newEntry)
-    {
-        siteurlField.text = [self.editingSite valueForKey:@"url"];
-    }
-
-    usernameCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    [[usernameCell textLabel] setText:NSLocalizedString(@"usernamelabel", nil)];
-    usernameField = [self _createCellTextField];
-    usernameField.frame = CGRectMake(115, 12, usernameCell.bounds.size.width - 125, 30);
-    [usernameField setReturnKeyType:UIReturnKeyNext];
-    [usernameCell addSubview:usernameField];
-    [usernameField setPlaceholder:NSLocalizedString(@"yourusername", nil)];
-    if (!newEntry)
-    {
-        usernameField.text = [self.editingSite valueForKeyPath:@"mainuser.username"];
-    }
-
-    passwordCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    [[passwordCell textLabel] setText:NSLocalizedString(@"passwordlabel", nil)];
-    passwordField = [self _createCellTextField];
-    passwordField.frame = CGRectMake(115, 12, passwordCell.bounds.size.width - 125, 30);
-    [passwordField setSecureTextEntry:YES];
-    [passwordField setReturnKeyType:UIReturnKeyDone];
-    [passwordCell addSubview:passwordField];
-    [passwordField setPlaceholder:NSLocalizedString(@"yourpassword", nil)];
-
-    topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [self.view bounds].size.width, 40.0f)];
-    [topLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
-    [topLabel setTextAlignment:UITextAlignmentCenter];
-    [topLabel setBackgroundColor:[UIColor clearColor]];
-    [topLabel setShadowColor:[UIColor blackColor]];
-    [topLabel setShadowOffset:CGSizeMake(0, 1.0f)];
-    [topLabel setTextColor:[UIColor whiteColor]];
-    [topLabel setFont:[UIFont fontWithName:@"SoulPapa" size:42]];
-    [topLabel setText:@"moodle"];
-
     if (!newEntry)
     {
         [self.navigationItem.rightBarButtonItem setTitle:NSLocalizedString(@"update", nil)];
+        // case of Updating a site
+        self.title = NSLocalizedString(@"updatesite", nil);
+
+        siteurlField.text = [self.editingSite valueForKey:@"url"];
+        usernameField.text = [self.editingSite valueForKeyPath:@"mainuser.username"];
         [passwordField setText:@""];
         int buttonWidth = 300;
         int buttonHeight = 45;
@@ -456,6 +417,12 @@
         [buttonView addSubview:btnDelete];
         self.tableView.tableFooterView = buttonView;
         [buttonView release];
+    }
+    else
+    {
+        [self.navigationItem.rightBarButtonItem setTitle:NSLocalizedString(@"add", nil)];
+        // case of Adding a new site
+        self.title = NSLocalizedString(@"addsite", nil);
     }
 }
 
@@ -472,23 +439,55 @@
     [cancelButton release];
 
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
-                                   initWithTitle:NSLocalizedString(@"save", nil)
+                                   initWithTitle:NSLocalizedString(@"add", nil)
                                            style:UIBarButtonItemStyleDone
                                           target:self
                                           action:@selector(saveButtonPressed:)];
     self.navigationItem.rightBarButtonItem = saveButton;
     [saveButton release];
 
-    if (!newEntry)
-    {
-        // case of Updating a site
-        self.title = NSLocalizedString(@"updatesite", nil);
-    }
-    else
-    {
-        // case of Adding a new site
-        self.title = NSLocalizedString(@"addsite", nil);
-    }
+    self.navigationController.view.backgroundColor = UIColorFromRGB(LoginBackground);
+    self.tableView.backgroundColor = [UIColor clearColor];
+
+    siteurlCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    [[siteurlCell textLabel] setText:NSLocalizedString(@"siteurllabel", nil)];
+    siteurlField = [self _createCellTextField];
+    siteurlField.frame = CGRectMake(115, 12, siteurlCell.bounds.size.width - 125, 30);
+    [siteurlField setReturnKeyType:UIReturnKeyNext];
+    [siteurlCell addSubview:siteurlField];
+    [siteurlField setPlaceholder:NSLocalizedString(@"yoursiteurl", nil)];
+
+
+    usernameCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    [[usernameCell textLabel] setText:NSLocalizedString(@"usernamelabel", nil)];
+    usernameField = [self _createCellTextField];
+    usernameField.frame = CGRectMake(115, 12, usernameCell.bounds.size.width - 125, 30);
+    [usernameField setReturnKeyType:UIReturnKeyNext];
+    [usernameCell addSubview:usernameField];
+    [usernameField setPlaceholder:NSLocalizedString(@"yourusername", nil)];
+
+
+    passwordCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    [[passwordCell textLabel] setText:NSLocalizedString(@"passwordlabel", nil)];
+    passwordField = [self _createCellTextField];
+    passwordField.frame = CGRectMake(115, 12, passwordCell.bounds.size.width - 125, 30);
+    [passwordField setSecureTextEntry:YES];
+    [passwordField setReturnKeyType:UIReturnKeyDone];
+    [passwordCell addSubview:passwordField];
+    [passwordField setPlaceholder:NSLocalizedString(@"yourpassword", nil)];
+
+
+    topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [self.view bounds].size.width, 40.0f)];
+    [topLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];
+    [topLabel setTextAlignment:UITextAlignmentCenter];
+    [topLabel setBackgroundColor:[UIColor clearColor]];
+    [topLabel setShadowColor:[UIColor blackColor]];
+    [topLabel setShadowOffset:CGSizeMake(0, 1.0f)];
+    [topLabel setTextColor:[UIColor whiteColor]];
+    [topLabel setFont:[UIFont fontWithName:@"SoulPapa" size:42]];
+    [topLabel setText:@"moodle"];
+
+
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard:)];
     tap.delegate = self;
@@ -496,7 +495,6 @@
 }
 
 #pragma mark - Table view data source
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return kNumberOfEditableRows;
@@ -554,8 +552,6 @@
 
 #pragma mark -
 #pragma mark textfield delegate method
-
-
 - (void)textFieldDidBeginEditing:(UITextField *)textField;
 {
     editingField = textField;
@@ -579,6 +575,8 @@
     return YES;
 }
 
+#pragma mark -
+#pragma mark Tap gusture
 - (void)dismissKeyboard:(UITapGestureRecognizer *)sender
 {
     [editingField resignFirstResponder];

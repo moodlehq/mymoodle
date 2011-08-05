@@ -11,7 +11,6 @@
 
 @implementation MoodleSite
 
-
 + (BOOL)siteExistsForURL:(NSString *)theURL withContext:(NSManagedObjectContext *)moc andUsername:(NSString *)username
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -71,6 +70,7 @@
     }
 
     // delete main user
+    NSLog(@"Deleting mainuser");
     NSFetchRequest *mainuserRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *mainuserDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
     [mainuserRequest setEntity:mainuserDescription];
@@ -82,9 +82,9 @@
         [context deleteObject:mainuser];
     }
     [mainuserRequest release];
-    NSLog(@"Deleted mainuser");
 
     // delete web services
+    NSLog(@"Deleting web services");
     NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *wsDescription = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
     [wsRequest setEntity:wsDescription];
@@ -96,9 +96,9 @@
         [context deleteObject:ws];
     }
     [wsRequest release];
-    NSLog(@"Deleted web services");
 
     // delete all jobs
+    NSLog(@"Deleting tasks");
     NSFetchRequest *taskRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *taskDescription = [NSEntityDescription entityForName:@"Job" inManagedObjectContext:context];
     [taskRequest setEntity:taskDescription];
@@ -110,9 +110,9 @@
         [context deleteObject:task];
     }
     [taskRequest release];
-    NSLog(@"Deleted tasks");
 
     // delete all courses
+    NSLog(@"Deleting courses");
     NSFetchRequest *courseRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *courseDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:context];
     [courseRequest setEntity:courseDescription];
@@ -124,9 +124,9 @@
         [context deleteObject:course];
     }
     [courseRequest release];
-    NSLog(@"Deleted courses");
 
     // delete all participants
+    NSLog(@"Deleting users");
     NSFetchRequest *userRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *userDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:context];
     [userRequest setEntity:userDescription];
@@ -138,11 +138,10 @@
         [context deleteObject:user];
     }
     [userRequest release];
-    NSLog(@"Deleted users");
 
     // delete site entry
+    NSLog(@"Deleting the site finally");
     [context deleteObject:site];
-    NSLog(@"Deleted site");
 
     NSError *error;
     if (![context save:&error])
@@ -170,4 +169,5 @@
     }
 
 }
+
 @end
