@@ -104,7 +104,7 @@
 
         // delete web services
         NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *wsDescription = [NSEntityDescription entityForName:@"Job" inManagedObjectContext:appDelegate.managedObjectContext];
+        NSEntityDescription *wsDescription = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:appDelegate.managedObjectContext];
         [wsRequest setEntity:wsDescription];
         NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
         [wsRequest setPredicate:wsPredicate];
@@ -203,52 +203,118 @@
     return [urlTest evaluateWithObject:candidate];
 }
 
-- (void)login
-{
-    NSManagedObjectContext *context = appDelegate.managedObjectContext;
-    NSString *siteurl;
+- (NSString *)getTokenWithHost: (NSURL *)tokenURL withUsername: (NSString *)username withPassword: (NSString *)password isTrying:(BOOL)isTrying {
 
-    siteurl = [siteurlField text];
-
-    if (![self validateUrl:siteurl])
-    {
-        siteurl = [NSString stringWithFormat:@"http://%@", siteurl];
-    }
-
-    if ([siteurl hasSuffix:@"/"])
-    {
-        siteurl = [siteurl substringToIndex:[siteurl length] - 1];
-    }
-
-    NSString *username = [usernameField text];
-    NSString *password = [passwordField text];
-
-    NSString *tokenURL = [NSString stringWithFormat:@"%@/login/token.php", siteurl];
-    NSURL *url = [NSURL URLWithString:tokenURL];
-    NSLog(@"%@", tokenURL);
-    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:tokenURL];
     [request setPostValue:username forKey:@"username"];
     [request setPostValue:password forKey:@"password"];
     [request setPostValue:@"moodle_mobile_app" forKey:@"service"];
-//    [request setCompletionBlock: ^{    }];
     [request startSynchronous];
 
     NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary:[request responseData] error:nil];
 
-    NSLog(@"Token info: %@", [request responseString]);
-
+    if ([[request responseString] isEqualToString: @""] || [request responseString] == nil || [request responseStatusCode] != 200) {
+        if (!isTrying) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"cannotconnect", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+        }
+        return nil;
+    }
+    
     if ([token valueForKey:@"error"])
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"invalidaccount", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
+        if (!isTrying) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"invalidaccount", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+        }
+        return nil;
+    }
+    
+    NSString *tokenString = [token valueForKey:@"token"];
+    
+    if (!tokenString)
+    {
+        if (!isTrying) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"invalidaccount", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+        }
+        return nil;
+    }
+    
+    return tokenString;
+}
+
+- (NSString *)tryHTTPSIfPossible:(NSString *)hostString withUsername: (NSString *)username withPassword: (NSString *)password {
+    
+    NSString *tokenURLString = [NSString stringWithFormat:@"%@/login/token.php", hostString];
+    NSLog(@"tokenURLString %@", tokenURLString);
+    NSURL *tokeURL = [NSURL URLWithString:tokenURLString];
+    NSString *token;
+    if ([tokeURL.scheme isEqualToString: @"http"]) {
+        // test https first
+        if ([hostString hasPrefix:@"http"]) {
+            tokenURLString = [tokenURLString substringFromIndex: 4];
+            tokenURLString = [NSString stringWithFormat: @"https%@", tokenURLString];
+        }
+        NSLog(@"Guessing HTTPS connection %@", tokenURLString);
+        NSURL *httpsTokenURL = [NSURL URLWithString: tokenURLString];
+        if ((token = [self getTokenWithHost:httpsTokenURL withUsername:username withPassword:password isTrying: YES])) {
+            // fix host url
+            hostURL = [hostURL substringFromIndex: 4];
+            hostURL = [NSString stringWithFormat: @"https%@", hostURL];
+            return token;
+        } else {
+            NSLog(@"https detection failed!");
+            token = [self getTokenWithHost:tokeURL withUsername:username withPassword:password isTrying: NO];
+            NSLog(@"got token from http %@", token);
+            return token;
+        }
+    } else {
+        token = [self getTokenWithHost:tokeURL withUsername:username withPassword:password isTrying: NO];
+        return token;
+    }
+}
+
+             
+- (void)login
+{
+    NSManagedObjectContext *context = appDelegate.managedObjectContext;
+    hostURL = [siteurlField text];
+
+    // remove trailing slash
+    if ([hostURL hasSuffix:@"/"])
+    {
+        hostURL = [hostURL substringToIndex:[hostURL length] - 1];
+    }
+
+    NSURL *siteURL = [NSURL URLWithString: hostURL];
+    if (siteURL.scheme == nil) {
+        hostURL = [NSString stringWithFormat:@"http://%@", hostURL]; 
+        siteURL = [NSURL URLWithString: hostURL];
+    }
+    
+    if (!([siteURL.scheme isEqualToString:@"http"] || [siteURL.scheme isEqualToString:@"https"])) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"invalidscheme", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
         [alert show];
         [alert release];
         return;
     }
 
-    NSString *sitetoken = [token valueForKey:@"token"];
+    NSString *username = [usernameField text];
+    NSString *password = [passwordField text];
+
+    NSString *sitetoken;
+    if (!(sitetoken = [self tryHTTPSIfPossible:hostURL withUsername: username withPassword:password])) {
+        NSLog(@"no token returned");
+        return;
+    }
+
     @try {
         // retrieve the site name
-        WSClient *client = [[WSClient alloc] initWithToken:sitetoken withHost:siteurl];
+        WSClient *client = [[WSClient alloc] initWithToken:sitetoken withHost:hostURL];
         NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
         NSDictionary *siteinfo = [client invoke:@"moodle_webservice_get_siteinfo" withParams:wsparams];
         [wsparams release];
@@ -261,7 +327,7 @@
             NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
             NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:context];
             [siteRequest setEntity:siteEntity];
-            NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", siteurl, [siteinfo objectForKey:@"userid"]];
+            NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", hostURL, [siteinfo objectForKey:@"userid"]];
             [siteRequest setPredicate:sitePredicate];
             NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
 
@@ -283,10 +349,9 @@
             [appDelegate.site setValue:sitename forKey:@"name"];
             [appDelegate.site setValue:userpictureurl forKey:@"userpictureurl"];
             [appDelegate.site setValue:sitetoken forKey:@"token"];
-            [appDelegate.site setValue:siteurl forKey:@"url"];
+            [appDelegate.site setValue:hostURL forKey:@"url"];
 
             NSManagedObject *user;
-            NSManagedObject *webservice;
             NSArray *webservices = [siteinfo objectForKey:@"functions"];
             // retrieve participant main user
             if (newEntry && !updateExistingAccount)
@@ -299,7 +364,7 @@
             {
                 user = [appDelegate.site valueForKey:@"mainuser"];
 
-                // delete old records
+                // delete old web service records
                 NSFetchRequest *request = [[NSFetchRequest alloc] init];
                 NSEntityDescription *entity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
                 [request setEntity:entity];
@@ -313,37 +378,26 @@
 
                 [request release];
             }
-
+            // set user values
             [user setValue:[siteinfo objectForKey:@"userid"]    forKey:@"userid"];
             [user setValue:[siteinfo objectForKey:@"username"]  forKey:@"username"];
             [user setValue:[siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
             [user setValue:[siteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
             [user setValue:[siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
             [user setValue:appDelegate.site forKey:@"site"];
-
             [appDelegate.site setValue:user forKey:@"mainuser"];
-
+            
+            // create web services
+            NSManagedObject *webservice;
             NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
             for (NSDictionary *function in webservices)
             {
-                NSFetchRequest *wsRequest = [[[NSFetchRequest alloc] init] autorelease];
-                NSEntityDescription *wsEntity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
-                [wsRequest setEntity:wsEntity];
-                NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"name = %@ AND site = %@", [function valueForKey:@"name"], appDelegate.site];
-                [wsRequest setPredicate:wsPredicate];
-                NSArray *wsResult = [context executeFetchRequest:wsRequest error:&error];
-                if ([wsResult count] > 0)
-                {
-                    NSLog(@"ws already added before");
-                }
-                else
-                {
-                    webservice = [NSEntityDescription insertNewObjectForEntityForName:[wsDesc name] inManagedObjectContext:context];
-                    [webservice setValue:[function valueForKey:@"name"] forKey:@"name"];
-                    [webservice setValue:appDelegate.site forKey:@"site"];
-                    int version = [[function valueForKey:@"version"] intValue];
-                    [webservice setValue:[NSNumber numberWithInt:version] forKey:@"version"];
-                }
+                int version = [[function valueForKey:@"version"] intValue];
+                webservice = [NSEntityDescription insertNewObjectForEntityForName:[wsDesc name] inManagedObjectContext:context];
+
+                [webservice setValue:[function valueForKey:@"name"] forKey:@"name"];
+                [webservice setValue:appDelegate.site forKey:@"site"];
+                [webservice setValue:[NSNumber numberWithInt:version] forKey:@"version"];
             }
 
             // update active site info
@@ -392,7 +446,6 @@
 
 - (void)saveButtonPressed:(id)sender
 {
-    NSLog(@"pass: %@", [passwordField text]);
     [editingField resignFirstResponder];
     if ([passwordField text] == nil || [[passwordField text] isEqualToString:@""] || [usernameField text] == nil || [[usernameField text] isEqualToString:@""] || [siteurlField text] == nil || [[siteurlField text] isEqualToString:@""])
     {

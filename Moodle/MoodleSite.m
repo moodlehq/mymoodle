@@ -41,4 +41,8 @@
     }
     return count;
 }
+
++ (void)deleteSite: (NSManagedObjectContext *)context {
+    
+}
 @end

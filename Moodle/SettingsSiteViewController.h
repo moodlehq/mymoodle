@@ -21,8 +21,8 @@
 
 @interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, MBProgressHUDDelegate> {
     AppDelegate *appDelegate;
-
     BOOL newEntry;
+    NSString *hostURL;
 
     MBProgressHUD *HUD;
 
