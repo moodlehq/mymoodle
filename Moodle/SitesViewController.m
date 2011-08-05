@@ -10,6 +10,7 @@
 #import "Constants.h"
 #import "MoodleSite.h"
 #import "UIImageView+WebCache.h"
+#import "SettingsSiteViewController.h"
 
 #define kSiteNameTag 1;
 
@@ -141,8 +142,11 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    appDelegate.site = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://settings/no"] applyAnimated:YES]];
+    SettingsSiteViewController *settingsSiteController = [[SettingsSiteViewController alloc] initWithNew:@"no"];
+
+    settingsSiteController.editingSite = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self.navigationController pushViewController:settingsSiteController animated:YES];
+    [settingsSiteController release];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

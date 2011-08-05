@@ -16,6 +16,8 @@
 
 @implementation SettingsSiteViewController
 
+@synthesize editingSite;
+
 - (void)backToRoot
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
@@ -63,130 +65,8 @@
     // there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
     if (buttonIndex != [actionSheet cancelButtonIndex])
     {
-        // delete the user/site default is they were matching the delete site
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *defaultSiteUrl = [defaults objectForKey:kSelectedSiteUrlKey];
-        NSNumber *defaultUserId = [defaults objectForKey:kSelectedUserIdKey];
 
-        BOOL resetCurrentSite = NO;
-        // delete current site
-        if (([[appDelegate.site valueForKey:@"url"] isEqualToString:defaultSiteUrl] && [[appDelegate.site valueForKeyPath:@"mainuser.userid"] isEqualToNumber:defaultUserId]))
-        {
-            [defaults removeObjectForKey:kSelectedSiteUrlKey];
-            [defaults removeObjectForKey:kSelectedSiteTokenKey];
-            [defaults removeObjectForKey:kSelectedSiteNameKey];
-            [defaults removeObjectForKey:kSelectedUserIdKey];
-            NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         @"", kSelectedSiteUrlKey,
-                                         @"", kSelectedSiteNameKey,
-                                         @"", kSelectedSiteTokenKey,
-                                         @"", kSelectedUserIdKey,
-                                         nil];
-
-            [defaults registerDefaults:appDefaults];
-            [NSUserDefaults resetStandardUserDefaults];
-            resetCurrentSite = YES;
-        }
-
-        // delete main user
-        NSFetchRequest *mainuserRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *mainuserDescription = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:appDelegate.managedObjectContext];
-        [mainuserRequest setEntity:mainuserDescription];
-        NSPredicate *mainuserPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-        [mainuserRequest setPredicate:mainuserPredicate];
-        NSArray *mainusers = [appDelegate.managedObjectContext executeFetchRequest:mainuserRequest error:nil];
-        for (NSManagedObject *mainuser in mainusers)
-        {
-            [appDelegate.managedObjectContext deleteObject:mainuser];
-        }
-        [mainuserRequest release];
-        NSLog(@"Deleted mainuser");
-
-        // delete web services
-        NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *wsDescription = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:appDelegate.managedObjectContext];
-        [wsRequest setEntity:wsDescription];
-        NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-        [wsRequest setPredicate:wsPredicate];
-        NSArray *webservices = [appDelegate.managedObjectContext executeFetchRequest:wsRequest error:nil];
-        for (NSManagedObject *ws in webservices)
-        {
-            [appDelegate.managedObjectContext deleteObject:ws];
-        }
-        [wsRequest release];
-        NSLog(@"Deleted web services");
-
-        // delete all jobs
-        NSFetchRequest *taskRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *taskDescription = [NSEntityDescription entityForName:@"Job" inManagedObjectContext:appDelegate.managedObjectContext];
-        [taskRequest setEntity:taskDescription];
-        NSPredicate *taskPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-        [taskRequest setPredicate:taskPredicate];
-        NSArray *tasks = [appDelegate.managedObjectContext executeFetchRequest:taskRequest error:nil];
-        for (NSManagedObject *task in tasks)
-        {
-            [appDelegate.managedObjectContext deleteObject:task];
-        }
-        [taskRequest release];
-        NSLog(@"Deleted tasks");
-
-        // delete all courses
-        NSFetchRequest *courseRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *courseDescription = [NSEntityDescription entityForName:@"Course" inManagedObjectContext:appDelegate.managedObjectContext];
-        [courseRequest setEntity:courseDescription];
-        NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-        [courseRequest setPredicate:coursePredicate];
-        NSArray *allCourses = [appDelegate.managedObjectContext executeFetchRequest:courseRequest error:nil];
-        for (NSManagedObject *course in allCourses)
-        {
-            [appDelegate.managedObjectContext deleteObject:course];
-        }
-        [courseRequest release];
-        NSLog(@"Deleted courses");
-
-        // delete all participants
-        NSFetchRequest *userRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *userDescription = [NSEntityDescription entityForName:@"Participant" inManagedObjectContext:appDelegate.managedObjectContext];
-        [userRequest setEntity:userDescription];
-        NSPredicate *userPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
-        [userRequest setPredicate:userPredicate];
-        NSArray *users = [appDelegate.managedObjectContext executeFetchRequest:userRequest error:nil];
-        for (NSManagedObject *user in users)
-        {
-            [appDelegate.managedObjectContext deleteObject:user];
-        }
-        [userRequest release];
-        NSLog(@"Deleted users");
-
-        // delete site entry
-        [appDelegate.managedObjectContext deleteObject:appDelegate.site];
-        NSLog(@"Deleted site");
-
-        NSError *error;
-        if (![appDelegate.managedObjectContext save:&error])
-        {
-            NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
-            NSArray *detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
-            if (detailedErrors != nil && [detailedErrors count] > 0)
-            {
-                for (NSError *detailedError in detailedErrors)
-                {
-                    NSLog(@"Detailed Error: %@", [detailedError userInfo]);
-                }
-            }
-            else
-            {
-                NSLog(@"  %@", [error userInfo]);
-            }
-        }
-
-        if (resetCurrentSite)
-        {
-            // send notification to appdelete to reset site
-            [[NSNotificationCenter defaultCenter] postNotificationName:kResetSite
-                                                                object:nil];
-        }
-
+        [MoodleSite deleteSite:appDelegate.managedObjectContext withSite:self.editingSite];
         // return the list of sites
         NSArray *allControllers = self.navigationController.viewControllers;
         UITableViewController *parent = [allControllers lastObject];
@@ -203,9 +83,11 @@
     return [urlTest evaluateWithObject:candidate];
 }
 
-- (NSString *)getTokenWithHost: (NSURL *)tokenURL withUsername: (NSString *)username withPassword: (NSString *)password isTrying:(BOOL)isTrying {
+- (NSString *)getTokenWithHost:(NSURL *)tokenURL withUsername:(NSString *)username withPassword:(NSString *)password isTrying:(BOOL)isTrying
+{
 
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:tokenURL];
+
     [request setPostValue:username forKey:@"username"];
     [request setPostValue:password forKey:@"password"];
     [request setPostValue:@"moodle_mobile_app" forKey:@"service"];
@@ -213,75 +95,89 @@
 
     NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary:[request responseData] error:nil];
 
-    if ([[request responseString] isEqualToString: @""] || [request responseString] == nil || [request responseStatusCode] != 200) {
-        if (!isTrying) {
+    if ([[request responseString] isEqualToString:@""] || [request responseString] == nil || [request responseStatusCode] != 200)
+    {
+        if (!isTrying)
+        {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"cannotconnect", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
             [alert show];
             [alert release];
         }
         return nil;
     }
-    
+
     if ([token valueForKey:@"error"])
     {
-        if (!isTrying) {
+        if (!isTrying)
+        {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"invalidaccount", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
             [alert show];
             [alert release];
         }
         return nil;
     }
-    
+
     NSString *tokenString = [token valueForKey:@"token"];
-    
+
     if (!tokenString)
     {
-        if (!isTrying) {
+        if (!isTrying)
+        {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"invalidaccount", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
             [alert show];
             [alert release];
         }
         return nil;
     }
-    
+
     return tokenString;
 }
 
-- (NSString *)tryHTTPSIfPossible:(NSString *)hostString withUsername: (NSString *)username withPassword: (NSString *)password {
-    
+- (NSString *)tryHTTPSIfPossible:(NSString *)hostString withUsername:(NSString *)username withPassword:(NSString *)password
+{
+
     NSString *tokenURLString = [NSString stringWithFormat:@"%@/login/token.php", hostString];
+
     NSLog(@"tokenURLString %@", tokenURLString);
     NSURL *tokeURL = [NSURL URLWithString:tokenURLString];
     NSString *token;
-    if ([tokeURL.scheme isEqualToString: @"http"]) {
+    if ([tokeURL.scheme isEqualToString:@"http"])
+    {
         // test https first
-        if ([hostString hasPrefix:@"http"]) {
-            tokenURLString = [tokenURLString substringFromIndex: 4];
-            tokenURLString = [NSString stringWithFormat: @"https%@", tokenURLString];
+        if ([hostString hasPrefix:@"http"])
+        {
+            tokenURLString = [tokenURLString substringFromIndex:4];
+            tokenURLString = [NSString stringWithFormat:@"https%@", tokenURLString];
         }
         NSLog(@"Guessing HTTPS connection %@", tokenURLString);
-        NSURL *httpsTokenURL = [NSURL URLWithString: tokenURLString];
-        if ((token = [self getTokenWithHost:httpsTokenURL withUsername:username withPassword:password isTrying: YES])) {
+        NSURL *httpsTokenURL = [NSURL URLWithString:tokenURLString];
+        if ((token = [self getTokenWithHost:httpsTokenURL withUsername:username withPassword:password isTrying:YES]))
+        {
             // fix host url
-            hostURL = [hostURL substringFromIndex: 4];
-            hostURL = [NSString stringWithFormat: @"https%@", hostURL];
+            hostURL = [hostURL substringFromIndex:4];
+            hostURL = [NSString stringWithFormat:@"https%@", hostURL];
             return token;
-        } else {
+        }
+        else
+        {
             NSLog(@"https detection failed!");
-            token = [self getTokenWithHost:tokeURL withUsername:username withPassword:password isTrying: NO];
+            token = [self getTokenWithHost:tokeURL withUsername:username withPassword:password isTrying:NO];
             NSLog(@"got token from http %@", token);
             return token;
         }
-    } else {
-        token = [self getTokenWithHost:tokeURL withUsername:username withPassword:password isTrying: NO];
+    }
+    else
+    {
+        token = [self getTokenWithHost:tokeURL withUsername:username withPassword:password isTrying:NO];
         return token;
     }
 }
 
-             
+
 - (void)login
 {
     NSManagedObjectContext *context = appDelegate.managedObjectContext;
+
     hostURL = [siteurlField text];
 
     // remove trailing slash
@@ -290,13 +186,15 @@
         hostURL = [hostURL substringToIndex:[hostURL length] - 1];
     }
 
-    NSURL *siteURL = [NSURL URLWithString: hostURL];
-    if (siteURL.scheme == nil) {
-        hostURL = [NSString stringWithFormat:@"http://%@", hostURL]; 
-        siteURL = [NSURL URLWithString: hostURL];
+    NSURL *siteURL = [NSURL URLWithString:hostURL];
+    if (siteURL.scheme == nil)
+    {
+        hostURL = [NSString stringWithFormat:@"http://%@", hostURL];
+        siteURL = [NSURL URLWithString:hostURL];
     }
-    
-    if (!([siteURL.scheme isEqualToString:@"http"] || [siteURL.scheme isEqualToString:@"https"])) {
+
+    if (!([siteURL.scheme isEqualToString:@"http"] || [siteURL.scheme isEqualToString:@"https"]))
+    {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:NSLocalizedString(@"invalidscheme", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
         [alert show];
         [alert release];
@@ -307,7 +205,8 @@
     NSString *password = [passwordField text];
 
     NSString *sitetoken;
-    if (!(sitetoken = [self tryHTTPSIfPossible:hostURL withUsername: username withPassword:password])) {
+    if (!(sitetoken = [self tryHTTPSIfPossible:hostURL withUsername:username withPassword:password]))
+    {
         NSLog(@"no token returned");
         return;
     }
@@ -336,20 +235,20 @@
             {
                 NSLog(@"updating existing site");
                 updateExistingAccount = YES;
-                appDelegate.site = [sites lastObject];
+                self.editingSite = [sites lastObject];
             }
             else
             {
-                appDelegate.site = [NSEntityDescription insertNewObjectForEntityForName:[siteEntity name] inManagedObjectContext:context];
+                self.editingSite = [NSEntityDescription insertNewObjectForEntityForName:[siteEntity name] inManagedObjectContext:context];
             }
             // profile pictre
             NSString *userpictureurl = [siteinfo objectForKey:@"userpictureurl"];
             NSString *sitename = [siteinfo objectForKey:@"sitename"];
             // create/update the site
-            [appDelegate.site setValue:sitename forKey:@"name"];
-            [appDelegate.site setValue:userpictureurl forKey:@"userpictureurl"];
-            [appDelegate.site setValue:sitetoken forKey:@"token"];
-            [appDelegate.site setValue:hostURL forKey:@"url"];
+            [self.editingSite setValue:sitename forKey:@"name"];
+            [self.editingSite setValue:userpictureurl forKey:@"userpictureurl"];
+            [self.editingSite setValue:sitetoken forKey:@"token"];
+            [self.editingSite setValue:hostURL forKey:@"url"];
 
             NSManagedObject *user;
             NSArray *webservices = [siteinfo objectForKey:@"functions"];
@@ -362,13 +261,13 @@
             }
             else
             {
-                user = [appDelegate.site valueForKey:@"mainuser"];
+                user = [self.editingSite valueForKey:@"mainuser"];
 
                 // delete old web service records
                 NSFetchRequest *request = [[NSFetchRequest alloc] init];
                 NSEntityDescription *entity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
                 [request setEntity:entity];
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(site = %@)", self.editingSite];
                 [request setPredicate:predicate];
                 NSArray *objects = [context executeFetchRequest:request error:nil];
                 for (NSManagedObject *info in objects)
@@ -384,9 +283,9 @@
             [user setValue:[siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
             [user setValue:[siteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
             [user setValue:[siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
-            [user setValue:appDelegate.site forKey:@"site"];
-            [appDelegate.site setValue:user forKey:@"mainuser"];
-            
+            [user setValue:self.editingSite forKey:@"site"];
+            [self.editingSite setValue:user forKey:@"mainuser"];
+
             // create web services
             NSManagedObject *webservice;
             NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
@@ -396,7 +295,7 @@
                 webservice = [NSEntityDescription insertNewObjectForEntityForName:[wsDesc name] inManagedObjectContext:context];
 
                 [webservice setValue:[function valueForKey:@"name"] forKey:@"name"];
-                [webservice setValue:appDelegate.site forKey:@"site"];
+                [webservice setValue:self.editingSite forKey:@"site"];
                 [webservice setValue:[NSNumber numberWithInt:version] forKey:@"version"];
             }
 
@@ -404,15 +303,18 @@
             sites = [context executeFetchRequest:siteRequest error:&error];
             if ([sites count] > 0)
             {
-                appDelegate.site = [sites lastObject];
+                self.editingSite = [sites lastObject];
             }
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            // save the current site into user preference
-            [defaults setObject:[appDelegate.site valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
-            [defaults setObject:[appDelegate.site valueForKey:@"name"] forKey:kSelectedSiteNameKey];
-            [defaults setObject:[appDelegate.site valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
-            [defaults setObject:[appDelegate.site valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
-            [defaults synchronize];
+            if (newEntry)
+            {
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                // save the current site into user preference
+                [defaults setObject:[self.editingSite valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+                [defaults setObject:[self.editingSite valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+                [defaults setObject:[self.editingSite valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+                [defaults setObject:[self.editingSite valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+                [defaults synchronize];
+            }
 
             // save the modification
             if (![context save:&error])
@@ -444,7 +346,7 @@
 }
 
 
-- (void)saveButtonPressed:(id)sender
+- (IBAction)saveButtonPressed:(id)sender
 {
     [editingField resignFirstResponder];
     if ([passwordField text] == nil || [[passwordField text] isEqualToString:@""] || [usernameField text] == nil || [[usernameField text] isEqualToString:@""] || [siteurlField text] == nil || [[siteurlField text] isEqualToString:@""])
@@ -460,33 +362,6 @@
     HUD.delegate = self;
     HUD.labelText = NSLocalizedString(@"loading", @"Loading");
     [HUD showWhileExecuting:@selector(login) onTarget:self withObject:nil animated:YES];
-}
-
-- (IBAction)textFieldDone:(id)sender
-{
-    UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
-    UITableView *table = (UITableView *)[cell superview];
-    NSIndexPath *textFieldIndexPath = [table indexPathForCell:cell];
-    NSUInteger row = [textFieldIndexPath row];
-
-    row++;
-    if (row >= kNumberOfEditableRows)
-    {
-        row = 0;
-    }
-    NSUInteger newIndex[] = { 0, row };
-    NSIndexPath *newPath = [[NSIndexPath alloc] initWithIndexes:newIndex length:2];
-    UITableViewCell *nextCell = [self.tableView cellForRowAtIndexPath:newPath];
-    UITextField *nextField = nil;
-    for (UIView *oneView in nextCell.contentView.subviews)
-    {
-        if ([oneView isMemberOfClass:[UITextField class]])
-        {
-            nextField = (UITextField *)oneView;
-        }
-    }
-    [newPath release];
-    [nextField becomeFirstResponder];
 }
 
 #pragma mark - View lifecycle
@@ -508,14 +383,10 @@
     return self;
 }
 
-- (void)loadView
-{
-    [super loadView];
-}
-
 - (void)dealloc
 {
     [super dealloc];
+    [editingSite release];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -527,37 +398,37 @@
     self.tableView.backgroundColor = [UIColor clearColor];
 
     siteurlCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    [[siteurlCell textLabel] setText:@"Site URL"];
+    [[siteurlCell textLabel] setText:NSLocalizedString(@"siteurllabel", nil)];
     siteurlField = [self _createCellTextField];
     siteurlField.frame = CGRectMake(115, 12, siteurlCell.bounds.size.width - 125, 30);
     [siteurlField setReturnKeyType:UIReturnKeyNext];
     [siteurlCell addSubview:siteurlField];
-    [siteurlField setPlaceholder: NSLocalizedString(@"yoursiteurl", nil)];
+    [siteurlField setPlaceholder:NSLocalizedString(@"yoursiteurl", nil)];
     if (!newEntry)
     {
-        siteurlField.text = [appDelegate.site valueForKey:@"url"];
+        siteurlField.text = [self.editingSite valueForKey:@"url"];
     }
 
     usernameCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    [[usernameCell textLabel] setText:@"Username"];
+    [[usernameCell textLabel] setText:NSLocalizedString(@"usernamelabel", nil)];
     usernameField = [self _createCellTextField];
     usernameField.frame = CGRectMake(115, 12, usernameCell.bounds.size.width - 125, 30);
     [usernameField setReturnKeyType:UIReturnKeyNext];
     [usernameCell addSubview:usernameField];
-    [usernameField setPlaceholder: NSLocalizedString(@"yourusername", nil)];
+    [usernameField setPlaceholder:NSLocalizedString(@"yourusername", nil)];
     if (!newEntry)
     {
-        usernameField.text = [appDelegate.site valueForKeyPath:@"mainuser.username"];
+        usernameField.text = [self.editingSite valueForKeyPath:@"mainuser.username"];
     }
 
     passwordCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    [[passwordCell textLabel] setText:@"Password"];
+    [[passwordCell textLabel] setText:NSLocalizedString(@"passwordlabel", nil)];
     passwordField = [self _createCellTextField];
     passwordField.frame = CGRectMake(115, 12, passwordCell.bounds.size.width - 125, 30);
     [passwordField setSecureTextEntry:YES];
     [passwordField setReturnKeyType:UIReturnKeyDone];
     [passwordCell addSubview:passwordField];
-    [passwordField setPlaceholder: NSLocalizedString(@"yourpassword", nil)];
+    [passwordField setPlaceholder:NSLocalizedString(@"yourpassword", nil)];
 
     topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [self.view bounds].size.width, 40.0f)];
     [topLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin];

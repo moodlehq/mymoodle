@@ -21,6 +21,7 @@
 
 @interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, MBProgressHUDDelegate> {
     AppDelegate *appDelegate;
+    MoodleSite *editingSite;
     BOOL newEntry;
     NSString *hostURL;
 
@@ -39,8 +40,10 @@
 
     UILabel *topLabel;
 }
+
+@property (nonatomic, retain) MoodleSite *editingSite;
+
 - (IBAction)cancel:(id)sender;
 - (IBAction)saveButtonPressed:(id)sender;
-- (IBAction)textFieldDone:(id)sender;
-- (void)deleteSite;
+- (id)initWithNew:(NSString *)new;
 @end

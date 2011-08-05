@@ -15,5 +15,5 @@
 #pragma mark Class methods
 + (BOOL)siteExistsForURL:(NSString *)theURL withContext:(NSManagedObjectContext *)moc andUsername:(NSString *)username;
 + (NSInteger)countWithContext:(NSManagedObjectContext *)context;
-
++ (void)deleteSite:(NSManagedObjectContext *)context withSite:(NSManagedObject *)site;
 @end

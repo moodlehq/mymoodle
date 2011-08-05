@@ -75,7 +75,8 @@
                                                       image:@"bundle://Web.png"
                                                         URL:@"" canDelete:NO];
     webLauncherItem.style = @"MoodleLauncherButton:";
-    if (![launcherView restoreLauncherItems]) {
+    if (![launcherView restoreLauncherItems])
+    {
         launcherView.pages = [NSArray arrayWithObjects:
                               [NSArray arrayWithObjects:
                                [self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image:@"bundle://Upload.png" URL:@"tt://upload/"],
