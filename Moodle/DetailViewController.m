@@ -222,16 +222,16 @@
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"messagesent", @"prompt user message has been sent") delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles:nil];
                 [alert show];
                 [alert release];
+                NSDictionary *msg = [wsinfo lastObject];
+                if ([msg valueForKey:@"errormessage"])
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:nil];
+                    [alert show];
+                    [alert release];
+                }
             }
             @catch (NSException *exception) {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles:nil];
-                [alert show];
-                [alert release];
-            }
-            NSDictionary *msg = [wsinfo lastObject];
-            if ([msg valueForKey:@"errormessage"])
-            {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:nil];
                 [alert show];
                 [alert release];
             }
@@ -284,19 +284,20 @@
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"noteadded", @"Note added") delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles:nil];
                 [alert show];
                 [alert release];
+                NSDictionary *msg = [wsinfo lastObject];
+                if ([msg valueForKey:@"errormessage"])
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:nil];
+                    [alert show];
+                    [alert release];
+                }
             }
             @catch (NSException *exception) {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles:nil];
                 [alert show];
                 [alert release];
             }
-            NSDictionary *msg = [wsinfo lastObject];
-            if ([msg valueForKey:@"errormessage"])
-            {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", @"Error") message:[[wsinfo lastObject] valueForKey:@"errormessage"] delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:nil];
-                [alert show];
-                [alert release];
-            }
+
         }
         [params release];
     }
