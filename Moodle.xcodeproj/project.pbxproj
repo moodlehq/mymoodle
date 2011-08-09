@@ -582,7 +582,6 @@
 		02618A021331A581008D3037 = {
 			isa = PBXGroup;
 			children = (
-				B5FB2ECF13E26DF10071AB52 /* libz.dylib */,
 				B5D48B3313BB18680063968A /* icon_iphone.png */,
 				B5D48B2F13BB17FD0063968A /* icon_retina.png */,
 				02618A191331A581008D3037 /* Moodle */,
@@ -604,13 +603,8 @@
 		02618A101331A581008D3037 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3201088596B4756681693700 /* Three20UICommon.xcodeproj */,
-				320D7DCCE32703ACAB9A45E0 /* Three20.xcodeproj */,
-				320A737074758E53BA54BE90 /* Three20UINavigator.xcodeproj */,
-				320A2827FEC940B25BC42C60 /* Three20Core.xcodeproj */,
-				320F2C48872C2E2C4DF86200 /* Three20UI.xcodeproj */,
-				320A5A189C235877202780D0 /* Three20Network.xcodeproj */,
-				320CC833B8AF0ACFD35E6220 /* Three20Style.xcodeproj */,
+				B5220AF913F0DBAF00DEDD21 /* Three20 */,
+				B5FB2ECF13E26DF10071AB52 /* libz.dylib */,
 				B5A8DD6013B9D9AA007A5EC1 /* AddressBook.framework */,
 				B5069EEA138116E800EABC26 /* AVFoundation.framework */,
 				B5609F39137F8DC000C59271 /* AudioToolbox.framework */,
@@ -633,6 +627,7 @@
 				B57CD18C133C798600CCB81A /* Resources */,
 				B57CD15B133C78F400CCB81A /* Classes */,
 				02618A1A1331A581008D3037 /* Supporting Files */,
+				B5220AFB13F0DCEA00DEDD21 /* Vendors */,
 			);
 			path = Moodle;
 			sourceTree = "<group>";
@@ -770,6 +765,43 @@
 			name = HTTP;
 			sourceTree = "<group>";
 		};
+		B5220AF913F0DBAF00DEDD21 /* Three20 */ = {
+			isa = PBXGroup;
+			children = (
+				320D7DCCE32703ACAB9A45E0 /* Three20.xcodeproj */,
+				320A2827FEC940B25BC42C60 /* Three20Core.xcodeproj */,
+				3201088596B4756681693700 /* Three20UICommon.xcodeproj */,
+				320A737074758E53BA54BE90 /* Three20UINavigator.xcodeproj */,
+				320A5A189C235877202780D0 /* Three20Network.xcodeproj */,
+				320F2C48872C2E2C4DF86200 /* Three20UI.xcodeproj */,
+				320CC833B8AF0ACFD35E6220 /* Three20Style.xcodeproj */,
+			);
+			name = Three20;
+			sourceTree = "<group>";
+		};
+		B5220AFA13F0DC5100DEDD21 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				B5DABB20138E2BF6004AE472 /* SyncViewController.h */,
+				B5DABB21138E2BF6004AE472 /* SyncViewController.m */,
+			);
+			name = Sync;
+			sourceTree = "<group>";
+		};
+		B5220AFB13F0DCEA00DEDD21 /* Vendors */ = {
+			isa = PBXGroup;
+			children = (
+				B5B0EB201383AFC3000A9330 /* Reachability */,
+				B5031AD5138007B9005BB407 /* MBProgressHUD */,
+				B55873D613A8AB77006526F3 /* EGOTableViewPullRefresh */,
+				B5031AEE1380134F005BB407 /* HTTP */,
+				B57CD15D133C791500CCB81A /* XMLRPC */,
+				B5902FA713B236F50053E1D6 /* SDWebImage */,
+				B54F75A1139365E700C95039 /* TouchJSON */,
+			);
+			name = Vendors;
+			sourceTree = "<group>";
+		};
 		B54F75A1139365E700C95039 /* TouchJSON */ = {
 			isa = PBXGroup;
 			children = (
@@ -857,16 +889,9 @@
 				B5DABB1B138E2BF6004AE472 /* Constants.h */,
 				B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */,
 				B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */,
+				023AF82F137A815E00BCDEEF /* Utils */,
 				B5DABB25138E2C14004AE472 /* Models */,
 				B57CD18E133C79D500CCB81A /* Controllers */,
-				B5B0EB201383AFC3000A9330 /* Reachability */,
-				B5031AD5138007B9005BB407 /* MBProgressHUD */,
-				B55873D613A8AB77006526F3 /* EGOTableViewPullRefresh */,
-				023AF82F137A815E00BCDEEF /* Utils */,
-				B5031AEE1380134F005BB407 /* HTTP */,
-				B57CD15D133C791500CCB81A /* XMLRPC */,
-				B5902FA713B236F50053E1D6 /* SDWebImage */,
-				B54F75A1139365E700C95039 /* TouchJSON */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -901,8 +926,8 @@
 		B57CD18C133C798600CCB81A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B59600D113CC3F7400438682 /* soulpapa.ttf */,
 				320B6C86F11D9990244A9730 /* Three20.bundle */,
+				B59600D113CC3F7400438682 /* soulpapa.ttf */,
 				0246A69413370B8B007BD281 /* Localizable.strings */,
 			);
 			name = Resources;
@@ -915,12 +940,13 @@
 				02618A231331A581008D3037 /* AppDelegate.m */,
 				02618A2B1331A582008D3037 /* RootViewController.h */,
 				02618A2C1331A582008D3037 /* RootViewController.m */,
+				B5DABB1C138E2BF6004AE472 /* CoursesViewController.h */,
+				B5DABB1D138E2BF6004AE472 /* CoursesViewController.m */,
 				B56983CA13896647003FECD2 /* WebViewController.h */,
 				B56983CB13896648003FECD2 /* WebViewController.m */,
 				B5DABB37138E57CE004AE472 /* MoodleImagePickerController.h */,
 				B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */,
-				B5DABB20138E2BF6004AE472 /* SyncViewController.h */,
-				B5DABB21138E2BF6004AE472 /* SyncViewController.m */,
+				B5220AFA13F0DC5100DEDD21 /* Sync */,
 				B5DABB2D138E2C52004AE472 /* Participant */,
 				B5DABB2C138E2C3C004AE472 /* Upload */,
 				B5DABB2E138E2C6E004AE472 /* Site */,
@@ -1086,8 +1112,6 @@
 		B5DABB2D138E2C52004AE472 /* Participant */ = {
 			isa = PBXGroup;
 			children = (
-				B5DABB1C138E2BF6004AE472 /* CoursesViewController.h */,
-				B5DABB1D138E2BF6004AE472 /* CoursesViewController.m */,
 				B5E047F4137280FA00314B60 /* ParticipantListViewController.h */,
 				B5E047F5137280FA00314B60 /* ParticipantListViewController.m */,
 				023AF82A137A2CF400BCDEEF /* DetailViewController.h */,
