@@ -90,10 +90,12 @@
     CFRelease(phoneNumberMultiValue);
 
     // Adding emails
-    ABMutableMultiValueRef emailMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-    ABMultiValueAddValueAndLabel(emailMultiValue, _participant.email, (CFStringRef)@"Work", NULL);
-    ABRecordSetValue(person, kABPersonURLProperty, emailMultiValue, nil);
-    CFRelease(emailMultiValue);
+    if (_participant.email) {
+        ABMutableMultiValueRef emailMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+        ABMultiValueAddValueAndLabel(emailMultiValue, _participant.email, (CFStringRef)@"Work", NULL);
+        ABRecordSetValue(person, kABPersonURLProperty, emailMultiValue, nil);
+        CFRelease(emailMultiValue);
+    }
 
     // Adding address
     ABMutableMultiValueRef addressMultipleValue = ABMultiValueCreateMutable(kABMultiDictionaryPropertyType);
