@@ -13,7 +13,7 @@
 #import "MBProgressHUD.h"
 #import <Three20/Three20.h>
 
-@interface CoursesViewController : UITableViewController <UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, EGORefreshTableHeaderDelegate, MBProgressHUDDelegate> {
+@interface CoursesViewController : UITableViewController <UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, UIScrollViewDelegate, EGORefreshTableHeaderDelegate, MBProgressHUDDelegate> {
     NSManagedObjectContext *managedObjectContext;
     AppDelegate *appDelegate;
 

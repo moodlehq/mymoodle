@@ -364,6 +364,7 @@
 - (void)doneLoadingTableViewData
 {
     //  model should call this when its done loading
+    [self updateParticipants];
     _reloading = NO;
     [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
@@ -373,7 +374,6 @@
 
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView *)view
 {
-    [self updateParticipants];
     [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.5];
 }
 

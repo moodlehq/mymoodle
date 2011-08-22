@@ -21,6 +21,7 @@
 - (void)updateCourses
 {
     _reloading = YES;
+
     WSClient *client = [[[WSClient alloc] init] autorelease];
     NSNumber *userid = [appDelegate.site valueForKeyPath:@"mainuser.userid"];
     NSArray *wsparams = [[NSArray alloc] initWithObjects:userid, nil];
@@ -102,6 +103,7 @@
         [alert show];
         [alert release];
     }
+
 }
 
 #pragma mark - View lifecycle
@@ -372,7 +374,7 @@
 
 - (void)doneLoadingTableViewData
 {
-    //  model should call this when its done loading
+    [self updateCourses];
     _reloading = NO;
     [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
@@ -382,18 +384,17 @@
 
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView *)view
 {
-    [self updateCourses];
     [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.5];
 }
 
 - (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView *)view
 {
-    return _reloading;             // should return if data source model is reloading
+    return _reloading;
 }
 
 - (NSDate *)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView *)view
 {
-    return [NSDate date];          // should return date data source was last changed
+    return [NSDate date];
 }
 
 #pragma mark -
@@ -412,8 +413,8 @@
 #pragma mark MBProgressHUDDelegate methods
 - (void)hudWasHidden
 {
-    // reset loading flag
     _reloading = NO;
+    // reset loading flag
     [HUD removeFromSuperview];
     [HUD release];
     HUD = nil;
