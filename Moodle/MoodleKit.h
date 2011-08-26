@@ -13,6 +13,7 @@
 #import "WSClient.h"
 #import "SDWebImageManager.h"
 #import "CJSONDeserializer.h"
+#import "CJSONSerializer.h"
 #import "MoodleMedia.h"
 #import "MoodleSite.h"
 #import "MoodleStyleSheet.h"

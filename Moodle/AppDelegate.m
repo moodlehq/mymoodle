@@ -108,7 +108,7 @@ static AppDelegate *moodleApp = NULL;
     [navigator.URLMap from:@"*"                   toViewController:[WebViewController class]];
     [navigator.URLMap from:@"tt://dashboard/"     toViewController:[RootViewController class]];
     [navigator.URLMap from:@"tt://upload/"        toViewController:[UploadViewController class]];
-    [navigator.URLMap from:@"tt://participants/"  toViewController:[CoursesViewController class]];
+    [navigator.URLMap from:@"tt://courses/(initWithType:)"  toViewController:[CoursesViewController class]];
     [navigator.URLMap from:@"tt://recorder/"      toViewController:[RecorderViewController class]];
     [navigator.URLMap from:@"tt://sites/"         toViewController:[SitesViewController class]];
     [navigator.URLMap from:@"tt://settings/"      toViewController:[SettingsSiteViewController class]];

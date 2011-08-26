@@ -7,22 +7,141 @@
 //
 
 #import "DetailViewController.h"
-#import "Reachability.h"
-#import "WSClient.h"
-#import "Constants.h"
+#import "MoodleKit.h"
+#import "Participant.h"
 // temp fix for https://github.com/facebook/three20/issues/194
 #import <Three20UINavigator/UIViewController+TTNavigator.h>
 #import "Three20Core/NSStringAdditions.h"
-#import "CJSONSerializer.h"
 
-#pragma mark - view controller
 @implementation DetailViewController
-
 @synthesize participant = _participant;
 @synthesize course = _course;
 
+#pragma mark - Button actions
+- (IBAction)clickedUploadButton:(id)sender
+{
+    HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
+    [self.view.window addSubview:HUD];
+    [HUD showWhileExecuting:@selector(refreshUserInfo) onTarget:self withObject:nil animated:YES];
+}
+
+#pragma mark - private methods
+
+- (void)setupTableHeader
+{
+    CGRect tableViewFrame = self.tableView.frame;
+    UIView *tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(TABLE_MARGIN, TABLE_MARGIN, tableViewFrame.size.width - TABLE_MARGIN * 2, 120)];
+
+    // user picture
+    userpicture = [[[UIImageView alloc] initWithFrame:CGRectMake(TABLE_MARGIN, TABLE_MARGIN, 100, 100)] autorelease];
+
+    userpicture.layer.cornerRadius = 9.0;
+    userpicture.layer.masksToBounds = YES;
+    userpicture.layer.borderColor = UIColorFromRGB(ColorBackground).CGColor;
+    userpicture.layer.borderWidth = 3.0;
+
+    NSURL *url = [NSURL URLWithString:[self.participant valueForKey:@"profileimageurl"]];
+
+    SDWebImageManager *manager = [SDWebImageManager sharedManager];
+
+    UIImage *cachedImage = [manager imageWithURL:url];
+
+    if (cachedImage)
+    {
+        userpicture.image = cachedImage;
+    }
+    else
+    {
+        [manager downloadWithURL:url delegate:self];
+    }
+
+    // user fullname
+    UILabel *fullname = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_MARGIN + 100 + 20, TABLE_MARGIN, tableViewFrame.size.width - TABLE_MARGIN * 2 - 100, 100)];
+    fullname.text = [self.participant valueForKey:@"fullname"];
+    fullname.backgroundColor = [UIColor clearColor];
+    fullname.font = [UIFont fontWithName:@"Arial-BoldMT" size:24.0];
+
+    [tableHeaderView addSubview:userpicture];
+    [tableHeaderView addSubview:fullname];
+    [fullname release];
+    self.tableView.tableHeaderView = tableHeaderView;
+    [tableHeaderView release];
+}
+
+- (void)setupTableFooter
+{
+    tableviewFooter = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 120)];
+    tableviewFooter.userInteractionEnabled = YES;
+
+    UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonSendMsg setTitle:NSLocalizedString(@"sendmessage", nil) forState:UIControlStateNormal];
+    [buttonSendMsg setFrame:CGRectMake(TABLE_MARGIN, 0, 320 - TABLE_MARGIN * 2, 50)];
+    buttonSendMsg.tag = TAG_BUTTON_SEND;
+    [buttonSendMsg addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
+
+    UIButton *buttonAddNote = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonAddNote setTitle:NSLocalizedString(@"addnote", nil) forState:UIControlStateNormal];
+    [buttonAddNote setFrame:CGRectMake(TABLE_MARGIN, 60, BUTTON_WIDTH, 50)];
+    buttonAddNote.tag = TAG_BUTTON_NOTE;
+    [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
+
+    UIButton *buttonAddContact = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonAddContact setTitle:NSLocalizedString(@"addcontact", nil) forState:UIControlStateNormal];
+    [buttonAddContact addTarget:self action:@selector(addContact) forControlEvents:UIControlEventTouchUpInside];
+    [buttonAddContact setFrame:CGRectMake(self.view.frame.size.width - TABLE_MARGIN - BUTTON_WIDTH, 60, BUTTON_WIDTH, 50)];
+    buttonAddContact.tag = TAG_BUTTON_CONTACT;
+
+    [tableviewFooter addSubview:buttonSendMsg];
+    [tableviewFooter addSubview:buttonAddNote];
+    [tableviewFooter addSubview:buttonAddContact];
+
+    [self.tableView setTableFooterView:tableviewFooter];
+    [tableviewFooter release];
+}
+
+
+- (NSDictionary *)createInfo:(NSString *)key value:(NSString *)value
+{
+    NSDictionary *dict = [[[NSDictionary alloc] initWithObjectsAndKeys:value, key, nil] autorelease];
+
+    return dict;
+}
+
+- (void)initialiseTableData
+{
+    /** contact information */
+    contactinfo = [[NSMutableArray alloc] init];
+    if ([self.participant valueForKey:@"email"])
+    {
+        [contactinfo addObject:[self createInfo:@"email" value:[self.participant valueForKey:@"email"]]];
+    }
+    if ([self.participant valueForKey:@"phone1"])
+    {
+        [contactinfo addObject:[self createInfo:@"phone1" value:[self.participant valueForKey:@"phone1"]]];
+    }
+    if ([self.participant valueForKey:@"phone2"])
+    {
+        [contactinfo addObject:[self createInfo:@"phone2" value:[self.participant valueForKey:@"phone2"]]];
+    }
+
+    /** geo information */
+    geoinfo = [[NSMutableArray alloc] init];
+    if ([self.participant valueForKey:@"country"])
+    {
+        [geoinfo addObject:[self createInfo:@"country" value:[self.participant valueForKey:@"country"]]];
+    }
+    if ([self.participant valueForKey:@"city"])
+    {
+        [geoinfo addObject:[self createInfo:@"city" value:[self.participant valueForKey:@"city"]]];
+    }
+    if ([self.participant valueForKey:@"address"])
+    {
+        [geoinfo addObject:[self createInfo:@"address" value:[self.participant valueForKey:@"address"]]];
+    }
+}
+
 // load user
-- (void)updateParticipant
+- (void)updateUserData
 {
     WSClient *client = [[WSClient alloc] init];
 
@@ -64,6 +183,16 @@
     [client release];
 }
 
+- (void)refreshUserInfo
+{
+    [self updateUserData];
+    [self initialiseTableData];
+
+    [self setupTableHeader];
+
+    [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+}
+
 - (void)addContact
 {
     ABAddressBookRef addressBook = ABAddressBookCreate();
@@ -90,7 +219,8 @@
     CFRelease(phoneNumberMultiValue);
 
     // Adding emails
-    if (_participant.email) {
+    if (_participant.email)
+    {
         ABMutableMultiValueRef emailMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
         ABMultiValueAddValueAndLabel(emailMultiValue, _participant.email, (CFStringRef)@"Work", NULL);
         ABRecordSetValue(person, kABPersonURLProperty, emailMultiValue, nil);
@@ -318,23 +448,9 @@
 {
 }
 
-- (void)dealloc
-{
-    [contactinfo release];
-    [geoinfo release];
-    [self.participant release];
-    [self.course release];
-    [super dealloc];
-}
 
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-}
 
 #pragma mark - View lifecycle
-
 
 - (id)initWithNew:(NSString *)new
 {
@@ -349,14 +465,6 @@
     [super viewDidAppear:animated];
     [[TTNavigator navigator].URLMap from:@"tt://post" toViewController:self selector:@selector(post:)];
 }
-
-- (NSDictionary *)createInfo:(NSString *)key value:(NSString *)value
-{
-    NSDictionary *dict = [[[NSDictionary alloc] initWithObjectsAndKeys:value, key, nil] autorelease];
-
-    return dict;
-}
-
 
 - (void)viewDidLoad
 {
@@ -387,10 +495,13 @@
     [[TTNavigator navigator].URLMap removeURL:@"tt://post"];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (void)dealloc
 {
-    // Return YES for supported orientations
-    return interfaceOrientation == UIInterfaceOrientationPortrait;
+    [contactinfo release];
+    [geoinfo release];
+    [self.participant release];
+    [self.course release];
+    [super dealloc];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -400,108 +511,26 @@
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     managedObjectContext = [appDelegate managedObjectContext];
 
-    contactinfo = [[NSMutableArray alloc] init];
-    if ([self.participant valueForKey:@"email"])
-    {
-        [contactinfo addObject:[self createInfo:@"email" value:[self.participant valueForKey:@"email"]]];
-    }
-    if ([self.participant valueForKey:@"phone1"])
-    {
-        [contactinfo addObject:[self createInfo:@"phone1" value:[self.participant valueForKey:@"phone1"]]];
-    }
-    if ([self.participant valueForKey:@"phone2"])
-    {
-        [contactinfo addObject:[self createInfo:@"phone2" value:[self.participant valueForKey:@"phone2"]]];
-    }
-    geoinfo = [[NSMutableArray alloc] init];
-    if ([self.participant valueForKey:@"country"])
-    {
-        [geoinfo addObject:[self createInfo:@"country" value:[self.participant valueForKey:@"country"]]];
-    }
-    if ([self.participant valueForKey:@"city"])
-    {
-        [geoinfo addObject:[self createInfo:@"city" value:[self.participant valueForKey:@"city"]]];
-    }
-    if ([self.participant valueForKey:@"address"])
-    {
-        [geoinfo addObject:[self createInfo:@"address" value:[self.participant valueForKey:@"address"]]];
-    }
+    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"update", @"") style:UIBarButtonItemStyleBordered target:self action:@selector(clickedUploadButton:)] autorelease];
 
+    [self initialiseTableData];
     // Scroll the table view to the top before it appears
     [self.tableView reloadData];
     [self.tableView setContentOffset:CGPointZero animated:NO];
     self.tableView.autoresizesSubviews = YES;
 
-    CGRect size = self.tableView.frame;
-    NSInteger margin = 20;
-    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(margin, margin, size.size.width - margin * 2, 120)] autorelease];
-
-    // user picture
-    userpicture = [[[UIImageView alloc] initWithFrame:CGRectMake(margin, margin, 100, 100)] autorelease];
-
-    userpicture.layer.cornerRadius = 9.0;
-    userpicture.layer.masksToBounds = YES;
-    userpicture.layer.borderColor = UIColorFromRGB(ColorBackground).CGColor;
-    userpicture.layer.borderWidth = 3.0;
-
-    NSURL *url = [NSURL URLWithString:[self.participant valueForKey:@"profileimageurl"]];
-
-    SDWebImageManager *manager = [SDWebImageManager sharedManager];
-
-    UIImage *cachedImage = [manager imageWithURL:url];
-
-    if (cachedImage)
-    {
-        userpicture.image = cachedImage;
-    }
-    else
-    {
-        [manager downloadWithURL:url delegate:self];
-    }
-
-    // user fullname
-    UILabel *fullname = [[[UILabel alloc] initWithFrame:CGRectMake(margin + 100 + 20, margin, size.size.width - margin * 2 - 100, 100)] autorelease];
-    fullname.text = [self.participant valueForKey:@"fullname"];
-    fullname.backgroundColor = [UIColor clearColor];
-    fullname.font = [UIFont fontWithName:@"Arial-BoldMT" size:24.0];
-
-    [containerView addSubview:userpicture];
-    [containerView addSubview:fullname];
-    self.tableView.tableHeaderView = containerView;
-
-    float button_width = 130;
-    tableviewFooter = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 120)];
-    tableviewFooter.userInteractionEnabled = YES;
-
-    UIButton *buttonSendMsg = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonSendMsg setTitle:NSLocalizedString(@"sendmessage", nil) forState:UIControlStateNormal];
-    [buttonSendMsg setFrame:CGRectMake(margin, 0, 320 - margin * 2, 50)];
-    buttonSendMsg.tag = TAG_BUTTON_SEND;
-    [buttonSendMsg addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
-
-    UIButton *buttonAddNote = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonAddNote setTitle:NSLocalizedString(@"addnote", nil) forState:UIControlStateNormal];
-    [buttonAddNote setFrame:CGRectMake(margin, 60, button_width, 50)];
-    buttonAddNote.tag = TAG_BUTTON_NOTE;
-    [buttonAddNote addTarget:@"tt://post" action:@selector(openURLFromButton:) forControlEvents:UIControlEventTouchUpInside];
-
-    UIButton *buttonAddContact = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [buttonAddContact setTitle:NSLocalizedString(@"addcontact", nil) forState:UIControlStateNormal];
-    [buttonAddContact addTarget:self action:@selector(addContact) forControlEvents:UIControlEventTouchUpInside];
-    [buttonAddContact setFrame:CGRectMake(self.view.frame.size.width - margin - button_width, 60, button_width, 50)];
-    buttonAddContact.tag = TAG_BUTTON_CONTACT;
-
-    [tableviewFooter addSubview:buttonSendMsg];
-    [tableviewFooter addSubview:buttonAddNote];
-    [tableviewFooter addSubview:buttonAddContact];
-
-    [self.tableView setTableFooterView:tableviewFooter];
-    [tableviewFooter release];
-
-    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"update", @"") style:UIBarButtonItemStyleBordered target:self action:@selector(updateParticipant)] autorelease];
+    [self setupTableHeader];
+    [self setupTableFooter];
 }
 
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
+}
+
+#pragma mark - guesture
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
@@ -537,7 +566,6 @@
     return 3;
 }
 
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     /*
@@ -563,10 +591,6 @@
             break;
     }
     return rows;
-}
-
-- (void)configureCell
-{
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -673,6 +697,7 @@
     }
     return cell;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
     if (indexPath.section == 0)               // description field
@@ -730,18 +755,19 @@
     return title;
 }
 
+#pragma mark - SDWebImage delegate
+
 - (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
 {
     userpicture.image = image;
 }
 
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+- (void)hudWasHidden
 {
-    if (buttonIndex == [alertView cancelButtonIndex])
-    {
-        // do nothing
-        return;
-    }
+    [HUD removeFromSuperview];
+    [HUD release];
+    HUD = nil;
 }
 @end

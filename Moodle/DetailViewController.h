@@ -9,33 +9,41 @@
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
 #import <AddressBook/AddressBook.h>
-#import "SDWebImageManager.h"
-#import "Participant.h"
-#import "AppDelegate.h"
+#import "MoodleKit.h"
 
 #define TAG_BUTTON_SEND    1
 #define TAG_BUTTON_NOTE    2
 #define TAG_BUTTON_UPDATE  3
 #define TAG_BUTTON_CONTACT 4
 
-
 #define ALERT_MSG          1
 #define ALERT_NOTE         2
 
-@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate, SDWebImageManagerDelegate, UIAlertViewDelegate> {
+#define BUTTON_WIDTH       130
+#define TABLE_MARGIN       20
+
+@class Participant;
+
+@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate, SDWebImageManagerDelegate, MBProgressHUDDelegate, UIAlertViewDelegate> {
     AppDelegate *appDelegate;
     NSManagedObjectContext *managedObjectContext;
     Participant *_participant;
     NSManagedObject *_course;
+    // table data
     NSMutableArray *contactinfo;
     NSMutableArray *geoinfo;
+    // UI controls
     UIView *tableviewFooter;
     UIImageView *userpicture;
-    NSInteger postControllerType;
+    MBProgressHUD *HUD;
+
+    // gesture
     UISwipeGestureRecognizer *swipeLeftRecognizer;
+
+    // flag
+    NSInteger postControllerType;
+
 }
 @property (nonatomic, retain) Participant *participant;
 @property (nonatomic, retain) NSManagedObject *course;
-- (void)updateParticipant;
-- (NSDictionary *)createInfo:(NSString *)key value:(NSString *)value;
 @end

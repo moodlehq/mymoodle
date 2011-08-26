@@ -30,7 +30,7 @@
     UIImageView *rootBackground;
     NSManagedObjectContext *managedObjectContext;
     UITextView *header;
-    
+
     /** available web service names */
     NSMutableArray *features;
 }

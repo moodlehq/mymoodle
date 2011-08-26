@@ -14,7 +14,17 @@
 
 @implementation CoursesViewController
 @synthesize fetchedResultsController = __fetchedResultsController;
-@synthesize participantListViewController;
+
+#pragma mark - private methods
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
+
+    //    cell.imageView.image = [UIImage imageNamed: @"course.png"];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
+    cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
+}
 
 #pragma mark - Update courses
 
@@ -114,19 +124,22 @@
     [super loadView];
 }
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)initWithType:(NSString *)type
 {
-    self = [super initWithStyle:style];
-    if (self)
+    if ((self = [self init]))
     {
-        // Custom initialization
+        viewControllerType = type;
+        // cliam ownership
+        [viewControllerType retain];
     }
+
     return self;
 }
 
 - (void)dealloc
 {
     [__fetchedResultsController release];
+    [viewControllerType release];
     [super dealloc];
 }
 
@@ -137,6 +150,7 @@
 
 - (void)viewDidUnload
 {
+    viewControllerType = nil;
     [super viewDidUnload];
 }
 
@@ -189,7 +203,6 @@
 
     self.title = NSLocalizedString(@"mycourses", @"My courses title");
 
-    participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -216,15 +229,6 @@
     return [sectionInfo numberOfObjects];
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
-
-//    cell.imageView.image = [UIImage imageNamed: @"course.png"];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
-    cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
-}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -252,11 +256,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *selectedCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
-
-    participantListViewController.course = selectedCourse;
-    NSString *participantListViewTitle = [selectedCourse valueForKey:@"shortname"];
-    participantListViewController.title = participantListViewTitle;
-    [self.navigationController pushViewController:participantListViewController animated:YES];
+    if ([viewControllerType isEqualToString:@"participants"]) {
+        ParticipantListViewController *participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
+        participantListViewController.course = selectedCourse;
+        participantListViewController.title  = [selectedCourse valueForKey:@"shortname"];
+        [self.navigationController pushViewController:participantListViewController animated:YES];
+        [participantListViewController release];
+    }
 }
 
 #pragma mark - Fetched results controller

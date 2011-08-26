@@ -37,22 +37,26 @@
     TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle
                                                                    image:image
                                                                      URL:url canDelete:NO];
-    
+
     launcherItem.style = @"MoodleLauncherButton:";
     return [launcherItem autorelease];
 }
 
 /** check if web service available*/
-- (BOOL)featureExists: (NSString *)name {
-    if ([features indexOfObject:name] == NSNotFound) {
+- (BOOL)featureExists:(NSString *)name
+{
+    if ([features indexOfObject:name] == NSNotFound)
+    {
         return NO;
     }
-    else {
+    else
+    {
         return YES;
     }
 }
 /** generate available launcher items*/
-- (NSArray *)generateLauncherItems {
+- (NSArray *)generateLauncherItems
+{
     features = [NSMutableArray array];
     NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *wsDescription = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:appDelegate.managedObjectContext];
@@ -65,18 +69,19 @@
         [features addObject:[ws valueForKey:@"name"]];
     }
     [wsRequest release];
-    
+
     NSMutableArray *pages = [[[NSMutableArray alloc] init] autorelease];
     NSMutableArray *items = [NSMutableArray array];
     // always available
     [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image:@"bundle://Upload.png" URL:@"tt://upload/"]];
-    if ([self featureExists:@"moodle_user_get_course_participants_by_id"] && [self featureExists:@"moodle_user_get_users_by_courseid"]) {
-        [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image:@"bundle://Participants.png" URL:@"tt://participants/"]];
+    if ([self featureExists:@"moodle_user_get_course_participants_by_id"] && [self featureExists:@"moodle_user_get_users_by_courseid"])
+    {
+        [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image:@"bundle://Participants.png" URL:@"tt://courses/participants"]];
     }
     [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Web", "Web") image:@"bundle://Web.png" URL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]]];
     [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image:@"bundle://MoodleHelp.png" URL:URL_MOODLE_HELP]];
-    
-    
+
+
     [pages addObject:items];
     return pages;
 }
@@ -128,7 +133,7 @@
     UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
     btnSettings.tag = 2;
 
-    UIBarItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 
     toolbar.items = [NSArray arrayWithObjects:
                      btnSync,
