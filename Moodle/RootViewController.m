@@ -16,18 +16,69 @@
 
 @implementation RootViewController
 
-/**
- * "Sites" button action
- *
- */
+#pragma mark -
+#pragma mark toolbar event handler
 - (void)displaySettingsView
 {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sites/"] applyAnimated:YES]];
 }
 
-- (void)launchNotification
+- (void)displaySyncView
 {
     [[TTNavigator navigator] openURLAction:[[TTURLAction actionWithURLPath:@"tt://sync/"] applyAnimated:YES]];
+}
+
+#pragma mark -
+#pragma mark Private methods
+
+/** generate individual launcher item object */
+- (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url
+{
+    TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle
+                                                                   image:image
+                                                                     URL:url canDelete:NO];
+    
+    launcherItem.style = @"MoodleLauncherButton:";
+    return [launcherItem autorelease];
+}
+
+/** check if web service available*/
+- (BOOL)featureExists: (NSString *)name {
+    if ([features indexOfObject:name] == NSNotFound) {
+        return NO;
+    }
+    else {
+        return YES;
+    }
+}
+/** generate available launcher items*/
+- (NSArray *)generateLauncherItems {
+    features = [NSMutableArray array];
+    NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *wsDescription = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:appDelegate.managedObjectContext];
+    [wsRequest setEntity:wsDescription];
+    NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", appDelegate.site];
+    [wsRequest setPredicate:wsPredicate];
+    NSArray *webservices = [appDelegate.managedObjectContext executeFetchRequest:wsRequest error:nil];
+    for (NSManagedObject *ws in webservices)
+    {
+        [features addObject:[ws valueForKey:@"name"]];
+    }
+    [wsRequest release];
+    
+    NSMutableArray *pages = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *items = [NSMutableArray array];
+    // always available
+    [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image:@"bundle://Upload.png" URL:@"tt://upload/"]];
+    if ([self featureExists:@"moodle_user_get_course_participants_by_id"] && [self featureExists:@"moodle_user_get_users_by_courseid"]) {
+        [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image:@"bundle://Participants.png" URL:@"tt://participants/"]];
+    }
+    [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Web", "Web") image:@"bundle://Web.png" URL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]]];
+    [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image:@"bundle://MoodleHelp.png" URL:URL_MOODLE_HELP]];
+    
+    
+    [pages addObject:items];
+    return pages;
 }
 
 - (void)viewDidLoad
@@ -42,12 +93,9 @@
 - (void)loadView
 {
     [super loadView];
-
     self.navigationBarTintColor = UIColorFromRGB(ColorNavigationBar);
 
     CGRect appRect = [UIScreen mainScreen].applicationFrame;
-    NSLog(@"app  frame: %@", NSStringFromCGRect(appRect));
-    NSLog(@"view frame: %@", NSStringFromCGRect(self.view.frame));
 
     // app background
     UIImageView *appBg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"screen_bg.png"]];
@@ -57,37 +105,10 @@
     [appBg release];
 
 
-    int headerHeight = 65;
-
-    int bgWidth = 276;
-    int bgHeight = 280;
-    UIImageView *rootBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"root_bg.png"]];
-    rootBackground.frame = CGRectMake((view.size.width - 276) / 2, appRect.origin.y + headerHeight, bgWidth, bgHeight);
+    rootBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"root_bg.png"]];
+    rootBackground.frame = CGRectMake((view.size.width - 276) / 2, appRect.origin.y + HEADER_HEIGHT, BG_WIDTH, BG_HEIGHT);
     [self.view addSubview:rootBackground];
     [rootBackground release];
-
-    CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x + 10, rootBackground.frame.origin.y + 30, bgWidth - 20, bgHeight + 40);
-    launcherView = [[TTLauncherView alloc] initWithFrame:launcherFrame];
-    launcherView.persistenceMode = TTLauncherPersistenceModeAll;
-    launcherView.columnCount = 2;
-    webLauncherItem = [[TTLauncherItem alloc] initWithTitle:NSLocalizedString(@"Web", "Web")
-                                                      image:@"bundle://Web.png"
-                                                        URL:@"" canDelete:NO];
-    webLauncherItem.style = @"MoodleLauncherButton:";
-    if (![launcherView restoreLauncherItems])
-    {
-        launcherView.pages = [NSArray arrayWithObjects:
-                              [NSArray arrayWithObjects:
-                               [self launcherItemWithTitle:NSLocalizedString(@"Upload", "Upload") image:@"bundle://Upload.png" URL:@"tt://upload/"],
-                               [self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image:@"bundle://Participants.png" URL:@"tt://participants/"],
-                               webLauncherItem,
-                               [self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image:@"bundle://MoodleHelp.png" URL:URL_MOODLE_HELP],
-                               nil]
-                              , nil];
-    }
-    launcherView.delegate = self;
-    [self.view addSubview:launcherView];
-
     // defautl toolbar height: 44
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(10, view.size.height - 40, view.size.width - 20, 33)];
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:toolbar.bounds
@@ -101,20 +122,20 @@
     toolbar.layer.mask = maskLayer;
     toolbar.tintColor = UIColorFromRGB(ColorToolbar);
 
-    btnSync = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"sync.png"] style:UIBarButtonItemStylePlain target:self action:@selector(launchNotification)];
+    btnSync = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"sync.png"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySyncView)];
     btnSync.tag = 1;
 
     UIBarButtonItem *btnSettings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySettingsView)];
     btnSettings.tag = 2;
 
-    UIBarItem *space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:
-                         UIBarButtonSystemItemFlexibleSpace           target:nil action:nil] autorelease];
+    UIBarItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 
     toolbar.items = [NSArray arrayWithObjects:
                      btnSync,
                      space,
                      btnSettings,
                      nil];
+    [space release];
     [btnSync release];
     [btnSettings release];
     [self.view addSubview:toolbar];
@@ -132,18 +153,27 @@
     [header release];
 }
 
+
 - (void)viewWillAppear:(BOOL)animated
 {
-    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    managedObjectContext = [appDelegate managedObjectContext];
-    [webLauncherItem setURL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]];
-    [connectedSite setText:[NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey:@"name"]]];
     [super viewWillAppear:animated];
+    appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x + 10, rootBackground.frame.origin.y + 30, BG_WIDTH - 20, BG_HEIGHT + 40);
+    launcherView = [[TTLauncherView alloc] initWithFrame:launcherFrame];
+    launcherView.persistenceMode = TTLauncherPersistenceModeAll;
+    launcherView.columnCount = 2;
+    if (![launcherView restoreLauncherItems])
+    {
+        launcherView.pages = [self generateLauncherItems];
+    }
+    launcherView.delegate = self;
+    [self.view addSubview:launcherView];
+
+    managedObjectContext = [appDelegate managedObjectContext];
+    [connectedSite setText:[NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey:@"name"]]];
 
     [header setText:[appDelegate.site valueForKey:@"name"]];
-
-    BOOL autosync = [[NSUserDefaults standardUserDefaults] boolForKey:kAutoSync];
-    NSLog(@"autosync: %d", autosync);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -173,32 +203,17 @@
 
 - (void)viewDidUnload
 {
-    settingsViewController = nil;
     launcherView = nil;
-    webLauncherItem = nil;
     [super viewDidUnload];
 }
 
 - (void)dealloc
 {
     // release view controllers
-    [settingsViewController release];
     [launcherView release];
-    [webLauncherItem release];
     [super dealloc];
 }
 
-#pragma mark -
-#pragma mark Private methods
-- (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url
-{
-    TTLauncherItem *launcherItem = [[TTLauncherItem alloc] initWithTitle:pTitle
-                                                                   image:image
-                                                                     URL:url canDelete:NO];
-
-    launcherItem.style = @"MoodleLauncherButton:";
-    return [launcherItem autorelease];
-}
 #pragma mark -
 #pragma mark TTLauncherViewDelegate methods
 - (void)launcherViewDidBeginEditing:(TTLauncherView *)launcher

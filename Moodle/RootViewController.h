@@ -16,18 +16,22 @@
 #import "CoursesViewController.h"
 #import "Reachability.h"
 
+
+#define HEADER_HEIGHT 65
+#define BG_WIDTH      276
+#define BG_HEIGHT     280
+
 @interface RootViewController : TTViewController <TTLauncherViewDelegate, UIActionSheetDelegate> {
     AppDelegate *appDelegate;
-    /** view controllers*/
-    SitesViewController *settingsViewController;
     /** modules */
     TTLauncherView *launcherView;
-    TTLauncherItem *webLauncherItem;
     UITextView *connectedSite;
     UIBarButtonItem *btnSync;
+    UIImageView *rootBackground;
     NSManagedObjectContext *managedObjectContext;
     UITextView *header;
+    
+    /** available web service names */
+    NSMutableArray *features;
 }
-
-- (TTLauncherItem *)launcherItemWithTitle:(NSString *)pTitle image:(NSString *)image URL:(NSString *)url;
 @end
