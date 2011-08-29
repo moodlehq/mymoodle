@@ -29,6 +29,7 @@
     UITextField *field = [[UITextField alloc] initWithFrame:CGRectZero];
 
     [field setAdjustsFontSizeToFitWidth:YES];
+    [field setClearButtonMode:UITextFieldViewModeWhileEditing];
     [field setTextColor:[UIColor blackColor]];
     [field setDelegate:self];
     [field setBackgroundColor:[UIColor clearColor]];
