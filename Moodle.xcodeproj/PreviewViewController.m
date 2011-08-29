@@ -32,7 +32,6 @@
     [super loadView];
     self.title = NSLocalizedString(@"preview", nil);
     imageView = [[UIImageView alloc] init];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - TTToolbarHeight() - self.navigationController.navigationBar.frame.size.height);
     [self.view addSubview: imageView];
 
@@ -95,6 +94,13 @@
     [super viewWillAppear:animated];
     _appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     imageView.image = [UIImage imageWithContentsOfFile:filePath];
+    CGSize imageSize = [imageView.image size];
+    if (imageSize.height > imageView.frame.size.height || imageSize.width > imageView.frame.size.width) {
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+    } else {
+        // don't resize small picture
+        imageView.contentMode = UIViewContentModeCenter;
+    }
 }
 
 - (IBAction)uploadPressed: (id)sender {
@@ -143,29 +149,6 @@
         // delete file
         NSFileManager *fileManager = [NSFileManager defaultManager];
         [fileManager removeItemAtPath:filePath error:nil];
-    } else {
-//        NSManagedObjectContext *managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-//        NSLog(@"%@", [managedObjectContext hasChanges]);
-//        if (![managedObjectContext save: nil]) {
-//        }
-//        NSManagedObject *job = [[[NSEntityDescription insertNewObjectForEntityForName: @"Job" inManagedObjectContext: managedObjectContext] retain] autorelease];
-//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
-//        NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
-//        [formatter release];
-//        [job setValue: @"MoodleMedia"    forKey: @"target"];
-//        [job setValue: @"upload"         forKey: @"action"];
-//        [job setValue: stringFromDate    forKey: @"desc"];
-//        [job setValue: filePath          forKey: @"data"];
-//        [job setValue: @"path"           forKey: @"dataformat"];
-//        [job setValue: @"undone"         forKey: @"status"];
-//        [job setValue: _appDelegate.site forKey: @"site"];
-//        [job setValue: [NSDate date]     forKey: @"created"];
-//
-//        NSError *error;
-//        if (![managedObjectContext save: &error]) {
-//            NSLog(@"Error saving entity: %@", [error localizedDescription]);
-//        }
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
