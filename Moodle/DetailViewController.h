@@ -10,6 +10,10 @@
 #import <Three20/Three20.h>
 #import <AddressBook/AddressBook.h>
 #import "MoodleKit.h"
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
+#import <MapKit/MapKit.h>
+
 
 #define TAG_BUTTON_SEND    1
 #define TAG_BUTTON_NOTE    2
@@ -24,7 +28,7 @@
 
 @class Participant;
 
-@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate, SDWebImageManagerDelegate, MBProgressHUDDelegate, UIAlertViewDelegate> {
+@interface DetailViewController : UITableViewController <UIGestureRecognizerDelegate, TTPostControllerDelegate, SDWebImageManagerDelegate, MBProgressHUDDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate> {
     AppDelegate *appDelegate;
     NSManagedObjectContext *managedObjectContext;
     Participant *_participant;

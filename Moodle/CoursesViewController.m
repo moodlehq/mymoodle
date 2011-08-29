@@ -256,7 +256,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *selectedCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([viewControllerType isEqualToString:@"participants"]) {
+
+    if ([viewControllerType isEqualToString:@"participants"])
+    {
         ParticipantListViewController *participantListViewController = [[ParticipantListViewController alloc] initWithStyle:UITableViewStylePlain];
         participantListViewController.course = selectedCourse;
         participantListViewController.title  = [selectedCourse valueForKey:@"shortname"];

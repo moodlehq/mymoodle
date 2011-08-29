@@ -13,11 +13,28 @@
 #import <Three20UINavigator/UIViewController+TTNavigator.h>
 #import "Three20Core/NSStringAdditions.h"
 
+#import "MapViewController.h"
+
 @implementation DetailViewController
 @synthesize participant = _participant;
 @synthesize course = _course;
 
 #pragma mark - Button actions
+- (void)displayComposerSheet:(NSString *)email
+{
+    MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+
+    picker.mailComposeDelegate = self;
+
+    // Set up recipients
+    NSArray *toRecipients = [NSArray arrayWithObject:email];
+
+    [picker setToRecipients:toRecipients];
+
+    [self presentModalViewController:picker animated:YES];
+    [picker release];
+}
+
 - (IBAction)clickedUploadButton:(id)sender
 {
     HUD = [[MBProgressHUD alloc] initWithWindow:[UIApplication sharedApplication].keyWindow];
@@ -600,23 +617,13 @@
 
     if (cell == nil)
     {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-
-    // Cache a date formatter to create a string representation of the date object.
-    static NSDateFormatter *dateFormatter = nil;
-    if (dateFormatter == nil)
-    {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"yyyy"];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier] autorelease];
     }
 
     // Set the text in the cell for the section/row.
 
     NSString *cellText = nil;
     NSDictionary *info;
-    NSString *key;
     switch (indexPath.section)
     {
         case 0:
@@ -633,41 +640,8 @@
         default:
             break;
     }
-    if (indexPath.section == 1 || indexPath.section == 2)
-    {
-        // contact and location
-        key = [[info allKeys] lastObject];
 
-        CGRect labelFrame = CGRectMake(10, 4, 70, 32);
-
-        UILabel *labelView = [[UILabel alloc] initWithFrame:labelFrame];
-        labelView.text = NSLocalizedString(key, key);
-        [labelView setTextAlignment:UITextAlignmentRight];
-        [labelView setFont:[UIFont boldSystemFontOfSize:16.0]];
-
-        CGRect textviewFrame = CGRectMake(90, 2, 200, 32);
-        UITextView *textView = [[UITextView alloc] initWithFrame:textviewFrame];
-        cellText = [info valueForKey:key];
-        [textView setText:cellText];
-        [textView setEditable:NO];
-        [textView setFont:[UIFont fontWithName:@"Helvetica" size:16]];
-        [textView setDataDetectorTypes:UIDataDetectorTypeAll];
-        [textView setScrollEnabled:NO];
-
-        // for address field resize automatically the field
-        if (indexPath.section == 2 && indexPath.row == 2)
-        {
-            CGSize constraint = CGSizeMake(200, 20000.0f);
-            CGSize size = [[cellText stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-            [textView setFrame:CGRectMake(90, 2, 200, MAX(size.height + 12, 44.0f))];                                      // 12 => inside cell margin * 2
-        }
-
-        [cell.contentView addSubview:textView];
-        [cell.contentView addSubview:labelView];
-        [labelView release];
-        [textView release];
-    }
-    else if (indexPath.section == 0)
+    if (indexPath.section == 0)
     {
         cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero] autorelease];
         NSString *desc = [self.participant valueForKey:@"desc"];
@@ -678,9 +652,6 @@
         [label setNumberOfLines:0];
         [label setFont:[UIFont systemFontOfSize:FONT_SIZE]];
         [label setTag:1];
-//        [cell.contentView.layer setBorderWidth:1.0f];
-//        [[label layer] setBorderWidth:2.0f];
-
         [[cell contentView] addSubview:label];
 
         CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
@@ -694,37 +665,108 @@
 
         [label setText:[desc stringByRemovingHTMLTags]];
         [label setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(size.height, 44.0f))];
+    } else {
+        NSString *key;
+        // contact and location
+        key = [[info allKeys] lastObject];
+        cell.textLabel.text = NSLocalizedString(key, key);
+        
+        cellText = [[info valueForKey:key] stringByRemovingHTMLTags];
+        cell.detailTextLabel.lineBreakMode = UILineBreakModeWordWrap;
+        cell.detailTextLabel.numberOfLines = 0;
+        
+        CGSize constraint = CGSizeMake(200.0f, 20000.0f);
+        CGSize size = [[cellText stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        // 12 => inside cell margin * 2
+        CGRect detailTextFrame = cell.detailTextLabel.frame;
+        detailTextFrame.size.height = MAX(size.height + 12, 44.0f);
+        [cell.detailTextLabel setFrame:detailTextFrame];
+        cell.detailTextLabel.text = cellText;
     }
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    if (indexPath.section == 0)               // description field
+    if (indexPath.section == 0)
     {
         NSString *text = [[self.participant valueForKey:@"desc"] stringByRemovingHTMLTags];
-
+        
         CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
-
+        
         CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-
+        
         CGFloat height = MAX(size.height, 44.0f);
         return height + (CELL_CONTENT_MARGIN * 2);
     }
-    else if (indexPath.section == 2 && indexPath.row == 2)                   // address field
+
+    NSDictionary *info;
+    switch (indexPath.section)
     {
-        NSString *text = [[self.participant valueForKey:@"address"] stringByRemovingHTMLTags];
-        CGSize constraint = CGSizeMake(200, 20000.0f);
 
-        CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-
-        CGFloat height = MAX(size.height + (CELL_CONTENT_MARGIN * 2) + 12, 48.0f); // 48 should be 44, a bit hacky ;)
-
-        return height;
+        case 1:
+            info = [contactinfo objectAtIndex:indexPath.row];
+            break;
+            
+        case 2:
+            info = [geoinfo objectAtIndex:indexPath.row];
+            break;
+            
+        default:
+            break;
     }
-    else                                                                           // all other fields
+    NSString *key = [[info allKeys] lastObject];
+    NSString *text = [info valueForKey: key];
+    CGSize constraint = CGSizeMake(200, 20000.0f);
+
+    CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+
+    CGFloat height = MAX(size.height + (CELL_CONTENT_MARGIN * 2) + 12, 44.0f);
+
+    return height;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
+    if (cell.detailTextLabel.text == nil)
     {
-        return 44.0f;
+        return;
+    }
+    NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingAllTypes error:nil];
+    NSArray *matches = [detector matchesInString:cell.detailTextLabel.text
+                                         options:0
+                                           range:NSMakeRange(0, [cell.detailTextLabel.text length])];
+    for (NSTextCheckingResult *match in matches)
+    {
+        if ([match resultType] == NSTextCheckingTypeLink)
+        {
+            NSURL *url = [match URL];
+            if ([url.scheme isEqualToString:@"mailto"])
+            {
+                // mail to
+                [self displayComposerSheet:cell.detailTextLabel.text];
+            }
+            else
+            {
+                // other scheme including http, https
+                [[TTNavigator navigator] openURLAction:[TTURLAction actionWithURLPath:[url absoluteString]]];
+            }
+        }
+        else if ([match resultType] == NSTextCheckingTypePhoneNumber)
+        {
+            NSString *phoneNumber = [NSString stringWithFormat:@"%@/%@", @"tel://", [match phoneNumber]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneNumber]];
+        }
+        else if ([match resultType] == NSTextCheckingTypeAddress)
+        {
+            MapViewController *mapView = [[MapViewController alloc] initWithAddress:cell.detailTextLabel.text withName:[self.participant valueForKey:@"fullname"]];
+            [self.navigationController pushViewController:mapView animated:YES];
+            [mapView release];
+        }
     }
 }
 
@@ -769,5 +811,11 @@
     [HUD removeFromSuperview];
     [HUD release];
     HUD = nil;
+}
+
+#pragma mark - dismiss mail composer
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissModalViewControllerAnimated:YES];
 }
 @end

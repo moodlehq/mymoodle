@@ -79,6 +79,8 @@
 		B5902FC713B238300053E1D6 /* SDWebImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = B5902FBF13B238300053E1D6 /* SDWebImageDownloader.m */; };
 		B5902FC813B238300053E1D6 /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B5902FC213B238300053E1D6 /* SDWebImageManager.m */; };
 		B5902FC913B238300053E1D6 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B5902FC513B238300053E1D6 /* UIImageView+WebCache.m */; };
+		B593EB0B140B3B2500500531 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B593EB0A140B3B2500500531 /* MessageUI.framework */; };
+		B593EB0D140B49DE00500531 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B593EB0C140B49DE00500531 /* MapKit.framework */; };
 		B596009B13CC1E2C00438682 /* level_1.png in Resources */ = {isa = PBXBuildFile; fileRef = B596008713CC1E2C00438682 /* level_1.png */; };
 		B596009C13CC1E2C00438682 /* level_2.png in Resources */ = {isa = PBXBuildFile; fileRef = B596008813CC1E2C00438682 /* level_2.png */; };
 		B596009D13CC1E2C00438682 /* level_3.png in Resources */ = {isa = PBXBuildFile; fileRef = B596008913CC1E2C00438682 /* level_3.png */; };
@@ -133,6 +135,8 @@
 		B5B0EB1D1383AEB6000A9330 /* XMLRPCRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB121383AEB6000A9330 /* XMLRPCRequest.m */; };
 		B5B0EB1E1383AEB6000A9330 /* XMLRPCResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB141383AEB6000A9330 /* XMLRPCResponse.m */; };
 		B5B0EB1F1383AEB6000A9330 /* XMLValueDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */; };
+		B5BDC0B9140B5C380071D1F1 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5BDC0B8140B5C380071D1F1 /* MapViewController.m */; };
+		B5BDC0C0140B649D0071D1F1 /* AddressAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B5BDC0BF140B649D0071D1F1 /* AddressAnnotation.m */; };
 		B5C4329513A7BDC100F8F1A9 /* item.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329413A7BDC100F8F1A9 /* item.png */; };
 		B5C4329713A7C99B00F8F1A9 /* course.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329613A7C99B00F8F1A9 /* course.png */; };
 		B5C6BB2613CEDC54007B1517 /* button_upload.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C6BB2413CEDC54007B1517 /* button_upload.png */; };
@@ -438,6 +442,8 @@
 		B5902FC313B238300053E1D6 /* SDWebImageManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDWebImageManagerDelegate.h; path = SDWebImage/SDWebImageManagerDelegate.h; sourceTree = SOURCE_ROOT; };
 		B5902FC413B238300053E1D6 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+WebCache.h"; path = "SDWebImage/UIImageView+WebCache.h"; sourceTree = SOURCE_ROOT; };
 		B5902FC513B238300053E1D6 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+WebCache.m"; path = "SDWebImage/UIImageView+WebCache.m"; sourceTree = SOURCE_ROOT; };
+		B593EB0A140B3B2500500531 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		B593EB0C140B49DE00500531 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B596008713CC1E2C00438682 /* level_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = level_1.png; path = Images/meter/level_1.png; sourceTree = SOURCE_ROOT; };
 		B596008813CC1E2C00438682 /* level_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = level_2.png; path = Images/meter/level_2.png; sourceTree = SOURCE_ROOT; };
 		B596008913CC1E2C00438682 /* level_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = level_3.png; path = Images/meter/level_3.png; sourceTree = SOURCE_ROOT; };
@@ -502,6 +508,10 @@
 		B5B0EB141383AEB6000A9330 /* XMLRPCResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLRPCResponse.m; path = XMLRPC/XMLRPCResponse.m; sourceTree = SOURCE_ROOT; };
 		B5B0EB151383AEB6000A9330 /* XMLValueDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLValueDecoder.h; path = XMLRPC/XMLValueDecoder.h; sourceTree = SOURCE_ROOT; };
 		B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLValueDecoder.m; path = XMLRPC/XMLValueDecoder.m; sourceTree = SOURCE_ROOT; };
+		B5BDC0B7140B5C380071D1F1 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		B5BDC0B8140B5C380071D1F1 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		B5BDC0BE140B649D0071D1F1 /* AddressAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddressAnnotation.h; sourceTree = "<group>"; };
+		B5BDC0BF140B649D0071D1F1 /* AddressAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddressAnnotation.m; sourceTree = "<group>"; };
 		B5C4329413A7BDC100F8F1A9 /* item.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = item.png; path = Images/item.png; sourceTree = SOURCE_ROOT; };
 		B5C4329613A7C99B00F8F1A9 /* course.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = course.png; path = Images/course.png; sourceTree = SOURCE_ROOT; };
 		B5C6BB2413CEDC54007B1517 /* button_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button_upload.png; path = Images/buttons/button_upload.png; sourceTree = SOURCE_ROOT; };
@@ -532,6 +542,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B593EB0D140B49DE00500531 /* MapKit.framework in Frameworks */,
+				B593EB0B140B3B2500500531 /* MessageUI.framework in Frameworks */,
 				B5A8DD6113B9D9AA007A5EC1 /* AddressBook.framework in Frameworks */,
 				3201088596B4756681693705 /* libThree20UICommon.a in Frameworks */,
 				320D7DCCE32703ACAB9A45E5 /* libThree20.a in Frameworks */,
@@ -603,8 +615,10 @@
 		02618A101331A581008D3037 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B5220AF913F0DBAF00DEDD21 /* Three20 */,
 				B5FB2ECF13E26DF10071AB52 /* libz.dylib */,
+				B5220AF913F0DBAF00DEDD21 /* Three20 */,
+				B593EB0C140B49DE00500531 /* MapKit.framework */,
+				B593EB0A140B3B2500500531 /* MessageUI.framework */,
 				B5A8DD6013B9D9AA007A5EC1 /* AddressBook.framework */,
 				B5069EEA138116E800EABC26 /* AVFoundation.framework */,
 				B5609F39137F8DC000C59271 /* AudioToolbox.framework */,
@@ -946,6 +960,10 @@
 				B56983CB13896648003FECD2 /* WebViewController.m */,
 				B5DABB37138E57CE004AE472 /* MoodleImagePickerController.h */,
 				B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */,
+				B5BDC0B7140B5C380071D1F1 /* MapViewController.h */,
+				B5BDC0B8140B5C380071D1F1 /* MapViewController.m */,
+				B5BDC0BE140B649D0071D1F1 /* AddressAnnotation.h */,
+				B5BDC0BF140B649D0071D1F1 /* AddressAnnotation.m */,
 				B5220AFA13F0DC5100DEDD21 /* Sync */,
 				B5DABB2D138E2C52004AE472 /* Participant */,
 				B5DABB2C138E2C3C004AE472 /* Upload */,
@@ -1515,6 +1533,8 @@
 				B5902FC913B238300053E1D6 /* UIImageView+WebCache.m in Sources */,
 				B51C0F9D13B4556300276760 /* Course.m in Sources */,
 				B520A27313DEB18A005046CF /* TaskHandler.m in Sources */,
+				B5BDC0B9140B5C380071D1F1 /* MapViewController.m in Sources */,
+				B5BDC0C0140B649D0071D1F1 /* AddressAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

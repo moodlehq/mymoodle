@@ -162,8 +162,6 @@
         [view release];
     }
 
-    //  update the last update date
-    [_refreshHeaderView refreshLastUpdatedDate];
 }
 
 - (void)viewDidUnload
