@@ -392,6 +392,13 @@
     [editingSite release];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [HUD removeFromSuperview];
+    [HUD release];
+    HUD = nil;
+    [super viewWillDisappear:animated];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];

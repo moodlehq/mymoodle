@@ -36,6 +36,7 @@
     if ((self = [super init])) {
     }
     address = _address;
+    [address retain];
     name = _name;
     return self;
 }
@@ -80,11 +81,13 @@
 
 - (void)viewDidUnload
 {
+    address = nil;
     self.mapView = nil;
 }
 
 - (void)dealloc 
 {
+    [address release];
     [mapView release];
     [super dealloc];
 }
