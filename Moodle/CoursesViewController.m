@@ -189,9 +189,6 @@
         [view release];
     }
 
-    //  update the last update date
-    [_refreshHeaderView refreshLastUpdatedDate];
-
     [super viewDidLoad];
 }
 
