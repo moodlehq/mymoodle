@@ -156,24 +156,27 @@
     [header setEditable:NO];
     [self.view addSubview:header];
     [header release];
-}
 
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
     appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
     CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x + 10, rootBackground.frame.origin.y + 30, BG_WIDTH - 20, BG_HEIGHT + 40);
     launcherView = [[TTLauncherView alloc] initWithFrame:launcherFrame];
     launcherView.persistenceMode = TTLauncherPersistenceModeAll;
     launcherView.columnCount = 2;
+    launcherView.delegate = self;
+    [self.view addSubview:launcherView];
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"view will appear");
+    [super viewWillAppear:animated];
+
     if (![launcherView restoreLauncherItems])
     {
         launcherView.pages = [self generateLauncherItems];
     }
-    launcherView.delegate = self;
-    [self.view addSubview:launcherView];
 
     managedObjectContext = [appDelegate managedObjectContext];
     [connectedSite setText:[NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey:@"name"]]];
