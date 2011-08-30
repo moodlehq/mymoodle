@@ -411,7 +411,11 @@
         self.title = NSLocalizedString(@"updatesite", nil);
 
         siteurlField.text = [self.editingSite valueForKey:@"url"];
+        [siteurlField setEnabled:NO];
+        [siteurlField setTextColor:[UIColor grayColor]];
         usernameField.text = [self.editingSite valueForKeyPath:@"mainuser.username"];
+        [usernameField setEnabled:NO];
+        [usernameField setTextColor:[UIColor grayColor]];
         [passwordField setText:@""];
         int buttonWidth = 300;
         int buttonHeight = 45;
