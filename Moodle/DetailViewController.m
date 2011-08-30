@@ -763,7 +763,10 @@
         }
         else if ([match resultType] == NSTextCheckingTypeAddress)
         {
-            MapViewController *mapView = [[MapViewController alloc] initWithAddress:cell.detailTextLabel.text withName:[self.participant valueForKey:@"fullname"]];
+            NSString *country = [self.participant valueForKey:@"country"];
+            NSString *city = [self.participant valueForKey:@"city"];
+            NSString *fulladdress = [NSString stringWithFormat: @"%@ %@ %@", cell.detailTextLabel.text, city, country];
+            MapViewController *mapView = [[MapViewController alloc] initWithAddress:fulladdress withName:[self.participant valueForKey:@"fullname"]];
             [self.navigationController pushViewController:mapView animated:YES];
             [mapView release];
         }
