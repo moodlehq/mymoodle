@@ -24,19 +24,44 @@
 
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request addPostValue:token forKey:@"token"];
-    NSLog(@"Uploading file: %@", [sender getFilepath]);
-    [request setFile:[sender getFilepath] forKey:@"thefile"];
+    NSLog(@"Uploading file: %@", [sender uploadFilepath]);
+    [request setFile:[sender uploadFilepath] forKey:@"thefile"];
     [request startSynchronous];
     NSLog(@"Server Response: %@", [request responseString]);
 
     NSError *error;
-    NSDictionary *result = [[CJSONDeserializer deserializer] deserializeAsArray:[request responseData] error:&error];
-    NSLog(@"Response: %@", result);
+    NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary: [request responseData] error:&error];
 
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    [fileManager removeItemAtPath:[sender getFilepath] error:nil];
-    [sender uploadCallback:nil];
-    sleep(1);
+    BOOL uploadSuccess = YES;
+    if (dictionary == nil) {
+        NSArray *result = [[CJSONDeserializer deserializer] deserializeAsArray:[request responseData] error:&error];
+        for (NSDictionary *file in result) {
+            if ([file valueForKey:@"error"]) {
+                uploadSuccess = NO;
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:[file valueForKey:@"error"] delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+            }
+        }
+        NSLog(@"Response: %@", result);
+    } else {
+        // probably user quota limit
+        if ([dictionary valueForKey:@"error"]) {
+            uploadSuccess = NO;
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:[dictionary valueForKey:@"error"] delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+            [alert show];
+            [alert release];
+        }
+    }
+
+    if (uploadSuccess) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        [fileManager removeItemAtPath:[sender uploadFilepath] error:nil];
+        [sender uploadDidFinishUploading:nil];
+        sleep(1);
+    } else {
+        [sender uploadFailed:nil];
+    }
 }
 
 @end

@@ -11,16 +11,7 @@
 
 @implementation RecorderViewController
 
-- (NSString *)getFilepath
-{
-    return recorderFilePath;
-}
-- (void)uploadCallback:(id)data
-{
-    HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
-    HUD.mode = MBProgressHUDModeCustomView;
-    HUD.labelText = @"Completed";
-}
+
 
 - (void)toggleRecordButton
 {
@@ -426,5 +417,23 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - MoodleUploadDelegate methods
+
+- (NSString *)uploadFilepath
+{
+    return recorderFilePath;
+}
+
+- (void)uploadDidFinishUploading:(id)data
+{
+    HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
+    HUD.mode = MBProgressHUDModeCustomView;
+    HUD.labelText = @"Completed";
+}
+
+- (void)uploadFailed:(id)data {
+
 }
 @end

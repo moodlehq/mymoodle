@@ -48,7 +48,6 @@
 		B51EC3E11394BBA40048C866 /* ASINetworkQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3D81394BBA40048C866 /* ASINetworkQueue.m */; };
 		B51EC3E41394BBD30048C866 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3E31394BBD30048C866 /* Reachability.m */; };
 		B520A27313DEB18A005046CF /* TaskHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = B520A27213DEB18A005046CF /* TaskHandler.m */; };
-		B52DE3D51380FA9F004F3692 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B52DE3D31380FA9F004F3692 /* PreviewViewController.m */; };
 		B53FAB401398B566008206EA /* Complete.png in Resources */ = {isa = PBXBuildFile; fileRef = B53FAB3F1398B566008206EA /* Complete.png */; };
 		B53FAB5C1398C06B008206EA /* MoodleJob.m in Sources */ = {isa = PBXBuildFile; fileRef = B53FAB5B1398C06B008206EA /* MoodleJob.m */; };
 		B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B54EFAA0133C7CB500CE8F87 /* WSClient.m */; };
@@ -59,6 +58,7 @@
 		B54F75C21393672300C95039 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BA1393672300C95039 /* CJSONScanner.m */; };
 		B54F75C31393672300C95039 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BC1393672300C95039 /* CJSONSerializer.m */; };
 		B54F75C913937B8000C95039 /* MoodleMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75C813937B8000C95039 /* MoodleMedia.m */; };
+		B553CC21140E32FA0027E2F7 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B553CC20140E32FA0027E2F7 /* PreviewViewController.m */; };
 		B55873E413A8AB77006526F3 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B55873DA13A8AB77006526F3 /* EGORefreshTableHeaderView.m */; };
 		B55873E513A8AB77006526F3 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DC13A8AB77006526F3 /* blackArrow.png */; };
 		B55873E613A8AB77006526F3 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DD13A8AB77006526F3 /* blackArrow@2x.png */; };
@@ -389,8 +389,6 @@
 		B51EC3E31394BBD30048C866 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = "asi-http-request/External/Reachability/Reachability.m"; sourceTree = SOURCE_ROOT; };
 		B520A27113DEB18A005046CF /* TaskHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskHandler.h; sourceTree = "<group>"; };
 		B520A27213DEB18A005046CF /* TaskHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskHandler.m; sourceTree = "<group>"; };
-		B52DE3D21380FA9F004F3692 /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreviewViewController.h; path = Moodle.xcodeproj/PreviewViewController.h; sourceTree = SOURCE_ROOT; };
-		B52DE3D31380FA9F004F3692 /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreviewViewController.m; path = Moodle.xcodeproj/PreviewViewController.m; sourceTree = SOURCE_ROOT; };
 		B53FAB3F1398B566008206EA /* Complete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Complete.png; path = Images/Complete.png; sourceTree = SOURCE_ROOT; };
 		B53FAB5A1398C06B008206EA /* MoodleJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleJob.h; sourceTree = "<group>"; };
 		B53FAB5B1398C06B008206EA /* MoodleJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleJob.m; sourceTree = "<group>"; };
@@ -412,6 +410,8 @@
 		B54F75BD1393672300C95039 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
 		B54F75C713937B8000C95039 /* MoodleMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleMedia.h; sourceTree = "<group>"; };
 		B54F75C813937B8000C95039 /* MoodleMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleMedia.m; sourceTree = "<group>"; };
+		B553CC1F140E32FA0027E2F7 /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewViewController.h; sourceTree = "<group>"; };
+		B553CC20140E32FA0027E2F7 /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewViewController.m; sourceTree = "<group>"; };
 		B55873D913A8AB77006526F3 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		B55873DA13A8AB77006526F3 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
 		B55873DC13A8AB77006526F3 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
@@ -1121,8 +1121,8 @@
 			children = (
 				B5D4EFFD13726FF000FD121F /* UploadViewController.h */,
 				B5D4EFFE13726FF000FD121F /* UploadViewController.m */,
-				B52DE3D21380FA9F004F3692 /* PreviewViewController.h */,
-				B52DE3D31380FA9F004F3692 /* PreviewViewController.m */,
+				B553CC1F140E32FA0027E2F7 /* PreviewViewController.h */,
+				B553CC20140E32FA0027E2F7 /* PreviewViewController.m */,
 				B577155C138102DD007582EF /* RecorderViewController.h */,
 				B577155D138102DD007582EF /* RecorderViewController.m */,
 			);
@@ -1492,7 +1492,6 @@
 				B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */,
 				023AF82D137A2CF600BCDEEF /* DetailViewController.m in Sources */,
 				B5031AD3138007AB005BB407 /* MBProgressHUD.m in Sources */,
-				B52DE3D51380FA9F004F3692 /* PreviewViewController.m in Sources */,
 				B577155F138102DD007582EF /* RecorderViewController.m in Sources */,
 				B5B0EB171383AEB6000A9330 /* CTidy.m in Sources */,
 				B5B0EB181383AEB6000A9330 /* NSDataAdditions.m in Sources */,
@@ -1537,6 +1536,7 @@
 				B520A27313DEB18A005046CF /* TaskHandler.m in Sources */,
 				B5BDC0B9140B5C380071D1F1 /* MapViewController.m in Sources */,
 				B5BDC0C0140B649D0071D1F1 /* AddressAnnotation.m in Sources */,
+				B553CC21140E32FA0027E2F7 /* PreviewViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

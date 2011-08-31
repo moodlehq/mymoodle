@@ -14,18 +14,6 @@
 #import <TargetConditionals.h>
 
 @implementation UploadViewController
-- (NSString *)getFilepath
-{
-    return filePath;
-}
-
-- (void)uploadCallback:(id)data
-{
-    // update HUD text
-    HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
-    HUD.mode = MBProgressHUDModeCustomView;
-    HUD.labelText = @"Completed";
-}
 
 // this is an Apple function to detect if AAC is enabled
 // Source: http://developer.apple.com/library/ios/#qa/qa1663/_index.html
@@ -336,4 +324,24 @@ Boolean IsAACHardwareEncoderAvailable(void)
     [HUD release];
     HUD = nil;
 }
+
+#pragma mark - MoodleUploadDelegate methods
+
+- (NSString *)uploadFilepath
+{
+    return filePath;
+}
+
+- (void)uploadDidFinishUploading:(id)data
+{
+    // update HUD text
+    HUD.customView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Complete.png"]] autorelease];
+    HUD.mode = MBProgressHUDModeCustomView;
+    HUD.labelText = @"Completed";
+}
+
+- (void)uploadFailed:(id)data {
+
+}
+
 @end
