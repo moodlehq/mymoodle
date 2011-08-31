@@ -15,6 +15,7 @@
 
 #import "MapViewController.h"
 
+
 @implementation DetailViewController
 @synthesize participant = _participant;
 @synthesize course = _course;
@@ -22,17 +23,38 @@
 #pragma mark - Button actions
 - (void)displayComposerSheet:(NSString *)email
 {
-    MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+    Class mailClass = (NSClassFromString(@"MFMailComposeViewController"));
+	if (mailClass != nil)
+	{
+		// We must always check whether the current device is configured for sending emails
+		if ([mailClass canSendMail])
+		{
+            MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+            NSLog(@"picker %@", picker);
+            picker.mailComposeDelegate = self;
 
-    picker.mailComposeDelegate = self;
+            // Set up recipients
+            NSArray *toRecipients = [NSArray arrayWithObject:email];
 
-    // Set up recipients
-    NSArray *toRecipients = [NSArray arrayWithObject:email];
+            [picker setToRecipients:toRecipients];
 
-    [picker setToRecipients:toRecipients];
+            [self presentModalViewController:picker animated:YES];
+            [picker release];
+        }
+		else
+		{
+            NSString *email = [NSString stringWithFormat:@"%@", email];
+            email = [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
+		}
+	}
+	else
+	{
+        NSString *email = [NSString stringWithFormat:@"%@", email];
+        email = [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
+	}
 
-    [self presentModalViewController:picker animated:YES];
-    [picker release];
 }
 
 - (IBAction)clickedUploadButton:(id)sender
@@ -656,30 +678,39 @@
 
         CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
 
-        CGSize size = [[desc stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        CGSize textSize;
+        if ([desc stringByRemovingHTMLTags] == nil || [[desc stringByRemovingHTMLTags] isEqualToString:@""]) {
+            textSize = CGSizeMake(0, 0);
+        } else {
+            textSize = [[desc stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        }
 
         if (!label)
         {
             label = (UILabel *)[cell viewWithTag:1];
         }
-
         [label setText:[desc stringByRemovingHTMLTags]];
-        [label setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(size.height, 44.0f))];
+        [label setFrame: CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(textSize.height, 44.0f))];
     } else {
         NSString *key;
         // contact and location
         key = [[info allKeys] lastObject];
         cell.textLabel.text = NSLocalizedString(key, key);
-        
+
         cellText = [[info valueForKey:key] stringByRemovingHTMLTags];
         cell.detailTextLabel.lineBreakMode = UILineBreakModeWordWrap;
         cell.detailTextLabel.numberOfLines = 0;
-        
+
         CGSize constraint = CGSizeMake(200.0f, 20000.0f);
-        CGSize size = [[cellText stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        CGSize textSize;
+        if ([cellText stringByRemovingHTMLTags] == nil || [[cellText stringByRemovingHTMLTags] isEqualToString:@""]) {
+            textSize = CGSizeMake(0, 0);
+        } else {
+            textSize = [[cellText stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+        }
         // 12 => inside cell margin * 2
         CGRect detailTextFrame = cell.detailTextLabel.frame;
-        detailTextFrame.size.height = MAX(size.height + 12, 44.0f);
+        detailTextFrame.size.height = MAX(textSize.height + 12, 44.0f);
         [cell.detailTextLabel setFrame:detailTextFrame];
         cell.detailTextLabel.text = cellText;
     }
@@ -691,12 +722,15 @@
     if (indexPath.section == 0)
     {
         NSString *text = [[self.participant valueForKey:@"desc"] stringByRemovingHTMLTags];
-        
+        if (text == nil) {
+            text = @"";
+        }
+
         CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
-        
-        CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-        
-        CGFloat height = MAX(size.height, 44.0f);
+
+        CGSize textSize = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+
+        CGFloat height = MAX(textSize.height, 44.0f);
         return height + (CELL_CONTENT_MARGIN * 2);
     }
 
@@ -707,21 +741,24 @@
         case 1:
             info = [contactinfo objectAtIndex:indexPath.row];
             break;
-            
+
         case 2:
             info = [geoinfo objectAtIndex:indexPath.row];
             break;
-            
+
         default:
             break;
     }
     NSString *key = [[info allKeys] lastObject];
     NSString *text = [info valueForKey: key];
     CGSize constraint = CGSizeMake(200, 20000.0f);
+    if (text == nil) {
+        text = @"";
+    }
 
-    CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+    CGSize textSize = [text sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
 
-    CGFloat height = MAX(size.height + (CELL_CONTENT_MARGIN * 2) + 12, 44.0f);
+    CGFloat height = MAX(textSize.height + (CELL_CONTENT_MARGIN * 2) + 12, 44.0f);
 
     return height;
 }
