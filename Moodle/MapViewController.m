@@ -60,13 +60,13 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    NSString *urlString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=csv", 
+    NSString *urlString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=csv",
                            [address stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	NSString *locationString = [NSString stringWithContentsOfURL:[NSURL URLWithString:urlString] encoding:NSUTF8StringEncoding error:nil];
 	NSArray *listItems = [locationString componentsSeparatedByString:@","];
 	double latitude = 0.0;
 	double longitude = 0.0;
-	
+
 	if([listItems count] >= 4 && [[listItems objectAtIndex:0] isEqualToString:@"200"]) {
 		latitude = [[listItems objectAtIndex:2] doubleValue];
 		longitude = [[listItems objectAtIndex:3] doubleValue];
@@ -85,7 +85,7 @@
     self.mapView = nil;
 }
 
-- (void)dealloc 
+- (void)dealloc
 {
     [address release];
     [mapView release];

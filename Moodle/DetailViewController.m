@@ -24,11 +24,12 @@
 - (void)displayComposerSheet:(NSString *)email
 {
     Class mailClass = (NSClassFromString(@"MFMailComposeViewController"));
-	if (mailClass != nil)
-	{
-		// We must always check whether the current device is configured for sending emails
-		if ([mailClass canSendMail])
-		{
+
+    if (mailClass != nil)
+    {
+        // We must always check whether the current device is configured for sending emails
+        if ([mailClass canSendMail])
+        {
             MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
             NSLog(@"picker %@", picker);
             picker.mailComposeDelegate = self;
@@ -41,19 +42,19 @@
             [self presentModalViewController:picker animated:YES];
             [picker release];
         }
-		else
-		{
+        else
+        {
             NSString *email = [NSString stringWithFormat:@"%@", email];
             email = [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
-		}
-	}
-	else
-	{
+        }
+    }
+    else
+    {
         NSString *email = [NSString stringWithFormat:@"%@", email];
         email = [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
-	}
+    }
 
 }
 
@@ -679,9 +680,12 @@
         CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
 
         CGSize textSize;
-        if ([desc stringByRemovingHTMLTags] == nil || [[desc stringByRemovingHTMLTags] isEqualToString:@""]) {
+        if ([desc stringByRemovingHTMLTags] == nil || [[desc stringByRemovingHTMLTags] isEqualToString:@""])
+        {
             textSize = CGSizeMake(0, 0);
-        } else {
+        }
+        else
+        {
             textSize = [[desc stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
         }
 
@@ -690,8 +694,10 @@
             label = (UILabel *)[cell viewWithTag:1];
         }
         [label setText:[desc stringByRemovingHTMLTags]];
-        [label setFrame: CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(textSize.height, 44.0f))];
-    } else {
+        [label setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(textSize.height, 44.0f))];
+    }
+    else
+    {
         NSString *key;
         // contact and location
         key = [[info allKeys] lastObject];
@@ -703,9 +709,12 @@
 
         CGSize constraint = CGSizeMake(200.0f, 20000.0f);
         CGSize textSize;
-        if ([cellText stringByRemovingHTMLTags] == nil || [[cellText stringByRemovingHTMLTags] isEqualToString:@""]) {
+        if ([cellText stringByRemovingHTMLTags] == nil || [[cellText stringByRemovingHTMLTags] isEqualToString:@""])
+        {
             textSize = CGSizeMake(0, 0);
-        } else {
+        }
+        else
+        {
             textSize = [[cellText stringByRemovingHTMLTags] sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
         }
         // 12 => inside cell margin * 2
@@ -722,7 +731,8 @@
     if (indexPath.section == 0)
     {
         NSString *text = [[self.participant valueForKey:@"desc"] stringByRemovingHTMLTags];
-        if (text == nil) {
+        if (text == nil)
+        {
             text = @"";
         }
 
@@ -750,9 +760,10 @@
             break;
     }
     NSString *key = [[info allKeys] lastObject];
-    NSString *text = [info valueForKey: key];
+    NSString *text = [info valueForKey:key];
     CGSize constraint = CGSizeMake(200, 20000.0f);
-    if (text == nil) {
+    if (text == nil)
+    {
         text = @"";
     }
 
@@ -802,7 +813,7 @@
         {
             NSString *country = [self.participant valueForKey:@"country"];
             NSString *city = [self.participant valueForKey:@"city"];
-            NSString *fulladdress = [NSString stringWithFormat: @"%@ %@ %@", cell.detailTextLabel.text, city, country];
+            NSString *fulladdress = [NSString stringWithFormat:@"%@ %@ %@", cell.detailTextLabel.text, city, country];
             MapViewController *mapView = [[MapViewController alloc] initWithAddress:fulladdress withName:[self.participant valueForKey:@"fullname"]];
             [self.navigationController pushViewController:mapView animated:YES];
             [mapView release];

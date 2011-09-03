@@ -30,36 +30,45 @@
     NSLog(@"Server Response: %@", [request responseString]);
 
     NSError *error;
-    NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary: [request responseData] error:&error];
+    NSDictionary *dictionary = [[CJSONDeserializer deserializer] deserializeAsDictionary:[request responseData] error:&error];
 
     BOOL uploadSuccess = YES;
-    if (dictionary == nil) {
+    if (dictionary == nil)
+    {
         NSArray *result = [[CJSONDeserializer deserializer] deserializeAsArray:[request responseData] error:&error];
-        for (NSDictionary *file in result) {
-            if ([file valueForKey:@"error"]) {
+        for (NSDictionary *file in result)
+        {
+            if ([file valueForKey:@"error"])
+            {
                 uploadSuccess = NO;
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:[file valueForKey:@"error"] delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:[file valueForKey:@"error"] delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
                 [alert show];
                 [alert release];
             }
         }
         NSLog(@"Response: %@", result);
-    } else {
+    }
+    else
+    {
         // probably user quota limit
-        if ([dictionary valueForKey:@"error"]) {
+        if ([dictionary valueForKey:@"error"])
+        {
             uploadSuccess = NO;
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:[dictionary valueForKey:@"error"] delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"error", nil) message:[dictionary valueForKey:@"error"] delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles:nil];
             [alert show];
             [alert release];
         }
     }
 
-    if (uploadSuccess) {
+    if (uploadSuccess)
+    {
         NSFileManager *fileManager = [NSFileManager defaultManager];
         [fileManager removeItemAtPath:[sender uploadFilepath] error:nil];
         [sender uploadDidFinishUploading:nil];
         sleep(1);
-    } else {
+    }
+    else
+    {
         [sender uploadFailed:nil];
     }
 }

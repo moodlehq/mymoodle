@@ -392,7 +392,8 @@
     [editingSite release];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated
+{
     [HUD removeFromSuperview];
     [HUD release];
     HUD = nil;

@@ -340,7 +340,8 @@ Boolean IsAACHardwareEncoderAvailable(void)
     HUD.labelText = @"Completed";
 }
 
-- (void)uploadFailed:(id)data {
+- (void)uploadFailed:(id)data
+{
 
 }
 

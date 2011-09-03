@@ -21,7 +21,7 @@
     AppDelegate *_appDelegate;
     // will be released by delegate method
     MBProgressHUD *HUD;
-    
+
 }
 @property (nonatomic, retain) UIImageView *imageView;
 @property (nonatomic, retain) NSString *fileName;

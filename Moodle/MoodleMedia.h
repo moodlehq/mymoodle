@@ -10,7 +10,7 @@
 
 @protocol MoodleUploadDelegate
 @required
-- (void)uploadDidFinishUploading: (id)data;
+- (void)uploadDidFinishUploading:(id)data;
 - (void)uploadFailed:(id)data;
 - (NSString *)uploadFilepath;
 @end
