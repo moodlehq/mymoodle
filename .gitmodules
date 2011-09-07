@@ -4,9 +4,6 @@
 [submodule "asi-http-request"]
 	path = asi-http-request
 	url = git://github.com/pokeb/asi-http-request.git
-[submodule "three20"]
-	path = three20
-	url = git://github.com/facebook/three20.git
 [submodule "TouchJSON"]
 	path = TouchJSON
 	url = git://github.com/TouchCode/TouchJSON.git
