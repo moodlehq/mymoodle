@@ -44,22 +44,28 @@
     [req setMethod:method withObjects:params];
     NSLog(@"Request: %@", [req source]);
     ASIHTTPRequest *http = [[ASIHTTPRequest alloc] initWithURL:[req host]];
-    [http setRequestMethod:@"POST"];
-    [http setShouldPresentCredentialsBeforeChallenge:YES];
-    [http setShouldPresentAuthenticationDialog:YES];
-    [http setUseKeychainPersistence:YES];
-    [http setValidatesSecureCertificate:NO];
-    [http setNumberOfTimesToRetryOnTimeout:2];
-    [http appendPostData:[[req source] dataUsingEncoding:NSUTF8StringEncoding]];
-    [http startSynchronous];
+
+    @try {
+        [http setTimeOutSeconds:60];
+        [http setRequestMethod:@"POST"];
+        [http setShouldPresentCredentialsBeforeChallenge:YES];
+        [http setShouldPresentAuthenticationDialog:YES];
+        [http setUseKeychainPersistence:YES];
+        [http setValidatesSecureCertificate:NO];
+        [http setNumberOfTimesToRetryOnTimeout:2];
+        [http appendPostData:[[req source] dataUsingEncoding:NSUTF8StringEncoding]];
+        [http startSynchronous];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"ASIHTTPRequestion Exception");
+    }
 
     NSError *err = [http error];
 
     if (err)
     {
-        NSLog(@"Error: %@", err);
         [http release];
-        return err;
+        [NSException raise:@"Connection Error" format:@"%@", [err localizedDescription]];
     }
     NSLog(@"XML: %@", [http responseString]);
     XMLRPCResponse *xmlrpcdata = [[XMLRPCResponse alloc] initWithData:[http responseData]];
