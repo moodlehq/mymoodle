@@ -43,14 +43,13 @@
     XMLRPCRequest *req = [[[XMLRPCRequest alloc] initWithHost:self.url] autorelease];
     [req setMethod:method withObjects:params];
     NSLog(@"Request: %@", [req source]);
-    ASIHTTPRequest *http = [[ASIHTTPRequest alloc] initWithURL:[req host]];
+    ASIHTTPRequest *http = [ASIHTTPRequest requestWithURL:[req host]];
 
     @try {
-        [http setTimeOutSeconds:60];
+        [http setTimeOutSeconds:120];
         [http setRequestMethod:@"POST"];
-        [http setShouldPresentCredentialsBeforeChallenge:YES];
-        [http setShouldPresentAuthenticationDialog:YES];
-        [http setUseKeychainPersistence:YES];
+        [http setPersistentConnectionTimeoutSeconds:120];
+        [http setShouldAttemptPersistentConnection:NO];
         [http setValidatesSecureCertificate:NO];
         [http setNumberOfTimesToRetryOnTimeout:2];
         [http appendPostData:[[req source] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -64,7 +63,6 @@
 
     if (err)
     {
-        [http release];
         [NSException raise:@"Connection Error" format:@"%@", [err localizedDescription]];
     }
     NSLog(@"XML: %@", [http responseString]);
@@ -76,7 +74,6 @@
     }
     id object = [xmlrpcdata object];
     [xmlrpcdata release];
-    [http release];
 
     NSLog(@"WSClient: %@", object);
     if ([object isKindOfClass:[NSDictionary class]] && [object valueForKey:@"faultString"])
