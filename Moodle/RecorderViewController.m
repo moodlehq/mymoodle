@@ -167,10 +167,8 @@
         [settings setValue:[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsBigEndianKey];
         [settings setValue:[NSNumber numberWithBool:NO] forKey:AVLinearPCMIsFloatKey];
 
-        // Create a new dated file
-        NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
-        NSString *caldate = [now description];
-        recorderFileName = [[NSString stringWithFormat:@"%@.mp4", caldate] retain];
+        int unixTime = (int)[[NSDate date] timeIntervalSince1970];
+        recorderFileName = [[NSString stringWithFormat:@"AUDIO_%d.mp4", unixTime] retain];
         recorderFilePath = [[NSString stringWithFormat:@"%@/%@", AUDIO_FOLDER, recorderFileName] retain];
         NSLog(@"Filename: %@", recorderFileName);
         NSLog(@"Filepath: %@", recorderFilePath);

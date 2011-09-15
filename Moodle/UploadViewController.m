@@ -156,6 +156,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
     [[self navigationItem] setBackBarButtonItem:newBackButton];
     [newBackButton release];
+
     previewViewController.fileName = filename;
     previewViewController.filePath = filepath;
     [self.navigationController pushViewController:previewViewController animated:YES];
@@ -164,14 +165,16 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSString *strtimestamp = [now description];
+    int unixTime = (int)[[NSDate date] timeIntervalSince1970];
+
+    NSString *strtimestamp = [NSString stringWithFormat:@"%d", unixTime];;
+
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
 
     if ([mediaType isEqualToString:@"public.image"])
     {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        fileName = [[NSString stringWithFormat:@"%@.jpg", strtimestamp] retain];
+        fileName = [[NSString stringWithFormat:@"IMG_%@.jpg", strtimestamp] retain];
         filePath = [[NSString stringWithFormat:@"%@/%@", PHOTO_FOLDER, fileName] retain];
         [UIImageJPEGRepresentation (image, 0.8f) writeToFile:filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"])
@@ -192,7 +195,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     else if ([mediaType isEqualToString:@"public.movie"])
     {
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
-        fileName = [[NSString stringWithFormat:@"%@.mov", strtimestamp] retain];
+        fileName = [[NSString stringWithFormat:@"VIDEO_%@.mov", strtimestamp] retain];
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
         filePath = [[NSString stringWithFormat:@"%@/%@", VIDEO_FOLDER, fileName] retain];
         NSLog(@"video path: %@", filePath);
