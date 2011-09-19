@@ -437,6 +437,13 @@
         // case of Adding a new site
         self.title = NSLocalizedString(@"addsite", nil);
     }
+    NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
+
+    if (defaultSiteUrl == nil || appDelegate.site == nil)
+    {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.hidesBackButton = YES;
+    }
 }
 
 - (void)viewDidLoad
