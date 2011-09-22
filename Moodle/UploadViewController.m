@@ -165,16 +165,20 @@ Boolean IsAACHardwareEncoderAvailable(void)
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    int unixTime = (int)[[NSDate date] timeIntervalSince1970];
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
 
-    NSString *strtimestamp = [NSString stringWithFormat:@"%d", unixTime];;
+    [format setDateFormat:@"yyyyMMdd-HHmmss"];
+    NSDate *now = [[NSDate alloc] init];
+    NSString *dateString = [format stringFromDate:now];
+    [now release];
+    [format release];
 
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
 
     if ([mediaType isEqualToString:@"public.image"])
     {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-        fileName = [[NSString stringWithFormat:@"IMG_%@.jpg", strtimestamp] retain];
+        fileName = [[NSString stringWithFormat:@"%@-%@.jpg", NSLocalizedString(@"imagefilenameprefix", nil), dateString] retain];
         filePath = [[NSString stringWithFormat:@"%@/%@", PHOTO_FOLDER, fileName] retain];
         [UIImageJPEGRepresentation (image, 0.8f) writeToFile:filePath atomically:YES];
         if ([info objectForKey:@"UIImagePickerControllerMediaMetadata"])
@@ -195,7 +199,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     else if ([mediaType isEqualToString:@"public.movie"])
     {
         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
-        fileName = [[NSString stringWithFormat:@"VIDEO_%@.mov", strtimestamp] retain];
+        fileName = [[NSString stringWithFormat:@"%@-%@.mov", NSLocalizedString(@"videofilenameprefix", nil), dateString] retain];
         NSData *data = [NSData dataWithContentsOfURL:videoURL];
         filePath = [[NSString stringWithFormat:@"%@/%@", VIDEO_FOLDER, fileName] retain];
         NSLog(@"video path: %@", filePath);
