@@ -437,9 +437,8 @@
         // case of Adding a new site
         self.title = NSLocalizedString(@"addsite", nil);
     }
-    NSString *defaultSiteUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kSelectedSiteUrlKey];
 
-    if (defaultSiteUrl == nil || appDelegate.site == nil)
+    if ([MoodleSite countWithContext:appDelegate.managedObjectContext] == 0)
     {
         self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.hidesBackButton = YES;

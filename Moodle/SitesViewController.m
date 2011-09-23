@@ -52,9 +52,25 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *defaultSiteUrl = [defaults objectForKey:kSelectedSiteUrlKey];
     NSLog(@"SitesViewController %@", defaultSiteUrl);
-    if (defaultSiteUrl == nil || appDelegate.site == nil)
+    if ([MoodleSite countWithContext:managedObjectContext] == 0)
     {
         self.navigationItem.hidesBackButton = YES;
+
+    } else if ([MoodleSite countWithContext:managedObjectContext] == 1) {
+        // restore active site info
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entity];
+        NSError *error = nil;
+        NSArray *sites = [managedObjectContext executeFetchRequest:request error:&error];
+        MoodleSite *onesite = [sites lastObject];
+        // save the current site into user preference
+        [defaults setObject:[onesite valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+        [defaults setObject:[onesite valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+        [defaults setObject:[onesite valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+        [defaults setObject:[onesite valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+        [defaults synchronize];
+        appDelegate.site = onesite;
     }
 
     // Set up the edit and add buttons.
