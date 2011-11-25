@@ -39,11 +39,23 @@
     NSLog(@"Number of participants in core data before web service call: %d", [enrolledUsers count]);
 
     WSClient *client = [[WSClient alloc] init];
-
+    NSArray *paramvalues;
+    NSArray *paramkeys;
     NSNumber *courseid = [course valueForKey:@"id"];
-    NSArray *options = [[NSArray alloc] init];
-    NSArray *paramvalues = [[NSArray alloc] initWithObjects:courseid, options, nil];
-    NSArray *paramkeys = [[NSArray alloc] initWithObjects:@"courseid", @"options", nil];
+    if ([[course valueForKey:@"enrolledusercount"] intValue] > LOTSOFENROLLEDUSERS)
+    {
+        NSDictionary *fields = [NSDictionary dictionaryWithObjectsAndKeys:@"id,fullname", @"value", @"userfields", @"name", nil];
+        NSArray *options = [[NSArray alloc] initWithObjects:fields, nil];
+        paramvalues = [[NSArray alloc] initWithObjects:courseid, options, nil];
+        paramkeys = [[NSArray alloc] initWithObjects:@"courseid", @"options", nil];
+        [options release];
+
+    }
+    else
+    {
+        paramvalues = [[NSArray alloc] initWithObjects:courseid, [NSArray array], nil];
+        paramkeys = [[NSArray alloc] initWithObjects:@"courseid", @"options", nil];
+    }
     NSDictionary *params = [[NSDictionary alloc] initWithObjects:paramvalues forKeys:paramkeys];
     NSArray *result;
     @try {
@@ -62,7 +74,7 @@
                 if ([user count] == 1)
                 {
                     // retrieve the participant to update
-                    NSLog(@"found one ");
+                    NSLog(@"Found user: %@", [user lastObject]);
                     dbparticipant = [user lastObject];
                 }
                 else if ([user count] == 0)
@@ -109,7 +121,6 @@
         [alert release];
     }
     // easy on memory
-    [options release];
     [paramvalues release];
     [paramkeys release];
     [params release];

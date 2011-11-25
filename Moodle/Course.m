@@ -7,7 +7,8 @@
 //
 
 #import "Course.h"
-
+#import "AppDelegate.h"
+#import "Section.h"
 
 @implementation Course
 @dynamic id;
@@ -68,4 +69,30 @@
     return count;
 }
 
+- (void)removeSections
+{
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context = appDelegate.managedObjectContext;
+    // retrieve all courses that will need to be deleted from core data if they are not returned by the web service call
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSEntityDescription *sectionEntry = [NSEntityDescription entityForName:@"Section" inManagedObjectContext:context];
+
+    [request setEntity:sectionEntry];
+    NSError *error;
+
+    NSPredicate *sectionPredicate = [NSPredicate predicateWithFormat:@"course = %@", self];
+    [request setPredicate:sectionPredicate];
+    NSArray *sections = [context executeFetchRequest:request error:&error];
+
+    if (!error)
+    {
+        for (Section *section in sections)
+        {
+            [section removeModules];
+            [context deleteObject:section];
+        }
+    }
+
+    [context performSelectorOnMainThread:@selector(save:) withObject:nil waitUntilDone:YES];
+}
 @end

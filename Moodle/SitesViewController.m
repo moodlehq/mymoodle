@@ -8,11 +8,10 @@
 
 #import "SitesViewController.h"
 #import "Constants.h"
-#import "MoodleSite.h"
 #import "UIImageView+WebCache.h"
 #import "SettingsSiteViewController.h"
 
-#define kSiteNameTag 1;
+#define kSiteNameTag 1
 
 @implementation SitesViewController
 @synthesize fetchedResultsController = __fetchedResultsController;
@@ -52,18 +51,20 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *defaultSiteUrl = [defaults objectForKey:kSelectedSiteUrlKey];
     NSLog(@"SitesViewController %@", defaultSiteUrl);
-    if ([MoodleSite countWithContext:managedObjectContext] == 0)
+    if ([Site countWithContext:managedObjectContext] == 0)
     {
         self.navigationItem.hidesBackButton = YES;
 
-    } else if ([MoodleSite countWithContext:managedObjectContext] == 1) {
+    }
+    else if ([Site countWithContext:managedObjectContext] == 1)
+    {
         // restore active site info
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:managedObjectContext];
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
         [request setEntity:entity];
         NSError *error = nil;
         NSArray *sites = [managedObjectContext executeFetchRequest:request error:&error];
-        MoodleSite *onesite = [sites lastObject];
+        Site *onesite = [sites lastObject];
         // save the current site into user preference
         [defaults setObject:[onesite valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
         [defaults setObject:[onesite valueForKey:@"name"] forKey:kSelectedSiteNameKey];
@@ -91,7 +92,7 @@
 {
     [super viewDidAppear:animated];
     // if there is no site available go to the add a site view
-    if ([MoodleSite countWithContext:managedObjectContext] == 0)
+    if ([Site countWithContext:managedObjectContext] == 0)
     {
         [self addSite];
     }
@@ -167,7 +168,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MoodleSite *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Site *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
@@ -277,7 +278,7 @@
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             // new added site
-            MoodleSite *site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];
+            Site *site = [self.fetchedResultsController objectAtIndexPath:newIndexPath];
             NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [site valueForKey:@"url"], kSelectedSiteUrlKey,
                                          [site valueForKey:@"name"], kSelectedSiteNameKey,

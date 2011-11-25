@@ -81,7 +81,7 @@ static AppDelegate *moodleApp = NULL;
     {
         MLog(@"Cannot create NSManagedObjectContext");
     }
-    NSInteger count = [MoodleSite countWithContext:context];
+    NSInteger count = [Site countWithContext:context];
 
     MLog(@"%d sites in core data", count);
     if (count > 0)
@@ -97,7 +97,6 @@ static AppDelegate *moodleApp = NULL;
         NSError *error = nil;
         NSArray *sites = [self.managedObjectContext executeFetchRequest:request error:&error];
         self.site = [sites lastObject];
-        self.site = (MoodleSite *)self.site;
         NSLog(@"Active site: %@", self.site);
     }
 
@@ -159,6 +158,18 @@ static AppDelegate *moodleApp = NULL;
     if (![NSFm fileExistsAtPath:OFFLINE_FOLDER isDirectory:&isDir])
     {
         if (![NSFm createDirectoryAtPath:OFFLINE_FOLDER withIntermediateDirectories:YES attributes:nil error:&error])
+        {
+            NSLog(@"Error: Create folder failed %@", error);
+        }
+        else
+        {
+            NSLog(@"Folder created");
+        }
+    }
+
+    if (![NSFm fileExistsAtPath:DOWNLOADS_FOLDER isDirectory:&isDir])
+    {
+        if (![NSFm createDirectoryAtPath:DOWNLOADS_FOLDER withIntermediateDirectories:YES attributes:nil error:&error])
         {
             NSLog(@"Error: Create folder failed %@", error);
         }
@@ -278,6 +289,7 @@ static AppDelegate *moodleApp = NULL;
         return __managedObjectModel;
     }
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Moodle" withExtension:@"momd"];
+    // there is VersionInfo.plist in that directory to determind dest version
     __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return __managedObjectModel;
 }
@@ -288,43 +300,114 @@ static AppDelegate *moodleApp = NULL;
  */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
+    NSError *error = nil;
+
     if (__persistentStoreCoordinator != nil)
     {
         return __persistentStoreCoordinator;
     }
+    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+
 
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Moodle.sqlite"];
 
-    NSError *error = nil;
-    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
+    // get source meta data
+    NSDictionary *sourceMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType
+                                                                                              URL:storeURL
+                                                                                            error:&error];
+    // get dest model
+    NSManagedObjectModel *destinationModel = [self managedObjectModel];
+    NSLog(@"Destination model version identifiers: %@", [destinationModel versionIdentifiers]);
+
+    if ([destinationModel isConfiguration:nil compatibleWithStoreMetadata:sourceMetadata] || sourceMetadata == nil)
     {
-        /*
-         * Replace this implementation with code to handle the error appropriately.
-         *
-         * abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-         *
-         * Typical reasons for an error here include:
-         * The persistent store is not accessible;
-         * The schema for the persistent store is incompatible with current managed object model.
-         * Check the error message to determine what the actual problem was.
-         *
-         *
-         * If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
-         *
-         * If you encounter schema incompatibility errors during development, you can reduce their frequency by:
-         * Simply deleting the existing store:
-         * [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
-         *
-         * Performing automatic lightweight migration by passing the following dictionary as the options parameter:
-         * [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-         *
-         * Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
-         *
-         */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+        NSLog(@"Data model looks ok");
+        [__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error];
     }
+    else
+    {
+        NSLog(@"Needs migration");
+
+        NSURL *destStoreURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"upgrade.sqlite"];
+        NSManagedObjectModel *sourceModel = [NSManagedObjectModel mergedModelFromBundles:nil forStoreMetadata:sourceMetadata];
+
+        NSMappingModel *mappingModel = [NSMappingModel
+                                        mappingModelFromBundles:[NSArray arrayWithObject:[NSBundle mainBundle]]
+                                                 forSourceModel:sourceModel
+                                               destinationModel:destinationModel];
+
+        NSMigrationManager *manager = [[NSMigrationManager alloc] initWithSourceModel:sourceModel destinationModel:destinationModel];
+        NSLog(@"Main Bundle: %@", [NSBundle mainBundle]);
+
+        if (mappingModel == nil)
+        {
+            NSLog(@"Cannot find mapping model");
+        }
+
+        // perform migration
+        BOOL ok = [manager migrateStoreFromURL:storeURL
+                                          type:NSSQLiteStoreType
+                                       options:nil
+                              withMappingModel:mappingModel
+                              toDestinationURL:destStoreURL
+                               destinationType:NSSQLiteStoreType
+                            destinationOptions:nil
+                                         error:&error];
+        [manager release];
+        if (ok)
+        {
+            NSLog(@"Migration went ok");
+        }
+        else
+        {
+            NSLog(@"Migration failed: %@", [error localizedDescription]);
+        }
+        NSPersistentStore *destStore = [__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:destStoreURL options:nil error:&error];
+        // try open migrated data
+        if (!destStore)
+        {
+            // delete storage
+            [[NSFileManager defaultManager] removeItemAtPath:storeURL.path error:nil];
+            if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
+            {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+
+            // if the app did not quit, show the alert to inform the users that the data have been deleted
+            UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error establishing database connection.", @"")
+                                                             message:NSLocalizedString(@"Please delete the app and reinstall.", @"")
+                                                            delegate:nil
+                                                   cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                                   otherButtonTitles:nil] autorelease];
+            [alert show];
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        else
+        {
+            if (![[NSFileManager defaultManager] removeItemAtURL:storeURL error:&error])
+            {
+                NSLog(@"Removing old sqlite.db failed %@", [error localizedDescription]);
+            }
+            if (![[NSFileManager defaultManager] moveItemAtURL:destStoreURL toURL:storeURL error:&error])
+            {
+                NSLog(@"Moving upgraded db to source db failed %@", [error localizedDescription]);
+            }
+            // remove dest db from persistent store coordinator
+            [__persistentStoreCoordinator removePersistentStore:destStore error:&error];
+            if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
+            {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+            else
+            {
+                NSLog(@"New storage established!");
+            }
+        }
+    }
+
 
     return __persistentStoreCoordinator;
 }

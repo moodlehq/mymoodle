@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MoodleSite.h"
 #import "AppDelegate.h"
 #import "MBProgressHUD.h"
+#import "Site.h"
 
 #define kNumberOfEditableRows 3
 #define kUrlIndex             0
@@ -21,7 +21,7 @@
 
 @interface SettingsSiteViewController : UITableViewController <UITextFieldDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, MBProgressHUDDelegate> {
     AppDelegate *appDelegate;
-    MoodleSite *editingSite;
+    NSManagedObject *editingSite;
     BOOL newEntry;
     NSString *hostURL;
 
@@ -41,9 +41,8 @@
     UILabel *topLabel;
 }
 
-@property (nonatomic, retain) MoodleSite *editingSite;
-
 - (IBAction)cancel:(id)sender;
 - (IBAction)saveButtonPressed:(id)sender;
 - (id)initWithNew:(NSString *)new;
+- (void)setEditingSite:(Site *)site;
 @end

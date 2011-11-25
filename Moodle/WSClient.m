@@ -83,7 +83,14 @@
     return object;
 }
 
+- (NSDictionary *)get_siteinfo
+{
+    NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
+    NSDictionary *siteinfo = [self invoke:@"moodle_webservice_get_siteinfo" withParams:wsparams];
 
+    [wsparams release];
+    return siteinfo;
+}
 - (void)dealloc
 {
     [super dealloc];

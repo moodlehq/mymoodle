@@ -22,4 +22,13 @@
     [super viewWillAppear:animated];
 }
 
+- (void)loadHTMLString:(NSString *)string baseURL:(NSURL *)baseURL
+{
+    [_webView loadHTMLString:string baseURL:baseURL];
+}
+- (void)loadData:(NSData *)data MIMEType:(NSString *)MIMEType textEncodingName:(NSString *)textEncodingName baseURL:(NSURL *)baseURL
+{
+    [_webView loadData:data MIMEType:MIMEType textEncodingName:textEncodingName baseURL:baseURL];
+}
+
 @end

@@ -19,4 +19,6 @@
 - (id)invoke:(NSString *)method withParams:(NSArray *)params;
 
 - (id)initWithToken:(NSString *)host withHost:(NSString *)host;
+
+- (id)get_siteinfo;
 @end

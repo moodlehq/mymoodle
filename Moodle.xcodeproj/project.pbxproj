@@ -19,13 +19,6 @@
 		02618A241331A581008D3037 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A231331A581008D3037 /* AppDelegate.m */; };
 		02618A271331A582008D3037 /* Moodle.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 02618A251331A582008D3037 /* Moodle.xcdatamodeld */; };
 		02618A2D1331A582008D3037 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A2C1331A582008D3037 /* RootViewController.m */; };
-		02618A371331A582008D3037 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A111331A581008D3037 /* UIKit.framework */; };
-		02618A381331A582008D3037 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A131331A581008D3037 /* Foundation.framework */; };
-		02618A391331A582008D3037 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A151331A581008D3037 /* CoreGraphics.framework */; };
-		02618A3A1331A582008D3037 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02618A171331A581008D3037 /* CoreData.framework */; };
-		02618A421331A582008D3037 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 02618A401331A582008D3037 /* InfoPlist.strings */; };
-		02618A451331A582008D3037 /* MoodleTests.h in Resources */ = {isa = PBXBuildFile; fileRef = 02618A441331A582008D3037 /* MoodleTests.h */; };
-		02618A471331A582008D3037 /* MoodleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02618A461331A582008D3037 /* MoodleTests.m */; };
 		3201088596B4756681693705 /* libThree20UICommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3201088596B4756681693704 /* libThree20UICommon.a */; };
 		320A2827FEC940B25BC42C65 /* libThree20Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320A2827FEC940B25BC42C64 /* libThree20Core.a */; };
 		320A5A189C235877202780D5 /* libThree20Network.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320A5A189C235877202780D4 /* libThree20Network.a */; };
@@ -36,8 +29,11 @@
 		320D7DCCE32703ACAB9A45E5 /* libThree20.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320D7DCCE32703ACAB9A45E4 /* libThree20.a */; };
 		320F2C48872C2E2C4DF86205 /* libThree20UI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320F2C48872C2E2C4DF86204 /* libThree20UI.a */; };
 		B5031AD3138007AB005BB407 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = B5031AD2138007AB005BB407 /* MBProgressHUD.m */; };
+		B5038BAD143C266100C64A9A /* Downloader.m in Sources */ = {isa = PBXBuildFile; fileRef = B5038BAC143C266100C64A9A /* Downloader.m */; };
 		B5069EEB138116E800EABC26 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5069EEA138116E800EABC26 /* AVFoundation.framework */; };
+		B50A117113F3D75A007CCEC7 /* ContentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B50A117013F3D75A007CCEC7 /* ContentsViewController.m */; };
 		B51C0F9D13B4556300276760 /* Course.m in Sources */ = {isa = PBXBuildFile; fileRef = B51C0F9C13B4556300276760 /* Course.m */; };
+		B51D247A1404A1570040AFA6 /* RBFilePreviewer.m in Sources */ = {isa = PBXBuildFile; fileRef = B51D24791404A1560040AFA6 /* RBFilePreviewer.m */; };
 		B51EC3DA1394BBA40048C866 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3C71394BBA40048C866 /* ASIAuthenticationDialog.m */; };
 		B51EC3DB1394BBA40048C866 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3CA1394BBA40048C866 /* ASIDataCompressor.m */; };
 		B51EC3DC1394BBA40048C866 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3CC1394BBA40048C866 /* ASIDataDecompressor.m */; };
@@ -48,6 +44,8 @@
 		B51EC3E11394BBA40048C866 /* ASINetworkQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3D81394BBA40048C866 /* ASINetworkQueue.m */; };
 		B51EC3E41394BBD30048C866 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B51EC3E31394BBD30048C866 /* Reachability.m */; };
 		B520A27313DEB18A005046CF /* TaskHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = B520A27213DEB18A005046CF /* TaskHandler.m */; };
+		B5349D8B147F4B9C00C8ED35 /* 1.0-1.1.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = B5349D8A147F4B9C00C8ED35 /* 1.0-1.1.xcmappingmodel */; };
+		B53893A21439A1CD00F15D99 /* Module.m in Sources */ = {isa = PBXBuildFile; fileRef = B53893A11439A1CD00F15D99 /* Module.m */; };
 		B53FAB401398B566008206EA /* Complete.png in Resources */ = {isa = PBXBuildFile; fileRef = B53FAB3F1398B566008206EA /* Complete.png */; };
 		B53FAB5C1398C06B008206EA /* MoodleJob.m in Sources */ = {isa = PBXBuildFile; fileRef = B53FAB5B1398C06B008206EA /* MoodleJob.m */; };
 		B54EFAA1133C7CB500CE8F87 /* WSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B54EFAA0133C7CB500CE8F87 /* WSClient.m */; };
@@ -58,7 +56,7 @@
 		B54F75C21393672300C95039 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BA1393672300C95039 /* CJSONScanner.m */; };
 		B54F75C31393672300C95039 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75BC1393672300C95039 /* CJSONSerializer.m */; };
 		B54F75C913937B8000C95039 /* MoodleMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = B54F75C813937B8000C95039 /* MoodleMedia.m */; };
-		B553CC21140E32FA0027E2F7 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B553CC20140E32FA0027E2F7 /* PreviewViewController.m */; };
+		B5516BC3147650640031FB40 /* Site.m in Sources */ = {isa = PBXBuildFile; fileRef = B5516BC2147650640031FB40 /* Site.m */; };
 		B55873E413A8AB77006526F3 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B55873DA13A8AB77006526F3 /* EGORefreshTableHeaderView.m */; };
 		B55873E513A8AB77006526F3 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DC13A8AB77006526F3 /* blackArrow.png */; };
 		B55873E613A8AB77006526F3 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873DD13A8AB77006526F3 /* blackArrow@2x.png */; };
@@ -68,8 +66,17 @@
 		B55873EA13A8AB77006526F3 /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873E113A8AB77006526F3 /* grayArrow@2x.png */; };
 		B55873EB13A8AB77006526F3 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873E213A8AB77006526F3 /* whiteArrow.png */; };
 		B55873EC13A8AB77006526F3 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B55873E313A8AB77006526F3 /* whiteArrow@2x.png */; };
+		B55DE225143AC2D500A5390C /* module.gif in Resources */ = {isa = PBXBuildFile; fileRef = B55DE224143AC2D400A5390C /* module.gif */; };
+		B560239B13FCDF6B00333555 /* ModuleTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B560239A13FCDF6B00333555 /* ModuleTableCellView.m */; };
+		B56089BF144688AF0060F300 /* FilesListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B56089BE144688AF0060F300 /* FilesListViewController.m */; };
+		B56089C4144694DC0060F300 /* arrow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = B56089C0144694DC0060F300 /* arrow-left.png */; };
+		B56089C5144694DC0060F300 /* arrow-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B56089C1144694DC0060F300 /* arrow-left@2x.png */; };
+		B56089C6144694DC0060F300 /* arrow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = B56089C2144694DC0060F300 /* arrow-right.png */; };
+		B56089C7144694DC0060F300 /* arrow-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B56089C3144694DC0060F300 /* arrow-right@2x.png */; };
 		B5609F3A137F8DC000C59271 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5609F39137F8DC000C59271 /* AudioToolbox.framework */; };
+		B5666F9D1403A6CA0036D8F7 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5666F9C1403A6CA0036D8F7 /* QuickLook.framework */; };
 		B56983CC13896648003FECD2 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B56983CB13896648003FECD2 /* WebViewController.m */; };
+		B56A9D5E1410B6E300A0B0E4 /* PreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B56A9D5D1410B6E300A0B0E4 /* PreviewViewController.m */; };
 		B577155F138102DD007582EF /* RecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B577155D138102DD007582EF /* RecorderViewController.m */; };
 		B57CD156133C787F00CCB81A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD155133C787F00CCB81A /* CFNetwork.framework */; };
 		B57CD158133C788900CCB81A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B57CD157133C788900CCB81A /* MobileCoreServices.framework */; };
@@ -119,7 +126,9 @@
 		B59600DA13CC49EB00438682 /* upload_camera.png in Resources */ = {isa = PBXBuildFile; fileRef = B59600D613CC49EB00438682 /* upload_camera.png */; };
 		B59600DB13CC49EB00438682 /* upload_cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = B59600D713CC49EB00438682 /* upload_cloud.png */; };
 		B59600DC13CC49EB00438682 /* upload_photo_album.png in Resources */ = {isa = PBXBuildFile; fileRef = B59600D813CC49EB00438682 /* upload_photo_album.png */; };
+		B5997B611445807900E36FAB /* Content.m in Sources */ = {isa = PBXBuildFile; fileRef = B5997B601445807900E36FAB /* Content.m */; };
 		B5A6C65C1389792A007B46F0 /* MoodleStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */; };
+		B5A767891455235500715C55 /* template.html in Resources */ = {isa = PBXBuildFile; fileRef = B5A767881455235500715C55 /* template.html */; };
 		B5A8DD6113B9D9AA007A5EC1 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A8DD6013B9D9AA007A5EC1 /* AddressBook.framework */; };
 		B5B0EAF41383ACFE000A9330 /* MoodleHelp.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAEA1383ACFE000A9330 /* MoodleHelp.png */; };
 		B5B0EAF51383ACFE000A9330 /* Participants.png in Resources */ = {isa = PBXBuildFile; fileRef = B5B0EAEB1383ACFE000A9330 /* Participants.png */; };
@@ -135,32 +144,31 @@
 		B5B0EB1D1383AEB6000A9330 /* XMLRPCRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB121383AEB6000A9330 /* XMLRPCRequest.m */; };
 		B5B0EB1E1383AEB6000A9330 /* XMLRPCResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB141383AEB6000A9330 /* XMLRPCResponse.m */; };
 		B5B0EB1F1383AEB6000A9330 /* XMLValueDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */; };
+		B5B998E3144414040032C26E /* Section.m in Sources */ = {isa = PBXBuildFile; fileRef = B5B998E2144414040032C26E /* Section.m */; };
 		B5BDC0B9140B5C380071D1F1 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5BDC0B8140B5C380071D1F1 /* MapViewController.m */; };
 		B5BDC0C0140B649D0071D1F1 /* AddressAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B5BDC0BF140B649D0071D1F1 /* AddressAnnotation.m */; };
+		B5BE0908140244130019B4E5 /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = B5BE0904140244130019B4E5 /* download.png */; };
+		B5BE0909140244130019B4E5 /* download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B5BE0905140244130019B4E5 /* download@2x.png */; };
+		B5BE090A140244130019B4E5 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = B5BE0906140244130019B4E5 /* pause.png */; };
+		B5BE090B140244130019B4E5 /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B5BE0907140244130019B4E5 /* pause@2x.png */; };
 		B5C4329513A7BDC100F8F1A9 /* item.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329413A7BDC100F8F1A9 /* item.png */; };
 		B5C4329713A7C99B00F8F1A9 /* course.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C4329613A7C99B00F8F1A9 /* course.png */; };
 		B5C6BB2613CEDC54007B1517 /* button_upload.png in Resources */ = {isa = PBXBuildFile; fileRef = B5C6BB2413CEDC54007B1517 /* button_upload.png */; };
+		B5D41E8B14593FDC00D68091 /* Contents.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D41E8A14593FDC00D68091 /* Contents.png */; };
 		B5D48B3713BB1EB70063968A /* icon_retina.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D48B2F13BB17FD0063968A /* icon_retina.png */; };
 		B5D48B3813BB1EBF0063968A /* icon_iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = B5D48B3313BB18680063968A /* icon_iphone.png */; };
 		B5D4EFFF13726FF000FD121F /* UploadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5D4EFFE13726FF000FD121F /* UploadViewController.m */; };
 		B5DABB22138E2BF6004AE472 /* CoursesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB1D138E2BF6004AE472 /* CoursesViewController.m */; };
 		B5DABB23138E2BF6004AE472 /* SitesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB1F138E2BF6004AE472 /* SitesViewController.m */; };
 		B5DABB24138E2BF6004AE472 /* SyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB21138E2BF6004AE472 /* SyncViewController.m */; };
-		B5DABB28138E2C2A004AE472 /* MoodleSite.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB27138E2C2A004AE472 /* MoodleSite.m */; };
 		B5DABB39138E57CF004AE472 /* MoodleImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */; };
+		B5DE98CD147F8C6B00DB4DE2 /* NSURL+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = B5DE98CC147F8C6B00DB4DE2 /* NSURL+Additions.m */; };
 		B5E047F6137280FA00314B60 /* ParticipantListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5E047F5137280FA00314B60 /* ParticipantListViewController.m */; };
 		B5EEB3F313AEED5C00A53635 /* Participant.m in Sources */ = {isa = PBXBuildFile; fileRef = B5EEB3F213AEED5C00A53635 /* Participant.m */; };
 		B5FB2ED013E26DF10071AB52 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5FB2ECF13E26DF10071AB52 /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		02618A3B1331A582008D3037 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 02618A041331A581008D3037 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 02618A0C1331A581008D3037;
-			remoteInfo = Moodle;
-		};
 		3201088596B4756681693702 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3201088596B4756681693700 /* Three20UICommon.xcodeproj */;
@@ -341,10 +349,9 @@
 		02618A201331A581008D3037 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		02618A221331A581008D3037 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		02618A231331A581008D3037 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		02618A261331A582008D3037 /* Moodle.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Moodle.xcdatamodel; sourceTree = "<group>"; };
+		02618A261331A582008D3037 /* Moodle 1.0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Moodle 1.0.xcdatamodel"; sourceTree = "<group>"; };
 		02618A2B1331A582008D3037 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		02618A2C1331A582008D3037 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
-		02618A361331A582008D3037 /* MoodleTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoodleTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		02618A3F1331A582008D3037 /* MoodleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MoodleTests-Info.plist"; sourceTree = "<group>"; };
 		02618A411331A582008D3037 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		02618A431331A582008D3037 /* MoodleTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MoodleTests-Prefix.pch"; sourceTree = "<group>"; };
@@ -362,9 +369,15 @@
 		320F2C48872C2E2C4DF86200 /* Three20UI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Three20UI.xcodeproj; path = three20/src/Three20UI/Three20UI.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B5031AD1138007AB005BB407 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = SOURCE_ROOT; };
 		B5031AD2138007AB005BB407 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = SOURCE_ROOT; };
+		B5038BAB143C266100C64A9A /* Downloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Downloader.h; sourceTree = "<group>"; };
+		B5038BAC143C266100C64A9A /* Downloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Downloader.m; sourceTree = "<group>"; };
 		B5069EEA138116E800EABC26 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B50A116F13F3D75A007CCEC7 /* ContentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentsViewController.h; sourceTree = "<group>"; };
+		B50A117013F3D75A007CCEC7 /* ContentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsViewController.m; sourceTree = "<group>"; };
 		B51C0F9B13B4556300276760 /* Course.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Course.h; sourceTree = "<group>"; };
 		B51C0F9C13B4556300276760 /* Course.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Course.m; sourceTree = "<group>"; };
+		B51D24781404A1560040AFA6 /* RBFilePreviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBFilePreviewer.h; sourceTree = "<group>"; };
+		B51D24791404A1560040AFA6 /* RBFilePreviewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBFilePreviewer.m; sourceTree = "<group>"; };
 		B51EC3C61394BBA40048C866 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASIAuthenticationDialog.h; path = "asi-http-request/Classes/ASIAuthenticationDialog.h"; sourceTree = SOURCE_ROOT; };
 		B51EC3C71394BBA40048C866 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASIAuthenticationDialog.m; path = "asi-http-request/Classes/ASIAuthenticationDialog.m"; sourceTree = SOURCE_ROOT; };
 		B51EC3C81394BBA40048C866 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASICacheDelegate.h; path = "asi-http-request/Classes/ASICacheDelegate.h"; sourceTree = SOURCE_ROOT; };
@@ -389,6 +402,9 @@
 		B51EC3E31394BBD30048C866 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = "asi-http-request/External/Reachability/Reachability.m"; sourceTree = SOURCE_ROOT; };
 		B520A27113DEB18A005046CF /* TaskHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskHandler.h; sourceTree = "<group>"; };
 		B520A27213DEB18A005046CF /* TaskHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskHandler.m; sourceTree = "<group>"; };
+		B5349D8A147F4B9C00C8ED35 /* 1.0-1.1.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; name = "1.0-1.1.xcmappingmodel"; path = "DataMigration/1.0-1.1.xcmappingmodel"; sourceTree = "<group>"; };
+		B53893A01439A1CD00F15D99 /* Module.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Module.h; sourceTree = "<group>"; };
+		B53893A11439A1CD00F15D99 /* Module.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Module.m; sourceTree = "<group>"; };
 		B53FAB3F1398B566008206EA /* Complete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Complete.png; path = Images/Complete.png; sourceTree = SOURCE_ROOT; };
 		B53FAB5A1398C06B008206EA /* MoodleJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleJob.h; sourceTree = "<group>"; };
 		B53FAB5B1398C06B008206EA /* MoodleJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleJob.m; sourceTree = "<group>"; };
@@ -410,8 +426,8 @@
 		B54F75BD1393672300C95039 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
 		B54F75C713937B8000C95039 /* MoodleMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleMedia.h; sourceTree = "<group>"; };
 		B54F75C813937B8000C95039 /* MoodleMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleMedia.m; sourceTree = "<group>"; };
-		B553CC1F140E32FA0027E2F7 /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewViewController.h; sourceTree = "<group>"; };
-		B553CC20140E32FA0027E2F7 /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewViewController.m; sourceTree = "<group>"; };
+		B5516BC1147650640031FB40 /* Site.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Site.h; sourceTree = "<group>"; };
+		B5516BC2147650640031FB40 /* Site.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Site.m; sourceTree = "<group>"; };
 		B55873D913A8AB77006526F3 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		B55873DA13A8AB77006526F3 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
 		B55873DC13A8AB77006526F3 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
@@ -422,9 +438,21 @@
 		B55873E113A8AB77006526F3 /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
 		B55873E213A8AB77006526F3 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
 		B55873E313A8AB77006526F3 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
+		B55DE224143AC2D400A5390C /* module.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = module.gif; path = ../module.gif; sourceTree = "<group>"; };
+		B560239913FCDF6B00333555 /* ModuleTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModuleTableCellView.h; sourceTree = "<group>"; };
+		B560239A13FCDF6B00333555 /* ModuleTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModuleTableCellView.m; sourceTree = "<group>"; };
+		B56089BD144688AF0060F300 /* FilesListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilesListViewController.h; sourceTree = "<group>"; };
+		B56089BE144688AF0060F300 /* FilesListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilesListViewController.m; sourceTree = "<group>"; };
+		B56089C0144694DC0060F300 /* arrow-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-left.png"; path = "Images/icons/arrow-left.png"; sourceTree = SOURCE_ROOT; };
+		B56089C1144694DC0060F300 /* arrow-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-left@2x.png"; path = "Images/icons/arrow-left@2x.png"; sourceTree = SOURCE_ROOT; };
+		B56089C2144694DC0060F300 /* arrow-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-right.png"; path = "Images/icons/arrow-right.png"; sourceTree = SOURCE_ROOT; };
+		B56089C3144694DC0060F300 /* arrow-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-right@2x.png"; path = "Images/icons/arrow-right@2x.png"; sourceTree = SOURCE_ROOT; };
 		B5609F39137F8DC000C59271 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		B5666F9C1403A6CA0036D8F7 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		B56983CA13896647003FECD2 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		B56983CB13896648003FECD2 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		B56A9D5C1410B6E300A0B0E4 /* PreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewViewController.h; sourceTree = "<group>"; };
+		B56A9D5D1410B6E300A0B0E4 /* PreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewViewController.m; sourceTree = "<group>"; };
 		B577155C138102DD007582EF /* RecorderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecorderViewController.h; sourceTree = "<group>"; };
 		B577155D138102DD007582EF /* RecorderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecorderViewController.m; sourceTree = "<group>"; };
 		B57CD155133C787F00CCB81A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -483,8 +511,11 @@
 		B59600D613CC49EB00438682 /* upload_camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = upload_camera.png; path = Images/icons/upload_camera.png; sourceTree = SOURCE_ROOT; };
 		B59600D713CC49EB00438682 /* upload_cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = upload_cloud.png; path = Images/icons/upload_cloud.png; sourceTree = SOURCE_ROOT; };
 		B59600D813CC49EB00438682 /* upload_photo_album.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = upload_photo_album.png; path = Images/icons/upload_photo_album.png; sourceTree = SOURCE_ROOT; };
+		B5997B5F1445807800E36FAB /* Content.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Content.h; sourceTree = "<group>"; };
+		B5997B601445807900E36FAB /* Content.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Content.m; sourceTree = "<group>"; };
 		B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleStyleSheet.h; sourceTree = "<group>"; };
 		B5A6C65B1389792A007B46F0 /* MoodleStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleStyleSheet.m; sourceTree = "<group>"; };
+		B5A767881455235500715C55 /* template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = template.html; sourceTree = "<group>"; };
 		B5A8DD6013B9D9AA007A5EC1 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		B5B0EAEA1383ACFE000A9330 /* MoodleHelp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = MoodleHelp.png; path = Icons/MoodleHelp.png; sourceTree = SOURCE_ROOT; };
 		B5B0EAEB1383ACFE000A9330 /* Participants.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Participants.png; path = Icons/Participants.png; sourceTree = SOURCE_ROOT; };
@@ -509,13 +540,21 @@
 		B5B0EB141383AEB6000A9330 /* XMLRPCResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLRPCResponse.m; path = XMLRPC/XMLRPCResponse.m; sourceTree = SOURCE_ROOT; };
 		B5B0EB151383AEB6000A9330 /* XMLValueDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLValueDecoder.h; path = XMLRPC/XMLValueDecoder.h; sourceTree = SOURCE_ROOT; };
 		B5B0EB161383AEB6000A9330 /* XMLValueDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLValueDecoder.m; path = XMLRPC/XMLValueDecoder.m; sourceTree = SOURCE_ROOT; };
+		B5B998E1144414040032C26E /* Section.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Section.h; sourceTree = "<group>"; };
+		B5B998E2144414040032C26E /* Section.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Section.m; sourceTree = "<group>"; };
+		B5BCDDFA14149B3D00A12593 /* Moodle 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Moodle 1.1.xcdatamodel"; sourceTree = "<group>"; };
 		B5BDC0B7140B5C380071D1F1 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		B5BDC0B8140B5C380071D1F1 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		B5BDC0BE140B649D0071D1F1 /* AddressAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddressAnnotation.h; sourceTree = "<group>"; };
 		B5BDC0BF140B649D0071D1F1 /* AddressAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddressAnnotation.m; sourceTree = "<group>"; };
+		B5BE0904140244130019B4E5 /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = download.png; path = Images/icons/download.png; sourceTree = SOURCE_ROOT; };
+		B5BE0905140244130019B4E5 /* download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "download@2x.png"; path = "Images/icons/download@2x.png"; sourceTree = SOURCE_ROOT; };
+		B5BE0906140244130019B4E5 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = Images/icons/pause.png; sourceTree = SOURCE_ROOT; };
+		B5BE0907140244130019B4E5 /* pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause@2x.png"; path = "Images/icons/pause@2x.png"; sourceTree = SOURCE_ROOT; };
 		B5C4329413A7BDC100F8F1A9 /* item.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = item.png; path = Images/item.png; sourceTree = SOURCE_ROOT; };
 		B5C4329613A7C99B00F8F1A9 /* course.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = course.png; path = Images/course.png; sourceTree = SOURCE_ROOT; };
 		B5C6BB2413CEDC54007B1517 /* button_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = button_upload.png; path = Images/buttons/button_upload.png; sourceTree = SOURCE_ROOT; };
+		B5D41E8A14593FDC00D68091 /* Contents.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Contents.png; path = Icons/Contents.png; sourceTree = SOURCE_ROOT; };
 		B5D48B2F13BB17FD0063968A /* icon_retina.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_retina.png; sourceTree = "<group>"; };
 		B5D48B3313BB18680063968A /* icon_iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_iphone.png; sourceTree = "<group>"; };
 		B5D4EFFD13726FF000FD121F /* UploadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadViewController.h; sourceTree = "<group>"; };
@@ -527,10 +566,10 @@
 		B5DABB1F138E2BF6004AE472 /* SitesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SitesViewController.m; sourceTree = "<group>"; };
 		B5DABB20138E2BF6004AE472 /* SyncViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncViewController.h; sourceTree = "<group>"; };
 		B5DABB21138E2BF6004AE472 /* SyncViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncViewController.m; sourceTree = "<group>"; };
-		B5DABB26138E2C2A004AE472 /* MoodleSite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleSite.h; sourceTree = "<group>"; };
-		B5DABB27138E2C2A004AE472 /* MoodleSite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleSite.m; sourceTree = "<group>"; };
 		B5DABB37138E57CE004AE472 /* MoodleImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoodleImagePickerController.h; sourceTree = "<group>"; };
 		B5DABB38138E57CE004AE472 /* MoodleImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoodleImagePickerController.m; sourceTree = "<group>"; };
+		B5DE98CB147F8C6B00DB4DE2 /* NSURL+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Additions.h"; sourceTree = "<group>"; };
+		B5DE98CC147F8C6B00DB4DE2 /* NSURL+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Additions.m"; sourceTree = "<group>"; };
 		B5E047F4137280FA00314B60 /* ParticipantListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticipantListViewController.h; sourceTree = "<group>"; };
 		B5E047F5137280FA00314B60 /* ParticipantListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParticipantListViewController.m; sourceTree = "<group>"; };
 		B5EEB3F113AEED5C00A53635 /* Participant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Participant.h; sourceTree = "<group>"; };
@@ -545,6 +584,7 @@
 			files = (
 				B593EB0D140B49DE00500531 /* MapKit.framework in Frameworks */,
 				B593EB0B140B3B2500500531 /* MessageUI.framework in Frameworks */,
+				B5666F9D1403A6CA0036D8F7 /* QuickLook.framework in Frameworks */,
 				B5A8DD6113B9D9AA007A5EC1 /* AddressBook.framework in Frameworks */,
 				3201088596B4756681693705 /* libThree20UICommon.a in Frameworks */,
 				320D7DCCE32703ACAB9A45E5 /* libThree20.a in Frameworks */,
@@ -567,17 +607,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		02618A321331A582008D3037 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				02618A371331A582008D3037 /* UIKit.framework in Frameworks */,
-				02618A381331A582008D3037 /* Foundation.framework in Frameworks */,
-				02618A391331A582008D3037 /* CoreGraphics.framework in Frameworks */,
-				02618A3A1331A582008D3037 /* CoreData.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -588,6 +617,8 @@
 				B54F75C813937B8000C95039 /* MoodleMedia.m */,
 				B520A27113DEB18A005046CF /* TaskHandler.h */,
 				B520A27213DEB18A005046CF /* TaskHandler.m */,
+				B5DE98CB147F8C6B00DB4DE2 /* NSURL+Additions.h */,
+				B5DE98CC147F8C6B00DB4DE2 /* NSURL+Additions.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -608,7 +639,6 @@
 			isa = PBXGroup;
 			children = (
 				02618A0D1331A581008D3037 /* Moodle.app */,
-				02618A361331A582008D3037 /* MoodleTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -620,6 +650,7 @@
 				B5220AF913F0DBAF00DEDD21 /* Three20 */,
 				B593EB0C140B49DE00500531 /* MapKit.framework */,
 				B593EB0A140B3B2500500531 /* MessageUI.framework */,
+				B5666F9C1403A6CA0036D8F7 /* QuickLook.framework */,
 				B5A8DD6013B9D9AA007A5EC1 /* AddressBook.framework */,
 				B5069EEA138116E800EABC26 /* AVFoundation.framework */,
 				B5609F39137F8DC000C59271 /* AudioToolbox.framework */,
@@ -654,7 +685,7 @@
 				02618A1B1331A581008D3037 /* Moodle-Info.plist */,
 				02618A1C1331A581008D3037 /* InfoPlist.strings */,
 				02618A1F1331A581008D3037 /* Moodle-Prefix.pch */,
-				02618A201331A581008D3037 /* main.m */,
+				B5349D8A147F4B9C00C8ED35 /* 1.0-1.1.xcmappingmodel */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -781,6 +812,19 @@
 			name = HTTP;
 			sourceTree = "<group>";
 		};
+		B50A116E13F3D729007CCEC7 /* Contents */ = {
+			isa = PBXGroup;
+			children = (
+				B50A116F13F3D75A007CCEC7 /* ContentsViewController.h */,
+				B50A117013F3D75A007CCEC7 /* ContentsViewController.m */,
+				B56089BD144688AF0060F300 /* FilesListViewController.h */,
+				B56089BE144688AF0060F300 /* FilesListViewController.m */,
+				B560239913FCDF6B00333555 /* ModuleTableCellView.h */,
+				B560239A13FCDF6B00333555 /* ModuleTableCellView.m */,
+			);
+			name = Contents;
+			sourceTree = "<group>";
+		};
 		B5220AF913F0DBAF00DEDD21 /* Three20 */ = {
 			isa = PBXGroup;
 			children = (
@@ -816,6 +860,22 @@
 				B54F75A1139365E700C95039 /* TouchJSON */,
 			);
 			name = Vendors;
+			sourceTree = "<group>";
+		};
+		B54813E613F4D4B100495911 /* CourseContents */ = {
+			isa = PBXGroup;
+			children = (
+				B55DE224143AC2D400A5390C /* module.gif */,
+				B5BE0904140244130019B4E5 /* download.png */,
+				B5BE0905140244130019B4E5 /* download@2x.png */,
+				B5BE0906140244130019B4E5 /* pause.png */,
+				B5BE0907140244130019B4E5 /* pause@2x.png */,
+				B56089C0144694DC0060F300 /* arrow-left.png */,
+				B56089C1144694DC0060F300 /* arrow-left@2x.png */,
+				B56089C2144694DC0060F300 /* arrow-right.png */,
+				B56089C3144694DC0060F300 /* arrow-right@2x.png */,
+			);
+			name = CourseContents;
 			sourceTree = "<group>";
 		};
 		B54F75A1139365E700C95039 /* TouchJSON */ = {
@@ -901,6 +961,9 @@
 		B57CD15B133C78F400CCB81A /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				02618A201331A581008D3037 /* main.m */,
+				02618A221331A581008D3037 /* AppDelegate.h */,
+				02618A231331A581008D3037 /* AppDelegate.m */,
 				B54BE9CC13BB66C000A5BBB3 /* MoodleKit.h */,
 				B5DABB1B138E2BF6004AE472 /* Constants.h */,
 				B5A6C65A1389792A007B46F0 /* MoodleStyleSheet.h */,
@@ -942,6 +1005,7 @@
 		B57CD18C133C798600CCB81A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B5A767881455235500715C55 /* template.html */,
 				320B6C86F11D9990244A9730 /* Three20.bundle */,
 				B59600D113CC3F7400438682 /* soulpapa.ttf */,
 				0246A69413370B8B007BD281 /* Localizable.strings */,
@@ -952,8 +1016,6 @@
 		B57CD18E133C79D500CCB81A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				02618A221331A581008D3037 /* AppDelegate.h */,
-				02618A231331A581008D3037 /* AppDelegate.m */,
 				02618A2B1331A582008D3037 /* RootViewController.h */,
 				02618A2C1331A582008D3037 /* RootViewController.m */,
 				B5DABB1C138E2BF6004AE472 /* CoursesViewController.h */,
@@ -966,6 +1028,11 @@
 				B5BDC0B8140B5C380071D1F1 /* MapViewController.m */,
 				B5BDC0BE140B649D0071D1F1 /* AddressAnnotation.h */,
 				B5BDC0BF140B649D0071D1F1 /* AddressAnnotation.m */,
+				B51D24781404A1560040AFA6 /* RBFilePreviewer.h */,
+				B51D24791404A1560040AFA6 /* RBFilePreviewer.m */,
+				B5038BAB143C266100C64A9A /* Downloader.h */,
+				B5038BAC143C266100C64A9A /* Downloader.m */,
+				B50A116E13F3D729007CCEC7 /* Contents */,
 				B5220AFA13F0DC5100DEDD21 /* Sync */,
 				B5DABB2D138E2C52004AE472 /* Participant */,
 				B5DABB2C138E2C3C004AE472 /* Upload */,
@@ -1050,6 +1117,7 @@
 		B59600C313CC24DF00438682 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				B54813E613F4D4B100495911 /* CourseContents */,
 				B59600CE13CC382700438682 /* shared-bg */,
 				B59600B413CC243B00438682 /* Root */,
 				B59600C413CC250D00438682 /* Upload */,
@@ -1104,14 +1172,20 @@
 		B5DABB25138E2C14004AE472 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				B5DABB26138E2C2A004AE472 /* MoodleSite.h */,
-				B5DABB27138E2C2A004AE472 /* MoodleSite.m */,
+				B5516BC1147650640031FB40 /* Site.h */,
+				B5516BC2147650640031FB40 /* Site.m */,
 				B53FAB5A1398C06B008206EA /* MoodleJob.h */,
 				B53FAB5B1398C06B008206EA /* MoodleJob.m */,
 				B5EEB3F113AEED5C00A53635 /* Participant.h */,
 				B5EEB3F213AEED5C00A53635 /* Participant.m */,
 				B51C0F9B13B4556300276760 /* Course.h */,
 				B51C0F9C13B4556300276760 /* Course.m */,
+				B5B998E1144414040032C26E /* Section.h */,
+				B5B998E2144414040032C26E /* Section.m */,
+				B53893A01439A1CD00F15D99 /* Module.h */,
+				B53893A11439A1CD00F15D99 /* Module.m */,
+				B5997B5F1445807800E36FAB /* Content.h */,
+				B5997B601445807900E36FAB /* Content.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1121,8 +1195,8 @@
 			children = (
 				B5D4EFFD13726FF000FD121F /* UploadViewController.h */,
 				B5D4EFFE13726FF000FD121F /* UploadViewController.m */,
-				B553CC1F140E32FA0027E2F7 /* PreviewViewController.h */,
-				B553CC20140E32FA0027E2F7 /* PreviewViewController.m */,
+				B56A9D5C1410B6E300A0B0E4 /* PreviewViewController.h */,
+				B56A9D5D1410B6E300A0B0E4 /* PreviewViewController.m */,
 				B577155C138102DD007582EF /* RecorderViewController.h */,
 				B577155D138102DD007582EF /* RecorderViewController.m */,
 			);
@@ -1156,6 +1230,7 @@
 			children = (
 				B5B0EAEA1383ACFE000A9330 /* MoodleHelp.png */,
 				B5B0EAEB1383ACFE000A9330 /* Participants.png */,
+				B5D41E8A14593FDC00D68091 /* Contents.png */,
 				B5B0EAED1383ACFE000A9330 /* Web.png */,
 				B5B0EAEE1383ACFE000A9330 /* Upload.png */,
 			);
@@ -1188,25 +1263,6 @@
 			productName = Moodle;
 			productReference = 02618A0D1331A581008D3037 /* Moodle.app */;
 			productType = "com.apple.product-type.application";
-		};
-		02618A351331A582008D3037 /* MoodleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 02618A4D1331A582008D3037 /* Build configuration list for PBXNativeTarget "MoodleTests" */;
-			buildPhases = (
-				02618A311331A582008D3037 /* Sources */,
-				02618A321331A582008D3037 /* Frameworks */,
-				02618A331331A582008D3037 /* Resources */,
-				02618A341331A582008D3037 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				02618A3C1331A582008D3037 /* PBXTargetDependency */,
-			);
-			name = MoodleTests;
-			productName = MoodleTests;
-			productReference = 02618A361331A582008D3037 /* MoodleTests.octest */;
-			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -1261,7 +1317,6 @@
 			projectRoot = "";
 			targets = (
 				02618A0C1331A581008D3037 /* Moodle */,
-				02618A351331A582008D3037 /* MoodleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1447,35 +1502,21 @@
 				B59600DB13CC49EB00438682 /* upload_cloud.png in Resources */,
 				B59600DC13CC49EB00438682 /* upload_photo_album.png in Resources */,
 				B5C6BB2613CEDC54007B1517 /* button_upload.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		02618A331331A582008D3037 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				02618A421331A582008D3037 /* InfoPlist.strings in Resources */,
-				02618A451331A582008D3037 /* MoodleTests.h in Resources */,
+				B5BE0908140244130019B4E5 /* download.png in Resources */,
+				B5BE0909140244130019B4E5 /* download@2x.png in Resources */,
+				B5BE090A140244130019B4E5 /* pause.png in Resources */,
+				B5BE090B140244130019B4E5 /* pause@2x.png in Resources */,
+				B55DE225143AC2D500A5390C /* module.gif in Resources */,
+				B56089C4144694DC0060F300 /* arrow-left.png in Resources */,
+				B56089C5144694DC0060F300 /* arrow-left@2x.png in Resources */,
+				B56089C6144694DC0060F300 /* arrow-right.png in Resources */,
+				B56089C7144694DC0060F300 /* arrow-right@2x.png in Resources */,
+				B5A767891455235500715C55 /* template.html in Resources */,
+				B5D41E8B14593FDC00D68091 /* Contents.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		02618A341331A582008D3037 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		02618A091331A581008D3037 /* Sources */ = {
@@ -1507,7 +1548,6 @@
 				B5DABB22138E2BF6004AE472 /* CoursesViewController.m in Sources */,
 				B5DABB23138E2BF6004AE472 /* SitesViewController.m in Sources */,
 				B5DABB24138E2BF6004AE472 /* SyncViewController.m in Sources */,
-				B5DABB28138E2C2A004AE472 /* MoodleSite.m in Sources */,
 				B5DABB39138E57CF004AE472 /* MoodleImagePickerController.m in Sources */,
 				B54F75BE1393672300C95039 /* CDataScanner.m in Sources */,
 				B54F75BF1393672300C95039 /* CDataScanner_Extensions.m in Sources */,
@@ -1536,26 +1576,24 @@
 				B520A27313DEB18A005046CF /* TaskHandler.m in Sources */,
 				B5BDC0B9140B5C380071D1F1 /* MapViewController.m in Sources */,
 				B5BDC0C0140B649D0071D1F1 /* AddressAnnotation.m in Sources */,
-				B553CC21140E32FA0027E2F7 /* PreviewViewController.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		02618A311331A582008D3037 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				02618A471331A582008D3037 /* MoodleTests.m in Sources */,
+				B50A117113F3D75A007CCEC7 /* ContentsViewController.m in Sources */,
+				B560239B13FCDF6B00333555 /* ModuleTableCellView.m in Sources */,
+				B51D247A1404A1570040AFA6 /* RBFilePreviewer.m in Sources */,
+				B56A9D5E1410B6E300A0B0E4 /* PreviewViewController.m in Sources */,
+				B53893A21439A1CD00F15D99 /* Module.m in Sources */,
+				B5038BAD143C266100C64A9A /* Downloader.m in Sources */,
+				B5B998E3144414040032C26E /* Section.m in Sources */,
+				B5997B611445807900E36FAB /* Content.m in Sources */,
+				B56089BF144688AF0060F300 /* FilesListViewController.m in Sources */,
+				B5516BC3147650640031FB40 /* Site.m in Sources */,
+				B5349D8B147F4B9C00C8ED35 /* 1.0-1.1.xcmappingmodel in Sources */,
+				B5DE98CD147F8C6B00DB4DE2 /* NSURL+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		02618A3C1331A582008D3037 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 02618A0C1331A581008D3037 /* Moodle */;
-			targetProxy = 02618A3B1331A582008D3037 /* PBXContainerItemProxy */;
-		};
 		3201088596B4756681693701 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Three20UICommon;
@@ -1676,8 +1714,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -1685,8 +1723,6 @@
 				INFOPLIST_FILE = "Moodle/Moodle-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1710,50 +1746,6 @@
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		02618A4E1331A582008D3037 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Moodle.app/Moodle";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MoodleTests/MoodleTests-Prefix.pch";
-				INFOPLIST_FILE = "MoodleTests/MoodleTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		02618A4F1331A582008D3037 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Moodle.app/Moodle";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MoodleTests/MoodleTests-Prefix.pch";
-				INFOPLIST_FILE = "MoodleTests/MoodleTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
@@ -1803,28 +1795,6 @@
 			};
 			name = Distribution;
 		};
-		02C37424140CCFA100B895F9 /* Distribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Moodle.app/Moodle";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MoodleTests/MoodleTests-Prefix.pch";
-				INFOPLIST_FILE = "MoodleTests/MoodleTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Distribution;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1848,25 +1818,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		02618A4D1331A582008D3037 /* Build configuration list for PBXNativeTarget "MoodleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				02618A4E1331A582008D3037 /* Debug */,
-				02618A4F1331A582008D3037 /* Release */,
-				02C37424140CCFA100B895F9 /* Distribution */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
 		02618A251331A582008D3037 /* Moodle.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				02618A261331A582008D3037 /* Moodle.xcdatamodel */,
+				B5BCDDFA14149B3D00A12593 /* Moodle 1.1.xcdatamodel */,
+				02618A261331A582008D3037 /* Moodle 1.0.xcdatamodel */,
 			);
-			currentVersion = 02618A261331A582008D3037 /* Moodle.xcdatamodel */;
+			currentVersion = B5BCDDFA14149B3D00A12593 /* Moodle 1.1.xcdatamodel */;
 			path = Moodle.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

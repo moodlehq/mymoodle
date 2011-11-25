@@ -11,6 +11,8 @@
 #define AUDIO_FOLDER            [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Audio"]
 #define PHOTO_FOLDER            [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Photo"]
 #define VIDEO_FOLDER            [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Video"]
+#define DOWNLOADS_FOLDER        [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Downloads"]
+
 
 #define OFFLINE_FOLDER          [DOCUMENTS_FOLDER stringByAppendingPathComponent:@"Offline"]
 
@@ -34,9 +36,10 @@
 #define kSelectedSiteTokenKey   @"Selected Site Token"
 #define kSelectedSiteNameKey    @"Selected Site Name"
 #define kSelectedUserIdKey      @"Selected User ID"
+#define kLastUpdateDate         @"LastUpdateDate"
 
 #define kResetSite              @"ResetActiveSite"
-
+#define kUpdateSiteInterval     60 * 60 * 24
 
 // Color scheme
 #define ColorBackground         0xFFE773
@@ -51,3 +54,6 @@
 #define FONT_SIZE               14.0f
 #define CELL_CONTENT_WIDTH      300.0f
 #define CELL_CONTENT_MARGIN     5.0f
+
+
+#define LOTSOFENROLLEDUSERS     100

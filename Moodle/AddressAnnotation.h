@@ -12,9 +12,9 @@
 @interface AddressAnnotation : NSObject <MKAnnotation> {
     CLLocationCoordinate2D coordinate;
 
-	NSString *mTitle;
-	NSString *mSubTitle;
+    NSString *mTitle;
+    NSString *mSubTitle;
 }
--(id)initWithCoordinate:(CLLocationCoordinate2D) c;
-- (void)setContact: (NSString *)name withAddress: (NSString *)address;
+- (id)initWithCoordinate:(CLLocationCoordinate2D)c;
+- (void)setContact:(NSString *)name withAddress:(NSString *)address;
 @end

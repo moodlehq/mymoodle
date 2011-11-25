@@ -1,15 +1,110 @@
 //
-//  MoodleSite.m
+//  Site.m
 //  Moodle
 //
-//  Created by Dongsheng Cai on 25/05/11.
-//  Copyright 2011 Moodle. All rights reserved.
+//  Created by Dongsheng Cai on 18/11/11.
+//  Copyright (c) 2011 Moodle. All rights reserved.
 //
 
-#import "MoodleSite.h"
-#import "Constants.h"
+#import "Site.h"
+#import "AppDelegate.h"
+#import "MoodleKit.h"
 
-@implementation MoodleSite
+
+@implementation Site
+
+@dynamic name;
+@dynamic url;
+@dynamic userpictureurl;
+@dynamic token;
+@dynamic downloadfiles;
+@dynamic jobs;
+@dynamic courses;
+@dynamic users;
+@dynamic mainuser;
+@dynamic webservices;
+
++ (NSManagedObject *)updateSite:(NSManagedObject *)site info:(NSDictionary *)wsSiteinfo newEntry:(BOOL)newEntry
+{
+    NSError *error;
+
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context =  appDelegate.managedObjectContext;
+
+    // create/update the site
+    [site setValue:[wsSiteinfo objectForKey:@"sitename"] forKey:@"name"];
+    [site setValue:[wsSiteinfo objectForKey:@"userpictureurl"] forKey:@"userpictureurl"];
+    [site setValue:[wsSiteinfo objectForKey:@"token"] forKey:@"token"];
+    [site setValue:[wsSiteinfo objectForKey:@"url"] forKey:@"url"];
+    [site setValue:[wsSiteinfo objectForKey:@"downloadfiles"] forKey:@"downloadfiles"];
+
+    NSManagedObject *user;
+    // retrieve participant main user
+    if (newEntry)
+    {
+        NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
+        user = [NSEntityDescription insertNewObjectForEntityForName:[mainUserDesc name]
+                                             inManagedObjectContext:context];
+    }
+    else
+    {
+        user = [site valueForKey:@"mainuser"];
+        // delete old web service records
+        NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *wsEntity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
+        [wsRequest setEntity:wsEntity];
+        NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", site];
+        [wsRequest setPredicate:wsPredicate];
+        NSArray *wsObjects = [context executeFetchRequest:wsRequest error:nil];
+        for (NSManagedObject *wsObject in wsObjects)
+        {
+            [context deleteObject:wsObject];
+        }
+
+        [wsRequest release];
+    }
+
+    // set user values
+    [user setValue:[wsSiteinfo objectForKey:@"userid"]    forKey:@"userid"];
+    [user setValue:[wsSiteinfo objectForKey:@"username"]  forKey:@"username"];
+    [user setValue:[wsSiteinfo objectForKey:@"firstname"] forKey:@"firstname"];
+    [user setValue:[wsSiteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
+    [user setValue:[wsSiteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
+    [user setValue:site forKey:@"site"];
+    [site setValue:user forKey:@"mainuser"];
+
+    // Insert new web services
+    NSManagedObject *webservice;
+    NSArray *webservices = [wsSiteinfo objectForKey:@"functions"];
+    NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
+    for (NSDictionary *function in webservices)
+    {
+        int version = [[function valueForKey:@"version"] intValue];
+        webservice = [NSEntityDescription insertNewObjectForEntityForName:[wsDesc name] inManagedObjectContext:context];
+
+        [webservice setValue:[function valueForKey:@"name"] forKey:@"name"];
+        [webservice setValue:site forKey:@"site"];
+        [webservice setValue:[NSNumber numberWithInt:version] forKey:@"version"];
+    }
+    // save the modification
+    if (![context save:&error])
+    {
+        NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
+        NSArray *detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+        if (detailedErrors != nil && [detailedErrors count] > 0)
+        {
+            for (NSError *detailedError in detailedErrors)
+            {
+                NSLog(@"Detailed Error: %@", [detailedError userInfo]);
+            }
+        }
+        else
+        {
+            NSLog(@"  %@", [error userInfo]);
+        }
+    }
+    return site;
+}
 
 + (BOOL)siteExistsForURL:(NSString *)theURL withContext:(NSManagedObjectContext *)moc andUsername:(NSString *)username
 {
@@ -25,6 +120,7 @@
 
     return results.count > 0;
 }
+
 + (NSInteger)countWithContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -41,8 +137,12 @@
     return count;
 }
 
-+ (void)deleteSite:(NSManagedObjectContext *)context withSite:(NSManagedObject *)site
++ (void)deleteSite:(NSManagedObject *)site
 {
+
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSManagedObjectContext *context =  appDelegate.managedObjectContext;
+
     // delete the user/site default is they were matching the delete site
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *defaultSiteUrl = [defaults objectForKey:kSelectedSiteUrlKey];
@@ -119,8 +219,12 @@
     NSPredicate *coursePredicate = [NSPredicate predicateWithFormat:@"(site = %@)", site];
     [courseRequest setPredicate:coursePredicate];
     NSArray *allCourses = [context executeFetchRequest:courseRequest error:nil];
-    for (NSManagedObject *course in allCourses)
+    for (Course *course in allCourses)
     {
+        if ([course respondsToSelector:@selector(removeSections)])
+        {
+            [course removeSections];
+        }
         [context deleteObject:course];
     }
     [courseRequest release];
@@ -167,7 +271,6 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kResetSite
                                                             object:nil];
     }
-
 }
 
 @end

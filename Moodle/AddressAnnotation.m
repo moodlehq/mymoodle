@@ -12,21 +12,25 @@
 
 @synthesize coordinate;
 
-- (NSString *)subtitle {
-	return mSubTitle;
+- (NSString *)subtitle
+{
+    return mSubTitle;
 }
-- (NSString *)title {
-	return mTitle;
+- (NSString *)title
+{
+    return mTitle;
 }
-- (void)setContact: (NSString *)name withAddress: (NSString *)address {
+- (void)setContact:(NSString *)name withAddress:(NSString *)address
+{
     mTitle = name;
     mSubTitle = address;
 }
 
 
--(id)initWithCoordinate:(CLLocationCoordinate2D) c{
-	coordinate=c;
-	return self;
+- (id)initWithCoordinate:(CLLocationCoordinate2D)c
+{
+    coordinate = c;
+    return self;
 }
 
 @end

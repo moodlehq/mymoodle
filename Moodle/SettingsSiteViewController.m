@@ -16,11 +16,14 @@
 
 @implementation SettingsSiteViewController
 
-@synthesize editingSite;
-
 - (void)backToRoot
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+- (void)setEditingSite:(Site *)site
+{
+    editingSite = site;
 }
 
 # pragma mark - private method
@@ -86,7 +89,7 @@
     // there is only one action sheet on this view, so we can check the buttonIndex against the cancel button
     if (buttonIndex != [actionSheet cancelButtonIndex])
     {
-        [MoodleSite deleteSite:appDelegate.managedObjectContext withSite:self.editingSite];
+        [Site deleteSite:editingSite];
         // return the list of sites
         NSArray *allControllers = self.navigationController.viewControllers;
         UITableViewController *parent = [allControllers lastObject];
@@ -114,6 +117,8 @@
     [request startSynchronous];
 
     NSDictionary *token = [[CJSONDeserializer deserializer] deserializeAsDictionary:[request responseData] error:nil];
+
+    NSLog(@"token %@", token);
 
     if ([[request responseString] isEqualToString:@""] || [request responseString] == nil || [request responseStatusCode] != 200)
     {
@@ -171,6 +176,7 @@
         }
         NSLog(@"Guessing HTTPS connection %@", tokenURLString);
         NSURL *httpsTokenURL = [NSURL URLWithString:tokenURLString];
+        NSLog(@"https url: %@", httpsTokenURL);
         if ((token = [self getTokenWithHost:httpsTokenURL withUsername:username withPassword:password isTrying:YES]))
         {
             // fix host url
@@ -234,13 +240,16 @@
     @try {
         // retrieve the site name
         WSClient *client = [[WSClient alloc] initWithToken:sitetoken withHost:hostURL];
-        NSArray *wsparams = [[NSArray alloc] initWithObjects:nil];
-        NSDictionary *siteinfo = [client invoke:@"moodle_webservice_get_siteinfo" withParams:wsparams];
-        [wsparams release];
+        NSDictionary *siteinfo = [client get_siteinfo];
         [client release];
 
         if ([siteinfo isKindOfClass:[NSDictionary class]])
         {
+
+            // required by model method
+            [siteinfo setValue:sitetoken forKey:@"token"];
+            [siteinfo setValue:hostURL forKey:@"url"];
+
             // check if the site url + userid is already in data core otherwise create a new site
             NSError *error;
             NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -249,111 +258,34 @@
             NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url = %@ AND mainuser.userid = %@)", hostURL, [siteinfo objectForKey:@"userid"]];
             [siteRequest setPredicate:sitePredicate];
             NSArray *sites = [context executeFetchRequest:siteRequest error:&error];
-
             BOOL updateExistingAccount = NO;
             if ([sites count] > 0)
             {
                 NSLog(@"updating existing site");
                 updateExistingAccount = YES;
-                self.editingSite = [sites lastObject];
+                editingSite = [sites lastObject];
             }
             else
             {
                 // insert new site
-                self.editingSite = [NSEntityDescription insertNewObjectForEntityForName:[siteEntity name] inManagedObjectContext:context];
-            }
-            // create/update the site
-            [self.editingSite setValue:[siteinfo objectForKey:@"sitename"] forKey:@"name"];
-            [self.editingSite setValue:[siteinfo objectForKey:@"userpictureurl"] forKey:@"userpictureurl"];
-            [self.editingSite setValue:sitetoken forKey:@"token"];
-            [self.editingSite setValue:hostURL forKey:@"url"];
-
-            NSManagedObject *user;
-            // retrieve participant main user
-            if (newEntry && !updateExistingAccount)
-            {
-                NSEntityDescription *mainUserDesc = [NSEntityDescription entityForName:@"MainUser" inManagedObjectContext:context];
-                user = [NSEntityDescription insertNewObjectForEntityForName:[mainUserDesc name]
-                                                     inManagedObjectContext:context];
-            }
-            else
-            {
-                user = [self.editingSite valueForKey:@"mainuser"];
-
-                // delete old web service records
-                NSFetchRequest *wsRequest = [[NSFetchRequest alloc] init];
-                NSEntityDescription *wsEntity = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
-                [wsRequest setEntity:wsEntity];
-                NSPredicate *wsPredicate = [NSPredicate predicateWithFormat:@"(site = %@)", self.editingSite];
-                [wsRequest setPredicate:wsPredicate];
-                NSArray *wsObjects = [context executeFetchRequest:wsRequest error:nil];
-                for (NSManagedObject *wsObject in wsObjects)
-                {
-                    [context deleteObject:wsObject];
-                }
-
-                [wsRequest release];
+                editingSite = [NSEntityDescription insertNewObjectForEntityForName:[siteEntity name] inManagedObjectContext:context];
             }
 
-            // set user values
-            [user setValue:[siteinfo objectForKey:@"userid"]    forKey:@"userid"];
-            [user setValue:[siteinfo objectForKey:@"username"]  forKey:@"username"];
-            [user setValue:[siteinfo objectForKey:@"firstname"] forKey:@"firstname"];
-            [user setValue:[siteinfo objectForKey:@"fullname"]  forKey:@"fullname"];
-            [user setValue:[siteinfo objectForKey:@"lastname"]  forKey:@"lastname"];
-            [user setValue:self.editingSite forKey:@"site"];
-            [self.editingSite setValue:user forKey:@"mainuser"];
+            editingSite = [Site updateSite:editingSite info:siteinfo newEntry:(newEntry && !updateExistingAccount)];
 
-            // Insert new web services
-            NSManagedObject *webservice;
-            NSArray *webservices = [siteinfo objectForKey:@"functions"];
-            NSEntityDescription *wsDesc = [NSEntityDescription entityForName:@"WebService" inManagedObjectContext:context];
-            for (NSDictionary *function in webservices)
-            {
-                int version = [[function valueForKey:@"version"] intValue];
-                webservice = [NSEntityDescription insertNewObjectForEntityForName:[wsDesc name] inManagedObjectContext:context];
-
-                [webservice setValue:[function valueForKey:@"name"] forKey:@"name"];
-                [webservice setValue:self.editingSite forKey:@"site"];
-                [webservice setValue:[NSNumber numberWithInt:version] forKey:@"version"];
-            }
-
-            // update active site info
-            sites = [context executeFetchRequest:siteRequest error:&error];
-            if ([sites count] > 0)
-            {
-                self.editingSite = [sites lastObject];
-            }
             // if this is a new site, use it as active site
             if (newEntry)
             {
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                 // save the current site into user preference
-                [defaults setObject:[self.editingSite valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
-                [defaults setObject:[self.editingSite valueForKey:@"name"] forKey:kSelectedSiteNameKey];
-                [defaults setObject:[self.editingSite valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
-                [defaults setObject:[self.editingSite valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
+                [defaults setObject:[editingSite valueForKey:@"url"] forKey:kSelectedSiteUrlKey];
+                [defaults setObject:[editingSite valueForKey:@"name"] forKey:kSelectedSiteNameKey];
+                [defaults setObject:[editingSite valueForKey:@"token"] forKey:kSelectedSiteTokenKey];
+                [defaults setObject:[editingSite valueForKeyPath:@"mainuser.userid"] forKey:kSelectedUserIdKey];
                 [defaults synchronize];
-                appDelegate.site = self.editingSite;
+                appDelegate.site = editingSite;
             }
 
-            // save the modification
-            if (![context save:&error])
-            {
-                NSLog(@"Failed to save to data store: %@", [error localizedDescription]);
-                NSArray *detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
-                if (detailedErrors != nil && [detailedErrors count] > 0)
-                {
-                    for (NSError *detailedError in detailedErrors)
-                    {
-                        NSLog(@"Detailed Error: %@", [detailedError userInfo]);
-                    }
-                }
-                else
-                {
-                    NSLog(@"  %@", [error userInfo]);
-                }
-            }
         }
     }
     @catch (NSException *exception) {
@@ -386,12 +318,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-    [editingSite release];
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [HUD removeFromSuperview];
@@ -411,10 +337,10 @@
         // case of Updating a site
         self.title = NSLocalizedString(@"updatesite", nil);
 
-        siteurlField.text = [self.editingSite valueForKey:@"url"];
+        siteurlField.text = [editingSite valueForKey:@"url"];
         [siteurlField setEnabled:NO];
         [siteurlField setTextColor:[UIColor grayColor]];
-        usernameField.text = [self.editingSite valueForKeyPath:@"mainuser.username"];
+        usernameField.text = [editingSite valueForKeyPath:@"mainuser.username"];
         [usernameField setEnabled:NO];
         [usernameField setTextColor:[UIColor grayColor]];
         [passwordField setText:@""];
@@ -438,7 +364,7 @@
         self.title = NSLocalizedString(@"addsite", nil);
     }
 
-    if ([MoodleSite countWithContext:appDelegate.managedObjectContext] == 0)
+    if ([Site countWithContext:appDelegate.managedObjectContext] == 0)
     {
         self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.hidesBackButton = YES;
@@ -511,6 +437,11 @@
                                                                           action:@selector(dismissKeyboard:)];
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
+}
+
+- (void)dealloc
+{
+    [super dealloc];
 }
 
 #pragma mark - Table view data source

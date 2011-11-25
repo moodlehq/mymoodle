@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <Three20/Three20.h>
-#import "MoodleSite.h"
 #import "Reachability.h"
+#import "Site.h"
 
 @interface AppDelegate : NSObject <UIApplicationDelegate> {
     NetworkStatus netStatus;
-    MoodleSite *site;
+    Site *site;
 }
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
@@ -21,7 +21,7 @@
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 // network status
 @property (nonatomic, assign) NetworkStatus netStatus;
-@property (nonatomic, retain) MoodleSite *site;
+@property (nonatomic, retain) NSManagedObject *site;
 
 
 - (void)saveContext;

@@ -21,4 +21,5 @@
 @property (nonatomic, retain) NSManagedObject *site;
 + (NSInteger)countWithContext:(NSManagedObjectContext *)context site:(NSManagedObject *)site;
 
+- (void)removeSections;
 @end

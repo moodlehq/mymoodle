@@ -12,6 +12,7 @@
 #import "MoodleStyleSheet.h"
 #import "MoodleJob.h"
 #import "Course.h"
+#import "WSClient.h"
 
 
 @implementation RootViewController
@@ -78,6 +79,23 @@
     {
         [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Participants", "Participants") image:@"bundle://Participants.png" URL:@"tt://courses/participants"]];
     }
+    BOOL candownloadfiles = YES;
+    NSLog(@"can download %@", [appDelegate.site valueForKey:@"downloadfiles"]);
+    if ([appDelegate.site valueForKey:@"downloadfiles"] == nil)
+    {
+        candownloadfiles = NO;
+    }
+    else
+    {
+        if ([[appDelegate.site valueForKey:@"downloadfiles"] intValue] != 1)
+        {
+            candownloadfiles = NO;
+        }
+    }
+    if ([self featureExists:@"core_course_get_contents"] && candownloadfiles)
+    {
+        [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Contents", nil) image:@"bundle://Contents.png" URL:@"tt://courses/contents"]];
+    }
     [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Web", "Web") image:@"bundle://Web.png" URL:[[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey]]];
     [items addObject:[self launcherItemWithTitle:NSLocalizedString(@"Help", "Help") image:@"bundle://MoodleHelp.png" URL:URL_MOODLE_HELP]];
 
@@ -114,6 +132,7 @@
     rootBackground.frame = CGRectMake((view.size.width - 276) / 2, appRect.origin.y + HEADER_HEIGHT, BG_WIDTH, BG_HEIGHT);
     [self.view addSubview:rootBackground];
     [rootBackground release];
+
     // defautl toolbar height: 44
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(10, view.size.height - 40, view.size.width - 20, 33)];
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:toolbar.bounds
@@ -162,7 +181,6 @@
     CGRect launcherFrame = CGRectMake(rootBackground.frame.origin.x + 10, rootBackground.frame.origin.y + 30, BG_WIDTH - 20, BG_HEIGHT + 40);
     launcherView = [[TTLauncherView alloc] initWithFrame:launcherFrame];
     launcherView.persistenceMode = TTLauncherPersistenceModeAll;
-    launcherView.columnCount = 2;
     launcherView.delegate = self;
     [self.view addSubview:launcherView];
 }
@@ -170,18 +188,76 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"view will appear");
     [super viewWillAppear:animated];
 
     if (![launcherView restoreLauncherItems])
     {
         launcherView.pages = [self generateLauncherItems];
+        if ([[launcherView.pages lastObject] count] > 4)
+        {
+            launcherView.columnCount = 3;
+        }
+        else
+        {
+            launcherView.columnCount = 2;
+
+        }
+
     }
 
     managedObjectContext = [appDelegate managedObjectContext];
     [connectedSite setText:[NSString stringWithFormat:NSLocalizedString(@"connectedto", @"Connect to:"), [appDelegate.site valueForKey:@"name"]]];
 
     [header setText:[appDelegate.site valueForKey:@"name"]];
+}
+
+
+- (void)updateSiteIfNecessary
+{
+    int now = (int)[[NSDate date] timeIntervalSince1970];
+
+    NSString *lastUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:kLastUpdateDate];
+
+    if (lastUpdate)
+    {
+        NSLog(@"Interval from last update siteinfo: %d", now - [lastUpdate intValue]);
+        if ((now - [lastUpdate intValue]) < kUpdateSiteInterval)
+        {
+            // less than a day so don't update
+            return;
+        }
+    }
+
+
+    // retrieve the site name
+    WSClient *client = [[WSClient alloc] init];
+    NSDictionary *siteinfo = [client get_siteinfo];
+    [client release];
+    NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
+    NSString *token = [appDelegate.site valueForKey:@"token"];
+    [siteinfo setValue:token forKey:@"token"];
+    [siteinfo setValue:host forKey:@"url"];
+
+
+    if ([siteinfo isKindOfClass:[NSDictionary class]])
+    {
+        NSError *error;
+        NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
+        NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:managedObjectContext];
+        [siteRequest setEntity:siteEntity];
+        NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url like %@ AND mainuser.userid = %@)", [siteinfo objectForKey:@"siteurl"], [siteinfo objectForKey:@"userid"]];
+        [siteRequest setPredicate:sitePredicate];
+        NSArray *sites = [managedObjectContext executeFetchRequest:siteRequest error:&error];
+        if ([sites count] > 0)
+        {
+            NSLog(@"updating existing site");
+            NSManagedObject *editingSite = [sites lastObject];
+            editingSite = [Site updateSite:editingSite info:siteinfo newEntry:NO];
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setObject:[NSNumber numberWithInt:now] forKey:kLastUpdateDate];
+            [defaults synchronize];
+        }
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -191,6 +267,10 @@
     if (defaultSiteUrl == nil || appDelegate.site == nil)
     {
         [self displaySettingsView];
+    }
+    else
+    {
+        [self performSelectorInBackground:@selector(updateSiteIfNecessary) withObject:self];
     }
 }
 
@@ -229,6 +309,7 @@
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:launcherView action:@selector(endEditing)];
 
     self.navigationItem.rightBarButtonItem = doneButton;
+    [doneButton release];
 }
 
 - (void)launcherViewDidEndEditing:(TTLauncherView *)launcher

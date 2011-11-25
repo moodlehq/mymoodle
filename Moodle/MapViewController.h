@@ -19,5 +19,5 @@
 
 @property (nonatomic, retain) MKMapView *mapView;
 
-- (id)initWithAddress: (NSString *)_ddress withName: (NSString *)_name;
+- (id)initWithAddress:(NSString *)_ddress withName:(NSString *)_name;
 @end

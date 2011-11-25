@@ -26,6 +26,6 @@
 @property (nonatomic, retain) UIImageView *imageView;
 @property (nonatomic, retain) NSString *fileName;
 @property (nonatomic, retain) NSString *filePath;
-- (void)uploadPressed: (id)sender;
-- (void)cancelPressed: (id)sender;
+- (void)uploadPressed:(id)sender;
+- (void)cancelPressed:(id)sender;
 @end

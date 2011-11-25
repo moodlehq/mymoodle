@@ -10,6 +10,7 @@
 #import "Constants.h"
 #import "WSClient.h"
 #import "ParticipantListViewController.h"
+#import "ContentsViewController.h"
 #import "Course.h"
 
 @implementation CoursesViewController
@@ -20,7 +21,6 @@
 {
     NSManagedObject *oneCourse = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    //    cell.imageView.image = [UIImage imageNamed: @"course.png"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.text = [oneCourse valueForKey:@"fullname"];
     cell.detailTextLabel.text = [oneCourse valueForKey:@"shortname"];
@@ -85,12 +85,18 @@
                 [course setValue:[wscourse objectForKey:@"id"] forKey:@"id"];
                 [course setValue:[wscourse objectForKey:@"fullname"]  forKey:@"fullname"];
                 [course setValue:[wscourse objectForKey:@"shortname"] forKey:@"shortname"];
+                NSLog(@"Nubmer of participants: %@", [wscourse objectForKey:@"enrolledusercount"]);
+                if ([wscourse objectForKey:@"enrolledusercount"])
+                {
+                    [course setValue:[wscourse objectForKey:@"enrolledusercount"] forKey:@"enrolledusercount"];
+                }
 
                 NSNumber *courseexist = [[NSNumber alloc] initWithBool:YES];
                 [retainedCourses setObject:courseexist forKey:[wscourse objectForKey:@"id"]];
                 [courseexist release];
             }
         }
+
         for (NSManagedObject *c in allCourses)
         {
             NSNumber *thecourseexist = [retainedCourses objectForKey:[c valueForKey:@"id"]];
@@ -100,6 +106,7 @@
                 [managedObjectContext deleteObject:c];
             }
         }
+
         // save the modifications
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:nil])
         {
@@ -262,6 +269,14 @@
         [self.navigationController pushViewController:participantListViewController animated:YES];
         [participantListViewController release];
     }
+    else if ([viewControllerType isEqualToString:@"contents"])
+    {
+        ContentsViewController *contentsViewController;
+        contentsViewController = [[ContentsViewController alloc] init];
+        contentsViewController.course = selectedCourse;
+        [self.navigationController pushViewController:contentsViewController animated:YES];
+        [contentsViewController release];
+    }
 }
 
 #pragma mark - Fetched results controller
@@ -327,9 +342,9 @@
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-   atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+   atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)changeType
 {
-    switch (type)
+    switch (changeType)
     {
         case NSFetchedResultsChangeInsert:
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -342,12 +357,12 @@
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)changeType
    newIndexPath:(NSIndexPath *)newIndexPath
 {
     UITableView *tableView = self.tableView;
 
-    switch (type)
+    switch (changeType)
     {
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
