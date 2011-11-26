@@ -44,11 +44,9 @@
     if ([content count] == 1)
     {
         contentObject = [content lastObject];
-        NSLog(@"Content exists %@", contentObject);
     }
     else if ([content count] == 0)
     {
-        NSLog(@"Insert new Content");
         contentObject = [NSEntityDescription insertNewObjectForEntityForName:[moduleItem name]
                                                       inManagedObjectContext:appDelegate.managedObjectContext];
     }
@@ -66,17 +64,11 @@
     [contentObject setValue:[item valueForKey:@"filesize"] forKey:@"filesize"];
     if ([(NSString *)[item valueForKey:@"type"] isEqualToString:@"content"])
     {
-        NSLog(@"update content %@", [item valueForKey:@"content"]);
         [contentObject setValue:[item valueForKey:@"content"] forKey:@"content"];
     }
     else
     {
-        NSLog(@"update file url");
         [contentObject setValue:[item valueForKey:@"fileurl"] forKey:@"fileurl"];
-        if ([contentObject valueForKey:@"localpath"])
-        {
-            // should remove local files
-        }
     }
     [contentObject setValue:[item valueForKey:@"timecreated"] forKey:@"timecreated"];
     NSLog(@"ws time modified: %d", [[item valueForKey:@"timemodified"] intValue]);
@@ -90,7 +82,7 @@
         if ([contentObject valueForKey:@"localpath"])
         {
             NSString *filePath = [contentObject valueForKey:@"localpath"];
-            NSLog(@"Updating file at %@", filePath);
+            NSLog(@"Re-download file stored at %@", filePath);
             NSURL *url = [NSURL URLWithString:[item valueForKey:@"fileurl"]];
             // redownload contents
             ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[url URLByAppendingQueryString:[NSString stringWithFormat:@"token=%@", token]]];

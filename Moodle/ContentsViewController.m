@@ -65,9 +65,6 @@ NSInteger sortBySortOrder(id m1, id m2, void *context)
         NSURL *url = [NSURL URLWithString:[item valueForKey:@"fileurl"]];
         NSLog(@"file link: %@", url);
 
-        NSLog(@"course id: %@", [course valueForKey:@"id"]);
-        NSLog(@"module id: %@", [module valueForKey:@"id"]);
-
         NSString *filepath = [NSString stringWithFormat:@"%@/%@/%@%@%@", DOWNLOADS_FOLDER, [course valueForKey:@"id"], [module valueForKey:@"id"], [item valueForKey:@"filepath"], [item valueForKey:@"filename"]];
 
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:indexPath, @"indexPath", nil];
@@ -113,16 +110,18 @@ NSInteger sortBySortOrder(id m1, id m2, void *context)
     {
         if ([file valueForKey:@"localpath"])
         {
+            // this will validate file path
             NSURL *fileURL = [NSURL fileURLWithPath:[file valueForKey:@"localpath"]];
             if (fileURL)
             {
-                NSLog(@"found a path %@", [file valueForKey:@"localpath"]);
-                hasFile = YES;
+                // does file exist
+                BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:[file valueForKey:@"localpath"]];
+                NSLog(@"File exists: %@", [file valueForKey:@"localpath"]);
+                hasFile = fileExists;
                 break;
             }
         }
     }
-
     return hasFile;
 }
 
@@ -134,8 +133,7 @@ NSInteger sortBySortOrder(id m1, id m2, void *context)
     WSClient *client = [[WSClient alloc] init];
 
     NSNumber *courseid = [NSNumber numberWithInt:[[course valueForKey:@"id"] intValue]];
-    NSArray *options = [NSArray array];
-    NSArray *vals = [[NSArray alloc] initWithObjects:courseid, options, nil];
+    NSArray *vals = [[NSArray alloc] initWithObjects:courseid, [NSArray array], nil];
     NSArray *keys = [[NSArray alloc] initWithObjects:@"courseid", @"options", nil];
 
     NSDictionary *params = [[NSDictionary alloc] initWithObjects:vals forKeys:keys];
