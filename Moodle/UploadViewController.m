@@ -186,13 +186,17 @@ Boolean IsAACHardwareEncoderAvailable(void)
             // Picked from camera, saving to photo album
             UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
 
-            picker.view.hidden = YES;
-            [picker.parentViewController dismissModalViewControllerAnimated:YES];
+             picker.view.hidden = YES;
+            //NOTE FOR DONGSHENG: http://stackoverflow.com/questions/6557425/modal-view-controller-wont-dismiss-itself
+            //picker.navigationController => picker otherwise it is broken in iOS5 (working with iOS 4.3)
+            [picker dismissModalViewControllerAnimated:YES];
             [self uploadAction];
         }
         else
         {
-            [picker.parentViewController dismissModalViewControllerAnimated:YES];
+            //NOTE FOR DONGSHENG: http://stackoverflow.com/questions/6557425/modal-view-controller-wont-dismiss-itself
+            //picker.navigationController => picker otherwise it is broken in iOS5 (working with iOS 4.3)
+            [picker dismissModalViewControllerAnimated:YES];
             [self loadPreview:filePath withFilename:fileName];
         }
     }
@@ -206,7 +210,9 @@ Boolean IsAACHardwareEncoderAvailable(void)
         [data writeToFile:filePath atomically:YES];
         // upload now!
         picker.view.hidden = YES;
-        [picker.parentViewController dismissModalViewControllerAnimated:YES];
+        //NOTE FOR DONGSHENG: http://stackoverflow.com/questions/6557425/modal-view-controller-wont-dismiss-itself
+        //picker.navigationController => picker otherwise it is broken in iOS5 (working with iOS 4.3)
+        [picker dismissModalViewControllerAnimated:YES];
         [self uploadAction];
     }
 }
@@ -312,7 +318,7 @@ Boolean IsAACHardwareEncoderAvailable(void)
     }
     else
     {
-        // The hud will dispable all input on the view (use the higest view possible in the view hierarchy)
+        // The hud will disable all input on the view (use the higest view possible in the view hierarchy)
         HUD = [[MBProgressHUD alloc] initWithView:self.view];
         [self.view addSubview:HUD];
         // Regiser for HUD callbacks so we can remove it from the window at the right time
