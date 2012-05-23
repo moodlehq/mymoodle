@@ -269,8 +269,17 @@
     }
     else
     {
-        dispatch_async(dispatch_get_global_queue(0, 0), ^(void){
-            [self updateSiteIfNecessary];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^(void) {
+            @try {
+                [self updateSiteIfNecessary];
+            } @catch (NSException *exception) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", @"") otherButtonTitles:nil];
+                    [alert show];
+                    [alert release];
+                    return;
+                });
+            }
         });
     }
 }
