@@ -11,7 +11,7 @@
 #import "Reachability.h"
 #import "Site.h"
 
-@interface AppDelegate : NSObject <UIApplicationDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate> {
     NetworkStatus netStatus;
     Site *site;
 }

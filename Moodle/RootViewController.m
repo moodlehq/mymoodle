@@ -214,15 +214,18 @@
 
 - (void)updateSiteIfNecessary
 {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
     int now = (int)[[NSDate date] timeIntervalSince1970];
 
-    NSString *lastUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:kLastUpdateDate];
-
+    NSString *lastUpdate = [defaults valueForKey:kLastUpdateDate];
+    NSLog(@"last update %@", lastUpdate);
     if (lastUpdate)
     {
-        NSLog(@"Interval from last update siteinfo: %d", now - [lastUpdate intValue]);
+        NSLog(@"Interval since last update siteinfo: %d", now - [lastUpdate intValue]);
         if ((now - [lastUpdate intValue]) < kUpdateSiteInterval)
         {
+            NSLog(@"less than a day");
             // less than a day so don't update
             return;
         }
@@ -230,30 +233,26 @@
 
 
     // retrieve the site name
-    WSClient *client = [[WSClient alloc] init];
+    WSClient *client = [[[WSClient alloc] init] autorelease];
     NSDictionary *siteinfo = [client get_siteinfo];
-    [client release];
-    NSString *host = [[NSUserDefaults standardUserDefaults] valueForKey:kSelectedSiteUrlKey];
+    NSString *host = [defaults valueForKey:kSelectedSiteUrlKey];
     NSString *token = [appDelegate.site valueForKey:@"token"];
     [siteinfo setValue:token forKey:@"token"];
     [siteinfo setValue:host forKey:@"url"];
-
 
     if ([siteinfo isKindOfClass:[NSDictionary class]])
     {
         NSError *error;
         NSFetchRequest *siteRequest = [[[NSFetchRequest alloc] init] autorelease];
-        NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:managedObjectContext];
+        NSEntityDescription *siteEntity = [NSEntityDescription entityForName:@"Site" inManagedObjectContext:[appDelegate managedObjectContext]];
         [siteRequest setEntity:siteEntity];
-        NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url like %@ AND mainuser.userid = %@)", [siteinfo objectForKey:@"siteurl"], [siteinfo objectForKey:@"userid"]];
+        NSPredicate *sitePredicate = [NSPredicate predicateWithFormat:@"(url like %@ AND mainuser.userid = %@)", host, [siteinfo objectForKey:@"userid"]];
         [siteRequest setPredicate:sitePredicate];
         NSArray *sites = [managedObjectContext executeFetchRequest:siteRequest error:&error];
         if ([sites count] > 0)
         {
-            NSLog(@"updating existing site");
             NSManagedObject *editingSite = [sites lastObject];
             editingSite = [Site updateSite:editingSite info:siteinfo newEntry:NO];
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setObject:[NSNumber numberWithInt:now] forKey:kLastUpdateDate];
             [defaults synchronize];
         }
@@ -270,7 +269,9 @@
     }
     else
     {
-        [self performSelectorInBackground:@selector(updateSiteIfNecessary) withObject:self];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^(void){
+            [self updateSiteIfNecessary];
+        });
     }
 }
 

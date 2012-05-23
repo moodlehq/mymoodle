@@ -83,6 +83,8 @@ static AppDelegate *moodleApp = NULL;
     }
     NSInteger count = [Site countWithContext:context];
 
+    // Let the device know we want to receive push notifications
+//    [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     MLog(@"%d sites in core data", count);
     if (count > 0)
     {
@@ -188,11 +190,17 @@ static AppDelegate *moodleApp = NULL;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:@"NetworkReachabilityChangedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:[TaskHandler class] selector:@selector(reachabilityChanged:) name:@"NetworkReachabilityChangedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetSite:) name:kResetSite object:nil];
+
     return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+    
+    // Saves changes in the application's managed object context before the application terminates.
+    [self saveContext];
+    NSLog(@"applicationWillResignActive");
+
     /*
      * Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
      * Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -201,6 +209,8 @@ static AppDelegate *moodleApp = NULL;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    NSLog(@"applicationDidEnterBackground");
+
     /*
      * Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
      * If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
@@ -220,10 +230,12 @@ static AppDelegate *moodleApp = NULL;
     /*
      * Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+    NSLog(@"applicationDidBecomeActive");
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    NSLog(@"applicationWillTerminate");
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
@@ -457,5 +469,29 @@ static AppDelegate *moodleApp = NULL;
         default:
             break;
     }
+}
+/**
+ * Display device token
+ */
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    NSLog(@"Device token: %@", deviceToken);
+    // send token to server
+}
+
+/**
+ * Failed to obtain token, do something
+ */
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"Failed to get token, error: %@", error);
+}
+
+/**
+ * When app is up, process the notification
+ */
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"Received notification: %@", userInfo);
 }
 @end
