@@ -292,6 +292,7 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[exception name] message:[exception reason] delegate:self cancelButtonTitle:NSLocalizedString(@"continue", nil) otherButtonTitles:nil];
         [alert show];
         [alert release];
+        return;
     }
     [self performSelectorOnMainThread:@selector(backToRoot)
                            withObject:nil
