@@ -10,6 +10,7 @@ In the Mac terminal, at the root project folder, execute:
 2.  git submodule update
 
 In the Mac finder, double click on the **Moodle.xcodeproj** file.
+Change the "Run target" from "Three20core > iPhone Simulator" to "Moodle > iPhone Simulator" if needed.
 
 Bugs / Pull requests
 ---
