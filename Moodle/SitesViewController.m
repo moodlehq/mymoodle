@@ -159,11 +159,10 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    SettingsSiteViewController *settingsSiteController = [[SettingsSiteViewController alloc] initWithNew:@"no"];
+    SettingsSiteViewController *settingsSiteController = [[[SettingsSiteViewController alloc] initWithNew:@"no"] autorelease];
 
     settingsSiteController.editingSite = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self.navigationController pushViewController:settingsSiteController animated:YES];
-    [settingsSiteController release];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
