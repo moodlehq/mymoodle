@@ -4,7 +4,12 @@ This is the iOS version of My Moodle app. The app is being ported to HTML5, this
 
 Installation
 ---
-On Mac, double click on the Moodle.xcodeproj file.
+In the Mac terminal, at the root project folder, execute:
+
+1.  git submodule init
+2.  git submodule update
+
+In the Mac finder, double click on the **Moodle.xcodeproj** file.
 
 Bugs / Pull requests
 ---
