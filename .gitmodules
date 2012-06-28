@@ -15,4 +15,4 @@
 	url = git://github.com/rs/SDWebImage.git
 [submodule "three20"]
 	path = three20
-	url = git://github.com/dongsheng/three20.git
+	url = git://github.com/facebook/three20.git
